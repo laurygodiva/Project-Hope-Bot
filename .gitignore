@@ -1,0 +1,5 @@
+node_modules/
+.env
+activity/.env
+activity/dist/
+*.log

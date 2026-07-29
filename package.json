@@ -1,0 +1,21 @@
+{
+  "name": "bot-project-hope",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "index.js",
+  "workspaces": ["activity"],
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "dev:activity": "npm run dev --workspace activity",
+    "build:activity": "npm run build --workspace activity"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

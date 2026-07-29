@@ -1,0 +1,71 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #17181c;
+  color: #e6e6e6;
+}
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 0.75rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+}
+
+.avatar-small {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.error-text {
+  color: #ff6b6b;
+}
+
+.identity-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: #1a1b20;
+  border-bottom: 1px solid #2c2d34;
+}
+
+.badge {
+  background: #5865f2;
+  color: white;
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  margin-left: auto;
+}
+
+.home-page {
+  padding: 1.5rem;
+}
+
+.home-page section {
+  background: #1e1f25;
+  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+}
+
+.home-page ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}

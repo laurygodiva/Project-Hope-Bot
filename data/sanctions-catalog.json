@@ -13,5 +13,20 @@
     "castigo_manual_staff": "",
     "pdr_cost_staff": null,
     "reiterado_limit": 2
+  },
+  {
+    "id": 435324643,
+    "familia": "AFK",
+    "titulo": "AFK",
+    "descripcion": "sdfsefgedr",
+    "severidad_base": 2,
+    "tipo_base": "Sanción",
+    "acciones_manuales": [],
+    "pdr_cost": 2,
+    "castigo_manual": "Ninguna",
+    "severidad_base_staff": null,
+    "castigo_manual_staff": "",
+    "pdr_cost_staff": null,
+    "reiterado_limit": 10
   }
 ]

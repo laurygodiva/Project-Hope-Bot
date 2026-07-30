@@ -35,6 +35,26 @@
 
 * {
   box-sizing: border-box;
+  scrollbar-color: var(--blue-300) var(--surface-alt);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--surface-alt);
+  border-radius: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--accent-gradient);
+  border-radius: 8px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-gradient-hover);
 }
 
 body {
@@ -649,21 +669,6 @@ body {
   gap: 0.35rem;
   overflow-y: auto;
   max-height: 240px;
-  scrollbar-color: var(--blue-300) var(--surface-alt);
-}
-
-.symbol-grid::-webkit-scrollbar {
-  width: 8px;
-}
-
-.symbol-grid::-webkit-scrollbar-track {
-  background: var(--surface-alt);
-  border-radius: 8px;
-}
-
-.symbol-grid::-webkit-scrollbar-thumb {
-  background: var(--accent-gradient);
-  border-radius: 8px;
 }
 
 .symbol-item {

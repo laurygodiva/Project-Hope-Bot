@@ -1,11 +1,13 @@
 {
   "embed": {
     "title": "Sanción Aplicada",
-    "description": "Buenas, {usuario}. Queremos informarle de que se le ha aplicado una sanción en el servidor por: \n{sanciones}.\nLa duración de la sanción es de: {duracion}.",
+    "description": "Buenas, {usuario}. Queremos informarle de que se le ha aplicado una sanción en el servidor por:\n\n{sanciones}.\n\n> - La duración de la sanción es de: {duracion}\n> - Esta finalizará: {fin}",
     "color": "#5b66ff",
     "imageURL": "",
     "thumbnailURL": "https://cdn.discordapp.com/attachments/1529530695905579255/1530206843857535106/Layer_1_copy_5_4.png?ex=6a6bfbed&is=6a6aaa6d&hm=2fe3f2e3b39fd6ff4fe66284907197103c8444b6e6bf288f80a427fdcf45a423&",
     "footer": "Project Hope",
-    "footerIconURL": "https://cdn.discordapp.com/attachments/1529530695905579255/1530206843857535106/Layer_1_copy_5_4.png?ex=6a6bfbed&is=6a6aaa6d&hm=2fe3f2e3b39fd6ff4fe66284907197103c8444b6e6bf288f80a427fdcf45a423&"
+    "footerIconURL": "https://cdn.discordapp.com/attachments/1529530695905579255/1530206843857535106/Layer_1_copy_5_4.png?ex=6a6bfbed&is=6a6aaa6d&hm=2fe3f2e3b39fd6ff4fe66284907197103c8444b6e6bf288f80a427fdcf45a423&",
+    "footerShowDate": true,
+    "footerShowTime": true
   }
 }

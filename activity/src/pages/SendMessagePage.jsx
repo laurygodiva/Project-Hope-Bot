@@ -8,7 +8,7 @@ import SymbolPicker from '../components/SymbolPicker.jsx';
 import MentionPicker from '../components/MentionPicker.jsx';
 import LinkTool from '../components/LinkTool.jsx';
 import MessagePreview from '../components/MessagePreview.jsx';
-import { loadWebhookPresets, saveWebhookPreset } from '../utils/webhookPresets.js';
+import { loadWebhookPresets, saveWebhookPreset, deleteWebhookPreset } from '../utils/webhookPresets.js';
 
 const LIMITS = { content: 2000, title: 256, description: 4096, footer: 2048 };
 
@@ -44,6 +44,11 @@ export default function SendMessagePage() {
   function handleSaveWebhookPreset() {
     if (!username) return;
     setWebhookPresets(saveWebhookPreset({ name: username, avatarURL }));
+  }
+
+  function handleDeleteWebhookPreset(name, e) {
+    e.stopPropagation();
+    setWebhookPresets(deleteWebhookPreset(name));
   }
 
   useEffect(() => {
@@ -212,9 +217,10 @@ export default function SendMessagePage() {
                   <span className="field-title">Webhooks guardados</span>
                   <div className="webhook-preset-list">
                     {webhookPresets.map((p) => (
-                      <button
+                      <div
                         key={p.name}
-                        type="button"
+                        role="button"
+                        tabIndex={0}
                         className="webhook-preset-chip"
                         onClick={() => {
                           setUsername(p.name);
@@ -223,7 +229,15 @@ export default function SendMessagePage() {
                       >
                         <img src={p.avatarURL || 'https://cdn.discordapp.com/embed/avatars/0.png'} alt="" />
                         {p.name}
-                      </button>
+                        <button
+                          type="button"
+                          className="webhook-preset-delete"
+                          onClick={(e) => handleDeleteWebhookPreset(p.name, e)}
+                          title="Borrar"
+                        >
+                          ✕
+                        </button>
+                      </div>
                     ))}
                   </div>
                 </label>

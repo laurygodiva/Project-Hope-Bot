@@ -978,3 +978,19 @@ body {
   border-radius: 50%;
   object-fit: cover;
 }
+
+.webhook-preset-delete {
+  background: transparent;
+  border: none;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  font-size: 0.75rem;
+  padding: 0 0 0 0.2rem;
+  line-height: 1;
+}
+
+.webhook-preset-delete:hover {
+  opacity: 1;
+  color: #ff6b6b;
+}

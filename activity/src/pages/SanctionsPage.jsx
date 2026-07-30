@@ -4,10 +4,12 @@ import NewSanctionForm from '../components/sanctions/NewSanctionForm.jsx';
 import CatalogManager from '../components/sanctions/CatalogManager.jsx';
 import CaseHistory from '../components/sanctions/CaseHistory.jsx';
 import AnnouncementSettings from '../components/sanctions/AnnouncementSettings.jsx';
+import AggravatorsManager from '../components/sanctions/AggravatorsManager.jsx';
 
 const SUB_TABS = [
   { id: 'new', label: 'Nueva sanción' },
   { id: 'catalog', label: 'Catálogo' },
+  { id: 'aggravators', label: 'Agravantes' },
   { id: 'history', label: 'Historial' },
   { id: 'announcements', label: 'Anuncios' },
 ];
@@ -41,6 +43,7 @@ export default function SanctionsPage() {
 
       {subTab === 'new' && <NewSanctionForm catalog={catalog} />}
       {subTab === 'catalog' && <CatalogManager catalog={catalog} onReload={loadCatalog} />}
+      {subTab === 'aggravators' && <AggravatorsManager />}
       {subTab === 'history' && <CaseHistory catalog={catalog} />}
       {subTab === 'announcements' && <AnnouncementSettings />}
     </div>

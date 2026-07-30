@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { computeDecision, aggregateDecisions, SEVERITY_MAP, AGGRAVATORS } from '../../shared/sanctionsEngine.js';
+import { computeDecision, aggregateDecisions, SEVERITY_MAP } from '../../shared/sanctionsEngine.js';
 import {
   getCatalog,
   saveCatalog,
@@ -9,11 +9,24 @@ import {
   saveQueue,
   getSettings,
   saveSettings,
+  getAggravators,
+  saveAggravators,
 } from '../../shared/sanctionsStore.js';
 import { logger } from '../../shared/logger.js';
 
 function findEntry(catalog, id) {
   return catalog.find((e) => String(e.id) === String(id));
+}
+
+function countPriorOccurrences(cases, catalogId, targetId, excludeCaseId) {
+  let count = 0;
+  for (const c of cases) {
+    if (excludeCaseId && c.id === excludeCaseId) continue;
+    if (c.archived) continue;
+    if (c.targetId !== targetId) continue;
+    if ((c.lineas || []).some((l) => String(l.catalogId) === String(catalogId))) count++;
+  }
+  return count;
 }
 
 function renderTemplate(template, { targetId, decisiones, agg }) {
@@ -38,7 +51,20 @@ export function createSanctionsRouter(client) {
   }
 
   router.get('/config', (req, res) => {
-    res.json({ severityMap: SEVERITY_MAP, aggravators: AGGRAVATORS });
+    res.json({ severityMap: SEVERITY_MAP, aggravators: getAggravators() });
+  });
+
+  router.get('/aggravators', (req, res) => {
+    res.json(getAggravators());
+  });
+
+  router.put('/aggravators', async (req, res) => {
+    const aggravators = req.body;
+    if (!aggravators || !aggravators.faccion || !aggravators.intencion || !aggravators.impacto) {
+      return res.status(400).json({ error: 'Faltan campos de agravantes (facción, intención, impacto)' });
+    }
+    await saveAggravators(aggravators);
+    res.json(aggravators);
   });
 
   router.get('/catalog', (req, res) => {
@@ -47,7 +73,21 @@ export function createSanctionsRouter(client) {
 
   router.post('/catalog', async (req, res) => {
     const catalog = getCatalog();
-    const { id, familia, titulo, descripcion, severidad_base, tipo_base, acciones_manuales } = req.body;
+    const {
+      id,
+      familia,
+      titulo,
+      descripcion,
+      severidad_base,
+      tipo_base,
+      acciones_manuales,
+      pdr_cost,
+      castigo_manual,
+      severidad_base_staff,
+      castigo_manual_staff,
+      pdr_cost_staff,
+      reiterado_limit,
+    } = req.body;
 
     if (!id || !familia || !titulo || !severidad_base) {
       return res.status(400).json({ error: 'Faltan campos obligatorios (id, familia, título, severidad base)' });
@@ -64,6 +104,12 @@ export function createSanctionsRouter(client) {
       severidad_base: Number(severidad_base),
       tipo_base: tipo_base || SEVERITY_MAP[Number(severidad_base)]?.label || '',
       acciones_manuales: acciones_manuales || [],
+      pdr_cost: pdr_cost != null && pdr_cost !== '' ? Number(pdr_cost) : null,
+      castigo_manual: castigo_manual || '',
+      severidad_base_staff: severidad_base_staff != null && severidad_base_staff !== '' ? Number(severidad_base_staff) : null,
+      castigo_manual_staff: castigo_manual_staff || '',
+      pdr_cost_staff: pdr_cost_staff != null && pdr_cost_staff !== '' ? Number(pdr_cost_staff) : null,
+      reiterado_limit: reiterado_limit != null && reiterado_limit !== '' ? Number(reiterado_limit) : null,
     };
     catalog.push(entry);
     await saveCatalog(catalog);
@@ -75,13 +121,35 @@ export function createSanctionsRouter(client) {
     const entry = findEntry(catalog, req.params.id);
     if (!entry) return res.status(404).json({ error: 'Tipo de sanción no encontrado' });
 
-    const { familia, titulo, descripcion, severidad_base, tipo_base, acciones_manuales } = req.body;
+    const {
+      familia,
+      titulo,
+      descripcion,
+      severidad_base,
+      tipo_base,
+      acciones_manuales,
+      pdr_cost,
+      castigo_manual,
+      severidad_base_staff,
+      castigo_manual_staff,
+      pdr_cost_staff,
+      reiterado_limit,
+    } = req.body;
     if (familia !== undefined) entry.familia = familia;
     if (titulo !== undefined) entry.titulo = titulo;
     if (descripcion !== undefined) entry.descripcion = descripcion;
     if (severidad_base !== undefined) entry.severidad_base = Number(severidad_base);
     if (tipo_base !== undefined) entry.tipo_base = tipo_base;
     if (acciones_manuales !== undefined) entry.acciones_manuales = acciones_manuales;
+    if (pdr_cost !== undefined) entry.pdr_cost = pdr_cost != null && pdr_cost !== '' ? Number(pdr_cost) : null;
+    if (castigo_manual !== undefined) entry.castigo_manual = castigo_manual;
+    if (severidad_base_staff !== undefined)
+      entry.severidad_base_staff = severidad_base_staff != null && severidad_base_staff !== '' ? Number(severidad_base_staff) : null;
+    if (castigo_manual_staff !== undefined) entry.castigo_manual_staff = castigo_manual_staff;
+    if (pdr_cost_staff !== undefined)
+      entry.pdr_cost_staff = pdr_cost_staff != null && pdr_cost_staff !== '' ? Number(pdr_cost_staff) : null;
+    if (reiterado_limit !== undefined)
+      entry.reiterado_limit = reiterado_limit != null && reiterado_limit !== '' ? Number(reiterado_limit) : null;
 
     await saveCatalog(catalog);
     res.json(entry);
@@ -97,16 +165,23 @@ export function createSanctionsRouter(client) {
 
   router.post('/preview', (req, res) => {
     const catalog = getCatalog();
-    const { lineas } = req.body;
+    const { lineas, targetId } = req.body;
     if (!Array.isArray(lineas) || lineas.length === 0) {
       return res.status(400).json({ error: 'Añade al menos una línea de sanción' });
     }
 
     try {
+      const aggravators = getAggravators();
+      const cases = getCases();
       const decisiones = lineas.map((ln) => {
         const entry = findEntry(catalog, ln.catalogId);
         if (!entry) throw new Error(`Tipo de sanción ${ln.catalogId} no encontrado`);
-        return computeDecision(entry, { faccion: ln.faccion, intencion: ln.intencion, impacto: ln.impacto || [] });
+        const priorCount = targetId ? countPriorOccurrences(cases, ln.catalogId, targetId) : 0;
+        return computeDecision(
+          entry,
+          { faccion: ln.faccion, intencion: ln.intencion, impacto: ln.impacto || [], isStaff: !!ln.isStaff, priorCount },
+          aggravators
+        );
       });
       const agg = aggregateDecisions(decisiones);
       res.json({ decisiones, agg });
@@ -118,7 +193,13 @@ export function createSanctionsRouter(client) {
   router.get('/cases', (req, res) => {
     const cases = getCases();
     const userId = req.query.userId;
-    const filtered = userId ? cases.filter((c) => c.targetId === userId) : cases;
+    const search = (req.query.search || '').toString().trim().toLowerCase();
+    let filtered = userId ? cases.filter((c) => c.targetId === userId) : cases;
+    if (search) {
+      filtered = filtered.filter(
+        (c) => (c.targetName || '').toLowerCase().includes(search) || (c.targetId || '').includes(search)
+      );
+    }
     res.json(filtered.slice(-100).reverse());
   });
 
@@ -128,15 +209,23 @@ export function createSanctionsRouter(client) {
     const caseObj = cases.find((c) => c.id === req.params.id);
     if (!caseObj) return res.status(404).json({ error: 'Caso no encontrado' });
 
-    const { targetName, lineas } = req.body;
+    const { targetName, lineas, manualApplied, archived } = req.body;
     if (targetName !== undefined) caseObj.targetName = targetName;
+    if (manualApplied !== undefined) caseObj.manualApplied = !!manualApplied;
+    if (archived !== undefined) caseObj.archived = !!archived;
 
     if (Array.isArray(lineas) && lineas.length > 0) {
       try {
+        const aggravators = getAggravators();
         const decisiones = lineas.map((ln) => {
           const entry = findEntry(catalog, ln.catalogId);
           if (!entry) throw new Error(`Tipo de sanción ${ln.catalogId} no encontrado`);
-          return computeDecision(entry, { faccion: ln.faccion, intencion: ln.intencion, impacto: ln.impacto || [] });
+          const priorCount = countPriorOccurrences(cases, ln.catalogId, caseObj.targetId, caseObj.id);
+          return computeDecision(
+            entry,
+            { faccion: ln.faccion, intencion: ln.intencion, impacto: ln.impacto || [], isStaff: !!ln.isStaff, priorCount },
+            aggravators
+          );
         });
         const agg = aggregateDecisions(decisiones);
         caseObj.lineas = lineas;
@@ -205,10 +294,17 @@ export function createSanctionsRouter(client) {
 
     let decisiones;
     try {
+      const aggravators = getAggravators();
+      const cases0 = getCases();
       decisiones = lineas.map((ln) => {
         const entry = findEntry(catalog, ln.catalogId);
         if (!entry) throw new Error(`Tipo de sanción ${ln.catalogId} no encontrado`);
-        return computeDecision(entry, { faccion: ln.faccion, intencion: ln.intencion, impacto: ln.impacto || [] });
+        const priorCount = countPriorOccurrences(cases0, ln.catalogId, targetId);
+        return computeDecision(
+          entry,
+          { faccion: ln.faccion, intencion: ln.intencion, impacto: ln.impacto || [], isStaff: !!ln.isStaff, priorCount },
+          aggravators
+        );
       });
     } catch (err) {
       return res.status(400).json({ error: err.message });
@@ -258,6 +354,8 @@ export function createSanctionsRouter(client) {
       decisiones,
       total: { pdr: agg.totalPdr, auto_ms: agg.totalMs, ends_at_iso: agg.total_ends_at_iso, permaban: agg.hasPerma },
       actions,
+      manualApplied: false,
+      archived: false,
     };
 
     const cases = getCases();

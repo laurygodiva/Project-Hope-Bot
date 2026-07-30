@@ -25,6 +25,14 @@ export default function SanctionLineEditor({ catalog, line, onChange, onRemove, 
         </label>
 
         <label>
+          <span className="field-title">Infractor</span>
+          <select value={line.isStaff ? 'staff' : 'usuario'} onChange={(e) => update({ isStaff: e.target.value === 'staff' })}>
+            <option value="usuario">Usuario</option>
+            <option value="staff">Staff</option>
+          </select>
+        </label>
+
+        <label>
           <span className="field-title">Facción</span>
           <select value={line.faccion} onChange={(e) => update({ faccion: e.target.value })}>
             <option value="civil">Civil</option>
@@ -61,6 +69,8 @@ export default function SanctionLineEditor({ catalog, line, onChange, onRemove, 
         {decision && (
           <div className="sanction-decision-preview">
             <strong>{decision.tipo_label}</strong> (severidad S.{decision.severidad_final}) · {decision.pdr} PDR
+            {decision.castigo_manual && <> · Manual: {decision.castigo_manual}</>}
+            {decision.reiterado && <div className="error-text">Reiteración detectada: PermaBan automático</div>}
           </div>
         )}
 

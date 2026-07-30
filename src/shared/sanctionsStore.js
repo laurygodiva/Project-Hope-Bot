@@ -1,12 +1,14 @@
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
+import { DEFAULT_AGGRAVATORS } from './sanctionsEngine.js';
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
 const CATALOG_PATH = path.join(DATA_DIR, 'sanctions-catalog.json');
 const CASES_PATH = path.join(DATA_DIR, 'sanctions-cases.json');
 const QUEUE_PATH = path.join(DATA_DIR, 'sanctions-queue.json');
 const SETTINGS_PATH = path.join(DATA_DIR, 'sanctions-settings.json');
+const AGGRAVATORS_PATH = path.join(DATA_DIR, 'sanctions-aggravators.json');
 
 const DEFAULT_SETTINGS = {
   dmTemplate:
@@ -64,4 +66,13 @@ export function getSettings() {
 
 export async function saveSettings(settings) {
   await writeJson(SETTINGS_PATH, settings);
+}
+
+export function getAggravators() {
+  const stored = readJson(AGGRAVATORS_PATH, null);
+  return stored || DEFAULT_AGGRAVATORS;
+}
+
+export async function saveAggravators(aggravators) {
+  await writeJson(AGGRAVATORS_PATH, aggravators);
 }

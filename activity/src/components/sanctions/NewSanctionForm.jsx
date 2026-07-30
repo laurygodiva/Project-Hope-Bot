@@ -5,7 +5,7 @@ import UserPicker from './UserPicker.jsx';
 import SanctionLineEditor from './SanctionLineEditor.jsx';
 
 function emptyLine() {
-  return { catalogId: null, faccion: 'civil', intencion: 'negligente', impacto: [] };
+  return { catalogId: null, faccion: 'civil', intencion: 'negligente', impacto: [], isStaff: false };
 }
 
 export default function NewSanctionForm({ catalog }) {
@@ -26,7 +26,7 @@ export default function NewSanctionForm({ catalog }) {
     }
     const timeout = setTimeout(() => {
       api
-        .post('/sanctions/preview', { lineas: readyLines })
+        .post('/sanctions/preview', { lineas: readyLines, targetId: targetUser?.id })
         .then((data) => {
           setPreview(data);
           setPreviewError(null);
@@ -35,7 +35,7 @@ export default function NewSanctionForm({ catalog }) {
     }, 300);
     return () => clearTimeout(timeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(readyLines)]);
+  }, [JSON.stringify(readyLines), targetUser?.id]);
 
   async function handleApply() {
     if (!targetUser || readyLines.length === 0) return;

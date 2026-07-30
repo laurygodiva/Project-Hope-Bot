@@ -77,6 +77,7 @@ export default function SendMessagePage() {
     <div className="send-message-page">
       <h1>Enviar mensaje</h1>
 
+      <div className="send-message-layout">
       <form onSubmit={handleSend} className="send-form">
         <label>
           Canal
@@ -175,15 +176,18 @@ export default function SendMessagePage() {
           </fieldset>
         )}
 
-        <MarkdownGuide />
-        <ColorTextGenerator onInsert={(text) => setContent((prev) => (prev ? `${prev}\n${text}` : text))} />
-
         <button type="submit" className="btn-primary" disabled={sending || !channelId}>
           {sending ? 'Enviando...' : 'Enviar mensaje'}
         </button>
+
+        {feedback && <p className={feedback.type === 'error' ? 'error-text' : 'ok-text'}>{feedback.text}</p>}
       </form>
 
-      {feedback && <p className={feedback.type === 'error' ? 'error-text' : 'ok-text'}>{feedback.text}</p>}
+      <aside className="send-message-sidebar">
+        <MarkdownGuide />
+        <ColorTextGenerator onInsert={(text) => setContent((prev) => (prev ? `${prev}\n${text}` : text))} />
+      </aside>
+      </div>
     </div>
   );
 }

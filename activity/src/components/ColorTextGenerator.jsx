@@ -117,8 +117,25 @@ export default function ColorTextGenerator({ onInsert }) {
               Insertar en mensaje
             </button>
           </div>
+
+          <div className="color-generator-test">
+            <p className="guide-note">
+              ¿Los colores no coinciden con la vista previa? Inserta esto, envíalo, y dime qué número corresponde a
+              qué color real para corregir las etiquetas.
+            </p>
+            <button type="button" className="btn-secondary" onClick={() => onInsert(buildTestBlock())}>
+              Insertar prueba de los 8 fondos numerados
+            </button>
+          </div>
         </div>
       )}
     </div>
   );
+}
+
+function buildTestBlock() {
+  const lines = BG_COLORS.filter((c) => c.code).map((c) =>
+    buildAnsiBlock({ text: `Fondo ${c.code}`, bold: false, underline: false, fg: null, bg: c.code }).replace(/```ansi\n|\n```/g, '')
+  );
+  return '```ansi\n' + lines.join('\n') + '\n```';
 }

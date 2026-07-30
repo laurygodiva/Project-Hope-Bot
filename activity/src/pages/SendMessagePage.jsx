@@ -7,6 +7,7 @@ import SymbolPicker from '../components/SymbolPicker.jsx';
 import MentionPicker from '../components/MentionPicker.jsx';
 import LinkTool from '../components/LinkTool.jsx';
 import MessagePreview from '../components/MessagePreview.jsx';
+import { loadWebhookPresets, saveWebhookPreset } from '../utils/webhookPresets.js';
 
 export default function SendMessagePage() {
   const [channels, setChannels] = useState(null);
@@ -31,6 +32,12 @@ export default function SendMessagePage() {
   const [showFooterTime, setShowFooterTime] = useState(false);
   const [sending, setSending] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  const [webhookPresets, setWebhookPresets] = useState(() => loadWebhookPresets());
+
+  function handleSaveWebhookPreset() {
+    if (!username) return;
+    setWebhookPresets(saveWebhookPreset({ name: username, avatarURL }));
+  }
 
   useEffect(() => {
     api
@@ -188,14 +195,38 @@ export default function SendMessagePage() {
 
           {destination === 'channel' && mode === 'webhook' && (
             <>
+              {webhookPresets.length > 0 && (
+                <label>
+                  <span className="field-title">Webhooks guardados</span>
+                  <div className="webhook-preset-list">
+                    {webhookPresets.map((p) => (
+                      <button
+                        key={p.name}
+                        type="button"
+                        className="webhook-preset-chip"
+                        onClick={() => {
+                          setUsername(p.name);
+                          setAvatarURL(p.avatarURL || '');
+                        }}
+                      >
+                        <img src={p.avatarURL || 'https://cdn.discordapp.com/embed/avatars/0.png'} alt="" />
+                        {p.name}
+                      </button>
+                    ))}
+                  </div>
+                </label>
+              )}
               <label>
-                <span className="field-title">Nombre a mostrar (opcional)</span>
+                <span className="field-title">Nombre</span>
                 <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Ej. Anuncios" />
               </label>
               <label>
-                <span className="field-title">URL de avatar (opcional)</span>
+                <span className="field-title">Avatar</span>
                 <input type="text" value={avatarURL} onChange={(e) => setAvatarURL(e.target.value)} placeholder="https://..." />
               </label>
+              <button type="button" className="btn-secondary" onClick={handleSaveWebhookPreset} disabled={!username}>
+                Guardar
+              </button>
             </>
           )}
 
@@ -297,7 +328,7 @@ export default function SendMessagePage() {
           <div className="gradient-frame">
             <LinkTool onInsert={(link) => setContent((prev) => (prev ? `${prev} ${link}` : link))} />
           </div>
-          {(destination === 'user' || mode === 'webhook' || messageType === 'embed') && (
+          {(messageType === 'embed' || (destination === 'channel' && mode === 'webhook')) && (
             <div className="gradient-frame">
               <MessagePreview
                 mode={destination === 'user' ? 'bot' : mode}

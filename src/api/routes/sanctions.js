@@ -33,10 +33,27 @@ function countPriorOccurrences(cases, catalogId, targetId, excludeCaseId) {
 function renderTemplate(template, { targetId, decisiones, agg }) {
   const sanciones = decisiones.map((d) => d.titulo).join(', ');
   const duracion = agg.hasPerma ? 'Permanente' : agg.totalMs > 0 ? `${agg.total_days} día(s)` : 'Sin baneo';
+  const fin = agg.hasPerma
+    ? 'Permanente'
+    : agg.total_ends_at_iso
+      ? `<t:${Math.floor(Date.parse(agg.total_ends_at_iso) / 1000)}:F>`
+      : '—';
   return template
     .replaceAll('{usuario}', `<@${targetId}>`)
     .replaceAll('{sanciones}', sanciones)
-    .replaceAll('{duracion}', duracion);
+    .replaceAll('{duracion}', duracion)
+    .replaceAll('{fin}', fin);
+}
+
+function buildFooterText(embed) {
+  if (!embed.footer && !embed.footerShowDate && !embed.footerShowTime) return '';
+  const now = new Date();
+  const parts = [];
+  if (embed.footerShowDate) parts.push(now.toLocaleDateString('es-ES'));
+  if (embed.footerShowTime) parts.push(now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }));
+  const suffix = parts.join(' ');
+  if (embed.footer && suffix) return `${embed.footer} • ${suffix}`;
+  return embed.footer || suffix;
 }
 
 export function createSanctionsRouter(client) {
@@ -288,6 +305,8 @@ export function createSanctionsRouter(client) {
         thumbnailURL: embed.thumbnailURL || '',
         footer: embed.footer || '',
         footerIconURL: embed.footerIconURL || '',
+        footerShowDate: !!embed.footerShowDate,
+        footerShowTime: !!embed.footerShowTime,
       },
     };
     await saveSettings(settings);
@@ -352,7 +371,7 @@ export function createSanctionsRouter(client) {
           ...settings.embed,
           title: renderTemplate(settings.embed.title || '', ctx),
           description: renderTemplate(settings.embed.description || '', ctx),
-          footer: renderTemplate(settings.embed.footer || '', ctx),
+          footer: buildFooterText(settings.embed),
         };
         if (member) await member.send({ embeds: [buildEmbed(renderedEmbed)] });
       } catch (err) {

@@ -20,6 +20,8 @@ const DEFAULT_SETTINGS = {
     thumbnailURL: '',
     footer: '',
     footerIconURL: '',
+    footerShowDate: false,
+    footerShowTime: false,
   },
 };
 

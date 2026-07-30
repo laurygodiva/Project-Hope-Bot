@@ -12,6 +12,7 @@ const PLACEHOLDERS = [
   { label: 'mención al usuario sancionado', value: '{usuario}' },
   { label: 'tipos de sanción aplicados', value: '{sanciones}' },
   { label: 'duración o "Permanente"', value: '{duracion}' },
+  { label: 'fecha/hora en que termina la sanción', value: '{fin}' },
 ];
 
 function CharCounter({ length, max }) {
@@ -23,7 +24,28 @@ function CharCounter({ length, max }) {
 }
 
 function emptyEmbed() {
-  return { title: '', description: '', color: '#5b66ff', imageURL: '', thumbnailURL: '', footer: '', footerIconURL: '' };
+  return {
+    title: '',
+    description: '',
+    color: '#5b66ff',
+    imageURL: '',
+    thumbnailURL: '',
+    footer: '',
+    footerIconURL: '',
+    footerShowDate: false,
+    footerShowTime: false,
+  };
+}
+
+function buildFooterPreview(embed) {
+  if (!embed.footer && !embed.footerShowDate && !embed.footerShowTime) return '';
+  const now = new Date();
+  const parts = [];
+  if (embed.footerShowDate) parts.push(now.toLocaleDateString());
+  if (embed.footerShowTime) parts.push(now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+  const suffix = parts.join(' ');
+  if (embed.footer && suffix) return `${embed.footer} • ${suffix}`;
+  return embed.footer || suffix;
 }
 
 export default function AnnouncementSettings() {
@@ -119,6 +141,24 @@ export default function AnnouncementSettings() {
                   placeholder="https://..."
                 />
               </label>
+              <div className="color-generator-row">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={embed.footerShowDate}
+                    onChange={(e) => setEmbed({ ...embed, footerShowDate: e.target.checked })}
+                  />
+                  Mostrar fecha
+                </label>
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={embed.footerShowTime}
+                    onChange={(e) => setEmbed({ ...embed, footerShowTime: e.target.checked })}
+                  />
+                  Mostrar hora
+                </label>
+              </div>
             </div>
           </div>
 
@@ -162,7 +202,7 @@ export default function AnnouncementSettings() {
               color={embed.color}
               imageURL={embed.imageURL}
               thumbnailURL={embed.thumbnailURL}
-              footer={embed.footer}
+              footer={buildFooterPreview(embed)}
               footerIconURL={embed.footerIconURL}
             />
           </div>

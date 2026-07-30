@@ -15,7 +15,7 @@ export default function SendMessagePage() {
   const [messageType, setMessageType] = useState('text');
   const [embedTitle, setEmbedTitle] = useState('');
   const [embedDescription, setEmbedDescription] = useState('');
-  const [embedColor, setEmbedColor] = useState('#5865f2');
+  const [embedColor, setEmbedColor] = useState('#5b66ff');
   const [embedImageURL, setEmbedImageURL] = useState('');
   const [embedThumbnailURL, setEmbedThumbnailURL] = useState('');
   const [embedFooter, setEmbedFooter] = useState('');
@@ -77,8 +77,6 @@ export default function SendMessagePage() {
 
   return (
     <div className="send-message-page">
-      <h1>Enviar mensaje</h1>
-
       <div className="send-message-layout">
       <form onSubmit={handleSend} className="send-form">
         <label>
@@ -99,7 +97,7 @@ export default function SendMessagePage() {
               Como el bot
             </button>
             <button type="button" className={mode === 'webhook' ? 'active' : ''} onClick={() => setMode('webhook')}>
-              Como webhook (nombre/avatar propio)
+              Webhook
             </button>
           </div>
         </label>
@@ -178,7 +176,7 @@ export default function SendMessagePage() {
           </fieldset>
         )}
 
-        <button type="submit" className="btn-primary" disabled={sending || !channelId}>
+        <button type="submit" className="btn-primary btn-block" disabled={sending || !channelId}>
           {sending ? 'Enviando...' : 'Enviar mensaje'}
         </button>
 

@@ -50,10 +50,6 @@ export default function ColorTextGenerator({ onInsert }) {
   const fgColor = FG_COLORS.find((c) => c.code === fg);
   const bgColor = BG_COLORS.find((c) => c.code === bg);
 
-  async function handleCopy() {
-    await navigator.clipboard.writeText(output);
-  }
-
   return (
     <div className="guide-box">
       <button type="button" className="guide-toggle" onClick={() => setOpen((o) => !o)}>
@@ -113,9 +109,6 @@ export default function ColorTextGenerator({ onInsert }) {
           </div>
 
           <div className="color-generator-actions">
-            <button type="button" className="btn-secondary" onClick={handleCopy}>
-              Copiar bloque
-            </button>
             <button type="button" className="btn-primary" onClick={() => onInsert(output)}>
               Insertar en mensaje
             </button>

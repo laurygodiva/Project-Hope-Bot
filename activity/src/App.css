@@ -123,8 +123,8 @@ body {
 }
 
 .tab-nav button.active {
-  background: var(--surface);
-  color: var(--text);
+  background: var(--accent-gradient);
+  color: white;
 }
 
 .send-message-page {
@@ -204,6 +204,10 @@ body {
   padding: 0.6rem;
   font-family: inherit;
   font-weight: normal;
+}
+
+.send-form textarea {
+  resize: none;
 }
 
 .send-form select:focus,
@@ -287,19 +291,15 @@ body {
 }
 
 .embed-fields {
+  margin: 0;
   border: none;
   border-radius: 16px;
   background: var(--surface);
-  padding: 1rem;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-.embed-fields legend {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  padding: 0 0.4rem;
+  min-width: 0;
 }
 
 .embed-fields input[type='color'] {
@@ -481,6 +481,21 @@ body {
   gap: 0.35rem;
   overflow-y: auto;
   max-height: 240px;
+  scrollbar-color: var(--blue-300) var(--surface-alt);
+}
+
+.symbol-grid::-webkit-scrollbar {
+  width: 8px;
+}
+
+.symbol-grid::-webkit-scrollbar-track {
+  background: var(--surface-alt);
+  border-radius: 8px;
+}
+
+.symbol-grid::-webkit-scrollbar-thumb {
+  background: var(--accent-gradient);
+  border-radius: 8px;
 }
 
 .symbol-item {
@@ -534,12 +549,14 @@ body {
 }
 
 .btn-primary.btn-block {
-  height: 84px;
-  padding: 0 3rem;
-  border-radius: 16px;
-  font-size: 1.2rem;
+  height: 100px;
+  min-width: 260px;
+  padding: 0 3.5rem;
+  border-radius: 18px;
+  font-size: 1.35rem;
   width: auto;
   align-self: center;
+  line-height: 1;
 }
 
 .embed-preview {

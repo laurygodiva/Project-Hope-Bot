@@ -144,14 +144,13 @@ export default function SendMessagePage() {
           </label>
 
           <label>
-            <span className="field-title">{messageType === 'embed' ? 'Texto adicional (opcional)' : 'Mensaje'}</span>
+            <span className="field-title">{messageType === 'embed' ? 'Texto adicional' : 'Mensaje'}</span>
             <textarea rows={4} value={content} onChange={(e) => setContent(e.target.value)} required={messageType === 'text'} />
           </label>
 
           {messageType === 'embed' && (
             <div className="gradient-frame">
               <fieldset className="embed-fields">
-                <legend>Contenido del embed</legend>
                 <label>
                   <span className="field-title">Título</span>
                   <input type="text" value={embedTitle} onChange={(e) => setEmbedTitle(e.target.value)} />
@@ -165,11 +164,11 @@ export default function SendMessagePage() {
                   <input type="color" value={embedColor} onChange={(e) => setEmbedColor(e.target.value)} />
                 </label>
                 <label>
-                  <span className="field-title">Imagen (URL, grande, debajo del texto)</span>
+                  <span className="field-title">Imagen incrustada</span>
                   <input type="text" value={embedImageURL} onChange={(e) => setEmbedImageURL(e.target.value)} placeholder="https://..." />
                 </label>
                 <label>
-                  <span className="field-title">Miniatura (URL, pequeña, arriba a la derecha)</span>
+                  <span className="field-title">Miniatura</span>
                   <input
                     type="text"
                     value={embedThumbnailURL}
@@ -178,11 +177,11 @@ export default function SendMessagePage() {
                   />
                 </label>
                 <label>
-                  <span className="field-title">Pie de página (opcional)</span>
+                  <span className="field-title">Pie de página</span>
                   <input type="text" value={embedFooter} onChange={(e) => setEmbedFooter(e.target.value)} />
                 </label>
                 <label>
-                  <span className="field-title">Icono del pie de página (URL, opcional)</span>
+                  <span className="field-title">Icono del pie de página</span>
                   <input
                     type="text"
                     value={embedFooterIconURL}
@@ -193,11 +192,11 @@ export default function SendMessagePage() {
                 <div className="color-generator-row">
                   <label className="checkbox-label">
                     <input type="checkbox" checked={showFooterDate} onChange={(e) => setShowFooterDate(e.target.checked)} />
-                    Mostrar fecha en el pie
+                    Mostrar fecha
                   </label>
                   <label className="checkbox-label">
                     <input type="checkbox" checked={showFooterTime} onChange={(e) => setShowFooterTime(e.target.checked)} />
-                    Mostrar hora en el pie
+                    Mostrar hora
                   </label>
                 </div>
               </fieldset>

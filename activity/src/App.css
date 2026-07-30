@@ -630,12 +630,10 @@ body {
 
 .btn-primary.btn-block {
   height: 100px;
-  min-width: 260px;
-  padding: 0 3.5rem;
-  border-radius: 18px;
-  font-size: 1.35rem;
-  width: auto;
-  align-self: center;
+  width: 100%;
+  padding: 0 1rem;
+  border-radius: 10px;
+  font-size: 1.2rem;
   line-height: 1;
 }
 
@@ -780,5 +778,64 @@ body {
 .embed-preview-footer img {
   width: 18px;
   height: 18px;
+  border-radius: 50%;
+}
+
+.mention-picker {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.mention-tabs button {
+  font-size: 0.8rem;
+  height: 36px;
+}
+
+.mention-picker input {
+  background: var(--surface-alt);
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+
+.mention-picker input:focus {
+  outline: none;
+  border-color: var(--blue-300);
+  box-shadow: 0 0 0 3px rgba(134, 50, 242, 0.35);
+}
+
+.mention-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.mention-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface-alt);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.mention-item:hover {
+  background: var(--accent-gradient);
+  color: white;
+}
+
+.mention-item img {
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
 }

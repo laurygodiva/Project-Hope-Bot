@@ -4,6 +4,7 @@ import MarkdownGuide from '../components/MarkdownGuide.jsx';
 import ColorTextGenerator from '../components/ColorTextGenerator.jsx';
 import EmojiPicker from '../components/EmojiPicker.jsx';
 import SymbolPicker from '../components/SymbolPicker.jsx';
+import MentionPicker from '../components/MentionPicker.jsx';
 import MessagePreview from '../components/MessagePreview.jsx';
 
 export default function SendMessagePage() {
@@ -222,6 +223,9 @@ export default function SendMessagePage() {
           </div>
           <div className="gradient-frame">
             <SymbolPicker onInsert={(symbol) => setContent((prev) => `${prev}${symbol}`)} />
+          </div>
+          <div className="gradient-frame">
+            <MentionPicker onInsert={(mention) => setContent((prev) => `${prev}${mention}`)} />
           </div>
           {(mode === 'webhook' || messageType === 'embed') && (
             <div className="gradient-frame">

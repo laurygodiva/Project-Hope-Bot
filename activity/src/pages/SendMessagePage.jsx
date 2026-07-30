@@ -3,6 +3,7 @@ import { api } from '../api/client.js';
 import MarkdownGuide from '../components/MarkdownGuide.jsx';
 import ColorTextGenerator from '../components/ColorTextGenerator.jsx';
 import EmojiPicker from '../components/EmojiPicker.jsx';
+import SymbolPicker from '../components/SymbolPicker.jsx';
 
 export default function SendMessagePage() {
   const [channels, setChannels] = useState(null);
@@ -188,6 +189,7 @@ export default function SendMessagePage() {
         <MarkdownGuide />
         <ColorTextGenerator onInsert={(text) => setContent((prev) => (prev ? `${prev}\n${text}` : text))} />
         <EmojiPicker onInsert={(tag) => setContent((prev) => `${prev}${tag}`)} />
+        <SymbolPicker onInsert={(symbol) => setContent((prev) => `${prev}${symbol}`)} />
       </aside>
       </div>
     </div>

@@ -120,25 +120,8 @@ export default function ColorTextGenerator({ onInsert }) {
               Insertar en mensaje
             </button>
           </div>
-
-          <div className="color-generator-test">
-            <p className="guide-note">
-              Herramienta de verificación: inserta los 8 fondos numerados para comprobar que la vista previa sigue
-              coincidiendo con lo real.
-            </p>
-            <button type="button" className="btn-secondary" onClick={() => onInsert(buildTestBlock())}>
-              Insertar prueba de los 8 fondos numerados
-            </button>
-          </div>
         </div>
       )}
     </div>
   );
-}
-
-function buildTestBlock() {
-  const lines = BG_COLORS.filter((c) => c.code).map((c) =>
-    buildAnsiBlock({ text: `Fondo ${c.code}`, bold: false, underline: false, fg: null, bg: c.code }).replace(/```ansi\n|\n```/g, '')
-  );
-  return '```ansi\n' + lines.join('\n') + '\n```';
 }

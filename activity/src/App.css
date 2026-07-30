@@ -283,19 +283,6 @@ body {
   gap: 0.5rem;
 }
 
-.color-generator-test {
-  border-top: 1px solid #333;
-  padding-top: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.guide-note {
-  margin: 0;
-  font-size: 0.8rem;
-  color: #999;
-}
 
 .emoji-picker-panel {
   margin-top: 0.75rem;
@@ -345,5 +332,27 @@ body {
   color: #888;
   font-size: 0.85rem;
   margin: 0;
+}
+
+.symbol-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 0.3rem;
+  overflow-y: auto;
+  max-height: 220px;
+}
+
+.symbol-item {
+  background: #14151a;
+  border: 1px solid #2c2d34;
+  border-radius: 6px;
+  padding: 0.35rem;
+  cursor: pointer;
+  color: white;
+  font-size: 1rem;
+}
+
+.symbol-item:hover {
+  background: #2c2d34;
 }
 

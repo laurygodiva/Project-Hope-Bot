@@ -11,8 +11,16 @@ const SETTINGS_PATH = path.join(DATA_DIR, 'sanctions-settings.json');
 const AGGRAVATORS_PATH = path.join(DATA_DIR, 'sanctions-aggravators.json');
 
 const DEFAULT_SETTINGS = {
-  dmTemplate:
-    'Hola {usuario}, se te ha aplicado una sanción en el servidor por: {sanciones}.\nDuración: {duracion}.\nSi crees que es un error, contacta con el staff.',
+  embed: {
+    title: 'Sanción aplicada',
+    description:
+      'Hola {usuario}, se te ha aplicado una sanción en el servidor por: {sanciones}.\nDuración: {duracion}.\nSi crees que es un error, contacta con el staff.',
+    color: '#5b66ff',
+    imageURL: '',
+    thumbnailURL: '',
+    footer: '',
+    footerIconURL: '',
+  },
 };
 
 function ensureDir() {
@@ -61,7 +69,8 @@ export async function saveQueue(queue) {
 }
 
 export function getSettings() {
-  return { ...DEFAULT_SETTINGS, ...readJson(SETTINGS_PATH, {}) };
+  const stored = readJson(SETTINGS_PATH, {});
+  return { embed: { ...DEFAULT_SETTINGS.embed, ...(stored.embed || {}) } };
 }
 
 export async function saveSettings(settings) {

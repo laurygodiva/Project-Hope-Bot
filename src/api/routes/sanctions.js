@@ -13,6 +13,7 @@ import {
   saveAggravators,
 } from '../../shared/sanctionsStore.js';
 import { logger } from '../../shared/logger.js';
+import { buildEmbed } from '../../shared/embedBuilder.js';
 
 function findEntry(catalog, id) {
   return catalog.find((e) => String(e.id) === String(id));
@@ -276,10 +277,21 @@ export function createSanctionsRouter(client) {
   });
 
   router.put('/settings', async (req, res) => {
-    const { dmTemplate } = req.body;
-    if (typeof dmTemplate !== 'string') return res.status(400).json({ error: 'Falta la plantilla' });
-    await saveSettings({ dmTemplate });
-    res.json({ dmTemplate });
+    const { embed } = req.body;
+    if (!embed || typeof embed !== 'object') return res.status(400).json({ error: 'Falta la plantilla de anuncio' });
+    const settings = {
+      embed: {
+        title: embed.title || '',
+        description: embed.description || '',
+        color: embed.color || '#5b66ff',
+        imageURL: embed.imageURL || '',
+        thumbnailURL: embed.thumbnailURL || '',
+        footer: embed.footer || '',
+        footerIconURL: embed.footerIconURL || '',
+      },
+    };
+    await saveSettings(settings);
+    res.json(settings);
   });
 
   router.post('/apply', async (req, res) => {
@@ -332,10 +344,17 @@ export function createSanctionsRouter(client) {
     }
 
     const settings = getSettings();
-    if (settings.dmTemplate) {
+    if (settings.embed?.title || settings.embed?.description) {
       try {
         const member = await guild.members.fetch(targetId).catch(() => null);
-        if (member) await member.send(renderTemplate(settings.dmTemplate, { targetId, decisiones, agg }));
+        const ctx = { targetId, decisiones, agg };
+        const renderedEmbed = {
+          ...settings.embed,
+          title: renderTemplate(settings.embed.title || '', ctx),
+          description: renderTemplate(settings.embed.description || '', ctx),
+          footer: renderTemplate(settings.embed.footer || '', ctx),
+        };
+        if (member) await member.send({ embeds: [buildEmbed(renderedEmbed)] });
       } catch (err) {
         actions.errors.push('No se pudo enviar el MD de aviso (puede tener los MD cerrados)');
       }

@@ -1,16 +1,6 @@
 import { Router } from 'express';
-import { ChannelType, EmbedBuilder } from 'discord.js';
-
-function buildEmbed(embed) {
-  const builder = new EmbedBuilder();
-  if (embed.title) builder.setTitle(embed.title);
-  if (embed.description) builder.setDescription(embed.description);
-  if (embed.color) builder.setColor(embed.color);
-  if (embed.imageURL) builder.setImage(embed.imageURL);
-  if (embed.thumbnailURL) builder.setThumbnail(embed.thumbnailURL);
-  if (embed.footer) builder.setFooter({ text: embed.footer, iconURL: embed.footerIconURL || undefined });
-  return builder;
-}
+import { ChannelType } from 'discord.js';
+import { buildEmbed } from '../../shared/embedBuilder.js';
 
 function buildMessagePayload({ content, messageType, embed }) {
   const hasEmbed = messageType === 'embed' && embed && (embed.title || embed.description || embed.imageURL);

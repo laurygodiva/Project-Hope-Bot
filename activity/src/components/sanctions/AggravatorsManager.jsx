@@ -58,7 +58,7 @@ export default function AggravatorsManager() {
             .filter(([key]) => GROUP_LABELS[key])
             .map(([group, def]) => (
               <div key={group} className="catalog-table">
-                <span className="field-title">{GROUP_LABELS[group]}</span>
+                <span className="field-title catalog-col-heading">{GROUP_LABELS[group]}</span>
                 {def.options.map((value) => (
                   <label key={value} className="catalog-row">
                     <span className="catalog-title">{value}</span>

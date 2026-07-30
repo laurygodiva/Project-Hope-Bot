@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
 
-const TABS = [
+const BASE_TABS = [
   { id: 'channels', label: 'Canales' },
   { id: 'roles', label: 'Roles' },
   { id: 'users', label: 'Usuarios' },
 ];
 
-export default function MentionPicker({ onInsert }) {
+export default function MentionPicker({ onInsert, placeholders }) {
+  const TABS = placeholders?.length ? [...BASE_TABS, { id: 'placeholders', label: 'Variables' }] : BASE_TABS;
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState('channels');
   const [search, setSearch] = useState('');
@@ -106,6 +107,16 @@ export default function MentionPicker({ onInsert }) {
                     {u.displayName}
                   </button>
                 ))}
+            </div>
+          )}
+
+          {tab === 'placeholders' && (
+            <div className="mention-list">
+              {placeholders.map((p) => (
+                <button key={p.value} type="button" className="mention-item" onClick={() => onInsert(p.value)}>
+                  {p.value} <span className="muted">({p.label})</span>
+                </button>
+              ))}
             </div>
           )}
         </div>

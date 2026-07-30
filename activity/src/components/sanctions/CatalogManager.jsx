@@ -79,29 +79,32 @@ export default function CatalogManager({ catalog, onReload }) {
       {isFormOpen && (
         <div className="gradient-frame">
           <div className="embed-fields">
-            <label>
-              <span className="field-title">Identificador</span>
-              <input
-                type="number"
-                value={form.id}
-                onChange={(e) => setForm({ ...form, id: e.target.value })}
-                disabled={!creating}
-              />
-            </label>
-            <label>
-              <span className="field-title">Categoría</span>
-              <input type="text" value={form.familia} onChange={(e) => setForm({ ...form, familia: e.target.value })} />
-            </label>
-            <label>
-              <span className="field-title">Título</span>
-              <input type="text" value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} />
-            </label>
-            <label>
-              <span className="field-title">Descripción</span>
-              <textarea rows={3} value={form.descripcion} onChange={(e) => setForm({ ...form, descripcion: e.target.value })} />
-            </label>
-
             <div className="catalog-staff-split">
+              <div className="catalog-staff-col">
+                <span className="field-title catalog-col-heading">Datos básicos</span>
+                <label>
+                  <span className="field-title">Identificador</span>
+                  <input
+                    type="number"
+                    value={form.id}
+                    onChange={(e) => setForm({ ...form, id: e.target.value })}
+                    disabled={!creating}
+                  />
+                </label>
+                <label>
+                  <span className="field-title">Categoría</span>
+                  <input type="text" value={form.familia} onChange={(e) => setForm({ ...form, familia: e.target.value })} />
+                </label>
+                <label>
+                  <span className="field-title">Título</span>
+                  <input type="text" value={form.titulo} onChange={(e) => setForm({ ...form, titulo: e.target.value })} />
+                </label>
+                <label>
+                  <span className="field-title">Descripción</span>
+                  <textarea rows={3} value={form.descripcion} onChange={(e) => setForm({ ...form, descripcion: e.target.value })} />
+                </label>
+              </div>
+
               <div className="catalog-staff-col">
                 <span className="field-title catalog-col-heading">Para un usuario</span>
                 <label>

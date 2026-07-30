@@ -16,7 +16,7 @@ export default function HomePage() {
   }, []);
 
   if (error) return <p className="error-text">{error}</p>;
-  if (!channels || !roles) return <p>Cargando datos del servidor...</p>;
+  if (!channels || !roles) return null;
 
   return (
     <div className="home-page">

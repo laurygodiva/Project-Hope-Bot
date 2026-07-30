@@ -49,7 +49,7 @@ export function extractMentionIds(text) {
   return { userIds, roleIds, channelIds };
 }
 
-export function renderMarkdownLite(str, mentions = { users: {}, roles: {}, channels: {} }) {
+export function renderMarkdownLite(str, mentions = { users: {}, roles: {}, channels: {} }, allowLinks = false) {
   if (!str) return '';
 
   const placeholders = [];
@@ -67,6 +67,14 @@ export function renderMarkdownLite(str, mentions = { users: {}, roles: {}, chann
 
   // Código en línea
   s = s.replace(/`([^`]+)`/g, (_, code) => store(`<code>${escapeHtml(code)}</code>`));
+
+  // Enlaces enmascarados [texto](url): Discord solo los renderiza clicables
+  // dentro de Embeds (título/descripción/campos), NO en mensajes normales.
+  if (allowLinks) {
+    s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_, text, url) => {
+      return store(`<a class="md-link" href="${url}" target="_blank" rel="noopener noreferrer">${escapeHtml(text)}</a>`);
+    });
+  }
 
   // Emojis personalizados de Discord: <:nombre:id> o <a:nombre:id>
   s = s.replace(/<(a)?:(\w+):(\d+)>/g, (_, animated, name, id) => {
@@ -186,12 +194,12 @@ export default function MessagePreview({
             <div className="embed-preview" style={{ borderLeftColor: color || '#5b66ff' }}>
               {thumbnailURL && <img className="embed-preview-thumb" src={thumbnailURL} alt="" />}
               {title && (
-                <div className="embed-preview-title" dangerouslySetInnerHTML={{ __html: renderMarkdownLite(title, mentions) }} />
+                <div className="embed-preview-title" dangerouslySetInnerHTML={{ __html: renderMarkdownLite(title, mentions, true) }} />
               )}
               {description && (
                 <div
                   className="embed-preview-desc"
-                  dangerouslySetInnerHTML={{ __html: renderMarkdownLite(description, mentions) }}
+                  dangerouslySetInnerHTML={{ __html: renderMarkdownLite(description, mentions, true) }}
                 />
               )}
               {imageURL && <img className="embed-preview-image" src={imageURL} alt="" />}

@@ -457,6 +457,13 @@ body {
   flex: 1;
 }
 
+.guide-desc {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
 .color-generator input[type='text'],
 .color-generator select {
   appearance: none;
@@ -736,6 +743,15 @@ body {
   font-weight: 500;
   padding: 0 2px;
   border-radius: 3px;
+}
+
+.md-link {
+  color: #00aff4;
+  text-decoration: none;
+}
+
+.md-link:hover {
+  text-decoration: underline;
 }
 
 .message-preview-author {

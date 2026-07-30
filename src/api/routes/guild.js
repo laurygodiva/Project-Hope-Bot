@@ -21,6 +21,18 @@ function buildMessagePayload({ content, messageType, embed }) {
   };
 }
 
+const MEMBERS_CACHE_TTL = 60_000;
+let membersCache = null;
+let membersCacheAt = 0;
+
+async function getAllMembers(guild) {
+  const now = Date.now();
+  if (membersCache && now - membersCacheAt < MEMBERS_CACHE_TTL) return membersCache;
+  membersCache = await guild.members.fetch();
+  membersCacheAt = now;
+  return membersCache;
+}
+
 export function createGuildRouter(client) {
   const router = Router();
 
@@ -118,21 +130,25 @@ export function createGuildRouter(client) {
     const roleId = req.query.role;
     const limit = Math.min(Number(req.query.limit) || 50, 200);
 
-    const members = await guild.members.fetch();
-    const filtered = members
-      .filter((m) => !search || m.user.username.toLowerCase().includes(search) || m.displayName.toLowerCase().includes(search))
-      .filter((m) => !roleId || m.roles.cache.has(roleId))
-      .first(limit)
-      .map((m) => ({
-        id: m.id,
-        username: m.user.username,
-        displayName: m.displayName,
-        avatar: m.user.displayAvatarURL({ size: 64 }),
-        roles: m.roles.cache.filter((r) => r.id !== guild.id).map((r) => r.id),
-        joinedAt: m.joinedAt,
-      }));
+    try {
+      const members = await getAllMembers(guild);
+      const filtered = members
+        .filter((m) => !search || m.user.username.toLowerCase().includes(search) || m.displayName.toLowerCase().includes(search))
+        .filter((m) => !roleId || m.roles.cache.has(roleId))
+        .first(limit)
+        .map((m) => ({
+          id: m.id,
+          username: m.user.username,
+          displayName: m.displayName,
+          avatar: m.user.displayAvatarURL({ size: 64 }),
+          roles: m.roles.cache.filter((r) => r.id !== guild.id).map((r) => r.id),
+          joinedAt: m.joinedAt,
+        }));
 
-    res.json(filtered);
+      res.json(filtered);
+    } catch (err) {
+      res.status(503).json({ error: 'Discord está limitando las peticiones de miembros ahora mismo, prueba de nuevo en unos segundos' });
+    }
   });
 
   router.patch('/members/:id/roles', async (req, res) => {

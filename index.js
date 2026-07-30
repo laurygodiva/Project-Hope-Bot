@@ -12,6 +12,15 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers],
 });
 
+// Red de seguridad: un error puntual (ej. rate limit de Discord) no debe
+// tumbar el proceso entero. Solo se loguea y se sigue.
+process.on('unhandledRejection', (err) => {
+  logger.error('unhandledRejection', err?.stack || String(err));
+});
+process.on('uncaughtException', (err) => {
+  logger.error('uncaughtException', err?.stack || String(err));
+});
+
 async function main() {
   await loadEvents(client, path.join(__dirname, 'src', 'events'));
   const commandData = await loadCommands(client, path.join(__dirname, 'src', 'commands'));

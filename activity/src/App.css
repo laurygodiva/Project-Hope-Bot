@@ -1030,6 +1030,16 @@ body {
   margin-top: 1rem;
 }
 
+.catalog-row-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+}
+
 .catalog-row {
   display: grid;
   grid-template-columns: 60px 1fr 140px 110px auto;
@@ -1039,6 +1049,29 @@ body {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0.6rem 1rem;
+}
+
+.catalog-row-wrap .catalog-row {
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.catalog-row-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.75rem;
+}
+
+.detail-chip {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.catalog-actions-bottom {
+  align-self: flex-end;
 }
 
 .case-row {

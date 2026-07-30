@@ -1,0 +1,44 @@
+{
+  "faccion": {
+    "label": "Facción del infractor",
+    "options": [
+      "civil",
+      "ilegales",
+      "policial"
+    ],
+    "deltaByValue": {
+      "civil": 0,
+      "ilegales": 2,
+      "policial": 1
+    }
+  },
+  "intencion": {
+    "label": "Intención",
+    "options": [
+      "involuntario",
+      "negligente",
+      "premeditado"
+    ],
+    "deltaByValue": {
+      "involuntario": -1,
+      "negligente": 0,
+      "premeditado": 1
+    }
+  },
+  "impacto": {
+    "label": "Afectados (múltiple)",
+    "multi": true,
+    "options": [
+      "streamer",
+      "grupo_usuarios",
+      "staff"
+    ],
+    "deltaByValue": {
+      "streamer": 1,
+      "grupo_usuarios": 2,
+      "staff": 0
+    }
+  },
+  "boundsMin": 1,
+  "boundsMax": 6
+}

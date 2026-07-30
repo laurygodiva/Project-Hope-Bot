@@ -213,20 +213,36 @@ export default function CatalogManager({ catalog, onReload }) {
 
       <div className="catalog-table">
         {catalog.map((entry) => (
-          <div key={entry.id} className="catalog-row">
-            <span className="catalog-id">#{entry.id}</span>
-            <span className="catalog-title">{entry.titulo}</span>
-            <span className="muted">{entry.familia}</span>
-            <span className="catalog-severity">{SEVERITY_LABELS[entry.severidad_base]}</span>
-            {entry.pdr_cost != null && <span className="muted">PDR: {entry.pdr_cost}</span>}
-            {entry.castigo_manual && <span className="muted">Otro: {entry.castigo_manual}</span>}
-            {entry.severidad_base_staff && (
-              <span className="muted">Staff: {SEVERITY_LABELS[entry.severidad_base_staff]}</span>
+          <div key={entry.id} className="catalog-row-wrap">
+            <div className="catalog-row">
+              <span className="catalog-id">#{entry.id}</span>
+              <span className="catalog-title">{entry.titulo}</span>
+              <span className="muted">{entry.familia}</span>
+              <span className="catalog-severity">{SEVERITY_LABELS[entry.severidad_base]}</span>
+              {entry.pdr_cost != null && <span className="muted">PDR: {entry.pdr_cost}</span>}
+            </div>
+
+            {(entry.castigo_manual ||
+              entry.severidad_base_staff ||
+              entry.pdr_cost_staff != null ||
+              entry.castigo_manual_staff ||
+              entry.reiterado_limit) && (
+              <div className="catalog-row-details">
+                {entry.castigo_manual && <span className="detail-chip">Otro: {entry.castigo_manual}</span>}
+                {entry.severidad_base_staff && (
+                  <span className="detail-chip">Staff: {SEVERITY_LABELS[entry.severidad_base_staff]}</span>
+                )}
+                {entry.pdr_cost_staff != null && <span className="detail-chip">PDR (staff): {entry.pdr_cost_staff}</span>}
+                {entry.castigo_manual_staff && <span className="detail-chip">Otro (staff): {entry.castigo_manual_staff}</span>}
+                {entry.reiterado_limit && (
+                  <span className="detail-chip">
+                    Reiteración: {entry.reiterado_limit}x → PermaBan
+                  </span>
+                )}
+              </div>
             )}
-            {entry.pdr_cost_staff != null && <span className="muted">PDR (staff): {entry.pdr_cost_staff}</span>}
-            {entry.castigo_manual_staff && <span className="muted">Otro (staff): {entry.castigo_manual_staff}</span>}
-            {entry.reiterado_limit && <span className="muted">Reiteración: {entry.reiterado_limit}x → PermaBan</span>}
-            <div className="catalog-actions">
+
+            <div className="catalog-actions catalog-actions-bottom">
               <button type="button" className="btn-secondary" onClick={() => startEdit(entry)}>
                 Editar
               </button>

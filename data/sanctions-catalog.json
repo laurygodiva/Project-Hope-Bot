@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "id": 1111,
+    "familia": "AFK",
+    "titulo": "aaa",
+    "descripcion": "aaa",
+    "severidad_base": 1,
+    "tipo_base": "Aviso",
+    "acciones_manuales": [],
+    "pdr_cost": 3,
+    "castigo_manual": "",
+    "severidad_base_staff": null,
+    "castigo_manual_staff": "",
+    "pdr_cost_staff": null,
+    "reiterado_limit": 4
+  }
+]

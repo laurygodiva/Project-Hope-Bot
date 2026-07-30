@@ -556,6 +556,18 @@ body {
   margin: 0;
 }
 
+.char-counter {
+  align-self: flex-end;
+  font-size: 0.75rem;
+  font-weight: normal;
+  color: var(--text-muted);
+}
+
+.char-counter.over {
+  color: #ff6b6b;
+  font-weight: 700;
+}
+
 .symbol-grid {
   display: grid;
   grid-template-columns: repeat(9, 1fr);

@@ -10,6 +10,12 @@ import LinkTool from '../components/LinkTool.jsx';
 import MessagePreview from '../components/MessagePreview.jsx';
 import { loadWebhookPresets, saveWebhookPreset } from '../utils/webhookPresets.js';
 
+const LIMITS = { content: 2000, title: 256, description: 4096, footer: 2048 };
+
+function CharCounter({ length, max }) {
+  return <span className={`char-counter ${length > max ? 'over' : ''}`}>{length}/{max}</span>;
+}
+
 export default function SendMessagePage() {
   const [channels, setChannels] = useState(null);
   const [channelId, setChannelId] = useState('');
@@ -123,7 +129,12 @@ export default function SendMessagePage() {
 
   if (!channels) return <p>Cargando canales...</p>;
 
-  const canSend = destination === 'user' ? Boolean(targetUser) : Boolean(channelId);
+  const overLimit =
+    content.length > LIMITS.content ||
+    embedTitle.length > LIMITS.title ||
+    embedDescription.length > LIMITS.description ||
+    embedFooter.length > LIMITS.footer;
+  const canSend = (destination === 'user' ? Boolean(targetUser) : Boolean(channelId)) && !overLimit;
 
   return (
     <div className="send-message-page">
@@ -246,6 +257,7 @@ export default function SendMessagePage() {
           <label>
             <span className="field-title">{messageType === 'embed' ? 'Texto adicional' : 'Mensaje'}</span>
             <textarea rows={4} value={content} onChange={(e) => setContent(e.target.value)} required={messageType === 'text'} />
+            <CharCounter length={content.length} max={LIMITS.content} />
           </label>
 
           {messageType === 'embed' && (
@@ -254,10 +266,12 @@ export default function SendMessagePage() {
                 <label>
                   <span className="field-title">Título</span>
                   <input type="text" value={embedTitle} onChange={(e) => setEmbedTitle(e.target.value)} />
+                  <CharCounter length={embedTitle.length} max={LIMITS.title} />
                 </label>
                 <label>
                   <span className="field-title">Descripción</span>
                   <textarea rows={4} value={embedDescription} onChange={(e) => setEmbedDescription(e.target.value)} />
+                  <CharCounter length={embedDescription.length} max={LIMITS.description} />
                 </label>
                 <label>
                   <span className="field-title">Color</span>
@@ -279,6 +293,7 @@ export default function SendMessagePage() {
                 <label>
                   <span className="field-title">Pie de página</span>
                   <input type="text" value={embedFooter} onChange={(e) => setEmbedFooter(e.target.value)} />
+                  <CharCounter length={embedFooter.length} max={LIMITS.footer} />
                 </label>
                 <label>
                   <span className="field-title">Icono del pie de página</span>

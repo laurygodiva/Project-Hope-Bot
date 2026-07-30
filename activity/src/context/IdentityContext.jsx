@@ -10,6 +10,7 @@ export function IdentityProvider({ children }) {
     phase: 'authorizing',
     user: null,
     isAdmin: false,
+    isSanctionsManager: false,
     error: null,
     guild: null,
   });
@@ -39,7 +40,15 @@ export function IdentityProvider({ children }) {
         const data = await api.post('/activity/token', { code });
         setAuthToken(data.token);
 
-        setState((prev) => ({ ...prev, status: 'ready', phase: 'ready', user: data.user, isAdmin: data.isAdmin, error: null }));
+        setState((prev) => ({
+          ...prev,
+          status: 'ready',
+          phase: 'ready',
+          user: data.user,
+          isAdmin: data.isAdmin,
+          isSanctionsManager: data.isSanctionsManager,
+          error: null,
+        }));
       } catch (err) {
         setState((prev) => ({ ...prev, status: 'error', error: err.message }));
       }

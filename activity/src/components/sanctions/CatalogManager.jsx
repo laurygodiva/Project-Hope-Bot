@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { api } from '../../api/client.js';
+import { useIdentity } from '../../context/IdentityContext.jsx';
 
 const SEVERITY_LABELS = { 1: 'S.1 Aviso', 2: 'S.2 Sanción', 3: 'S.3 Baneo 3d', 4: 'S.4 Baneo 5d', 5: 'S.5 Baneo 7d', 6: 'S.6 PermaBan' };
 
@@ -20,6 +21,7 @@ function emptyForm() {
 }
 
 export default function CatalogManager({ catalog, onReload }) {
+  const { isSanctionsManager } = useIdentity();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyForm());
   const [creating, setCreating] = useState(false);
@@ -76,7 +78,9 @@ export default function CatalogManager({ catalog, onReload }) {
     <div className="send-message-page">
       {error && <p className="error-text">{error}</p>}
 
-      {isFormOpen && (
+      {!isSanctionsManager && <p className="muted">Solo el staff con el rol autorizado puede crear, editar o borrar tipos de sanción.</p>}
+
+      {isSanctionsManager && isFormOpen && (
         <div className="gradient-frame">
           <div className="embed-fields">
             <div className="catalog-staff-split">
@@ -208,7 +212,7 @@ export default function CatalogManager({ catalog, onReload }) {
         </div>
       )}
 
-      {!isFormOpen && (
+      {isSanctionsManager && !isFormOpen && (
         <button type="button" className="btn-primary" onClick={startCreate}>
           + Añadir tipo de sanción
         </button>
@@ -245,14 +249,16 @@ export default function CatalogManager({ catalog, onReload }) {
               </div>
             )}
 
-            <div className="catalog-actions catalog-actions-bottom">
-              <button type="button" className="btn-secondary" onClick={() => startEdit(entry)}>
-                Editar
-              </button>
-              <button type="button" className="btn-secondary" onClick={() => handleDelete(entry.id)}>
-                Borrar
-              </button>
-            </div>
+            {isSanctionsManager && (
+              <div className="catalog-actions catalog-actions-bottom">
+                <button type="button" className="btn-secondary" onClick={() => startEdit(entry)}>
+                  Editar
+                </button>
+                <button type="button" className="btn-secondary" onClick={() => handleDelete(entry.id)}>
+                  Borrar
+                </button>
+              </div>
+            )}
           </div>
         ))}
       </div>

@@ -4,3 +4,10 @@ export function isAdmin(member) {
   if (!adminRoleId) return false;
   return member.roles.cache.has(adminRoleId);
 }
+
+export function isSanctionsManager(member) {
+  if (!member) return false;
+  const roleId = process.env.SANCTIONS_MANAGER_ROLE_ID;
+  if (!roleId) return false;
+  return member.roles.cache.has(roleId);
+}

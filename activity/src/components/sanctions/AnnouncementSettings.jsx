@@ -6,6 +6,7 @@ import EmojiPicker from '../EmojiPicker.jsx';
 import MentionPicker from '../MentionPicker.jsx';
 import LinkTool from '../LinkTool.jsx';
 import MessagePreview from '../MessagePreview.jsx';
+import { useIdentity } from '../../context/IdentityContext.jsx';
 
 const LIMITS = { title: 256, description: 4096, footer: 2048 };
 const PLACEHOLDERS = [
@@ -49,6 +50,7 @@ function buildFooterPreview(embed) {
 }
 
 export default function AnnouncementSettings() {
+  const { isSanctionsManager } = useIdentity();
   const [embed, setEmbed] = useState(emptyEmbed());
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState(null);
@@ -89,8 +91,12 @@ export default function AnnouncementSettings() {
             "Variables" para insertar {'{usuario}'}, {'{sanciones}'} y {'{duracion}'}.
           </p>
 
+          {!isSanctionsManager && (
+            <p className="muted">Solo el staff con el rol autorizado puede editar y guardar esta plantilla.</p>
+          )}
+
           <div className="gradient-frame">
-            <div className="embed-fields">
+            <fieldset className="embed-fields" disabled={!isSanctionsManager}>
               <label>
                 <span className="field-title">Título</span>
                 <input type="text" value={embed.title} onChange={(e) => setEmbed({ ...embed, title: e.target.value })} />
@@ -159,39 +165,45 @@ export default function AnnouncementSettings() {
                   Mostrar hora
                 </label>
               </div>
-            </div>
+            </fieldset>
           </div>
 
-          <button type="button" className="btn-primary btn-block" onClick={handleSave} disabled={saving || overLimit}>
-            {saving ? 'Guardando...' : 'Guardar plantilla'}
-          </button>
+          {isSanctionsManager && (
+            <button type="button" className="btn-primary btn-block" onClick={handleSave} disabled={saving || overLimit}>
+              {saving ? 'Guardando...' : 'Guardar plantilla'}
+            </button>
+          )}
 
           {feedback && <p className={feedback.type === 'error' ? 'error-text' : 'ok-text'}>{feedback.text}</p>}
         </div>
 
         <aside className="send-message-sidebar">
-          <div className="gradient-frame">
-            <MarkdownGuide />
-          </div>
-          <div className="gradient-frame">
-            <ColorTextGenerator onInsert={(text) => setEmbed((prev) => ({ ...prev, description: prev.description ? `${prev.description}\n${text}` : text }))} />
-          </div>
-          <div className="gradient-frame">
-            <EmojiPicker onInsert={(tag) => setEmbed((prev) => ({ ...prev, description: `${prev.description}${tag}` }))} />
-          </div>
-          <div className="gradient-frame">
-            <MentionPicker
-              placeholders={PLACEHOLDERS}
-              onInsert={(mention) => setEmbed((prev) => ({ ...prev, description: `${prev.description}${mention}` }))}
-            />
-          </div>
-          <div className="gradient-frame">
-            <LinkTool
-              onInsert={(link) =>
-                setEmbed((prev) => ({ ...prev, description: prev.description ? `${prev.description} ${link}` : link }))
-              }
-            />
-          </div>
+          {isSanctionsManager && (
+            <>
+              <div className="gradient-frame">
+                <MarkdownGuide />
+              </div>
+              <div className="gradient-frame">
+                <ColorTextGenerator onInsert={(text) => setEmbed((prev) => ({ ...prev, description: prev.description ? `${prev.description}\n${text}` : text }))} />
+              </div>
+              <div className="gradient-frame">
+                <EmojiPicker onInsert={(tag) => setEmbed((prev) => ({ ...prev, description: `${prev.description}${tag}` }))} />
+              </div>
+              <div className="gradient-frame">
+                <MentionPicker
+                  placeholders={PLACEHOLDERS}
+                  onInsert={(mention) => setEmbed((prev) => ({ ...prev, description: `${prev.description}${mention}` }))}
+                />
+              </div>
+              <div className="gradient-frame">
+                <LinkTool
+                  onInsert={(link) =>
+                    setEmbed((prev) => ({ ...prev, description: prev.description ? `${prev.description} ${link}` : link }))
+                  }
+                />
+              </div>
+            </>
+          )}
           <div className="gradient-frame">
             <MessagePreview
               mode="bot"

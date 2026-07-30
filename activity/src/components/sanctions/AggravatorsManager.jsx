@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api/client.js';
+import { useIdentity } from '../../context/IdentityContext.jsx';
 
 const GROUP_LABELS = {
   faccion: 'Facción del infractor',
@@ -8,6 +9,7 @@ const GROUP_LABELS = {
 };
 
 export default function AggravatorsManager() {
+  const { isSanctionsManager } = useIdentity();
   const [aggravators, setAggravators] = useState(null);
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState(null);
@@ -54,6 +56,9 @@ export default function AggravatorsManager() {
           <p className="muted">
             Configura cuántos puntos de severidad suma (o resta) cada valor de cada agravante al calcular una sanción.
           </p>
+          {!isSanctionsManager && (
+            <p className="muted">Solo el staff con el rol autorizado puede modificar los agravantes.</p>
+          )}
           {Object.entries(aggravators)
             .filter(([key]) => GROUP_LABELS[key])
             .map(([group, def]) => (
@@ -65,15 +70,18 @@ export default function AggravatorsManager() {
                     <input
                       type="number"
                       value={def.deltaByValue[value]}
+                      disabled={!isSanctionsManager}
                       onChange={(e) => setDelta(group, value, Number(e.target.value))}
                     />
                   </label>
                 ))}
               </div>
             ))}
-          <button type="button" className="btn-primary" onClick={handleSave} disabled={saving}>
-            {saving ? 'Guardando...' : 'Guardar agravantes'}
-          </button>
+          {isSanctionsManager && (
+            <button type="button" className="btn-primary" onClick={handleSave} disabled={saving}>
+              {saving ? 'Guardando...' : 'Guardar agravantes'}
+            </button>
+          )}
           {feedback && <p className={feedback.type === 'error' ? 'error-text' : 'ok-text'}>{feedback.text}</p>}
         </div>
       </div>

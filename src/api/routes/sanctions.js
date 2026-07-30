@@ -14,6 +14,7 @@ import {
 } from '../../shared/sanctionsStore.js';
 import { logger } from '../../shared/logger.js';
 import { buildEmbed } from '../../shared/embedBuilder.js';
+import { requireSanctionsManager } from '../middleware/requireSanctionsManager.js';
 
 function findEntry(catalog, id) {
   return catalog.find((e) => String(e.id) === String(id));
@@ -73,7 +74,7 @@ export function createSanctionsRouter(client) {
     res.json(getAggravators());
   });
 
-  router.put('/aggravators', async (req, res) => {
+  router.put('/aggravators', requireSanctionsManager, async (req, res) => {
     const aggravators = req.body;
     if (!aggravators || !aggravators.faccion || !aggravators.intencion || !aggravators.impacto) {
       return res.status(400).json({ error: 'Faltan campos de agravantes (facción, intención, impacto)' });
@@ -86,7 +87,7 @@ export function createSanctionsRouter(client) {
     res.json(getCatalog());
   });
 
-  router.post('/catalog', async (req, res) => {
+  router.post('/catalog', requireSanctionsManager, async (req, res) => {
     const catalog = getCatalog();
     const {
       id,
@@ -131,7 +132,7 @@ export function createSanctionsRouter(client) {
     res.status(201).json(entry);
   });
 
-  router.put('/catalog/:id', async (req, res) => {
+  router.put('/catalog/:id', requireSanctionsManager, async (req, res) => {
     const catalog = getCatalog();
     const entry = findEntry(catalog, req.params.id);
     if (!entry) return res.status(404).json({ error: 'Tipo de sanción no encontrado' });
@@ -170,7 +171,7 @@ export function createSanctionsRouter(client) {
     res.json(entry);
   });
 
-  router.delete('/catalog/:id', async (req, res) => {
+  router.delete('/catalog/:id', requireSanctionsManager, async (req, res) => {
     const catalog = getCatalog();
     const next = catalog.filter((e) => String(e.id) !== String(req.params.id));
     if (next.length === catalog.length) return res.status(404).json({ error: 'Tipo de sanción no encontrado' });
@@ -257,7 +258,7 @@ export function createSanctionsRouter(client) {
     res.json(caseObj);
   });
 
-  router.delete('/cases/:id', async (req, res) => {
+  router.delete('/cases/:id', requireSanctionsManager, async (req, res) => {
     const guild = getGuild(res);
     if (!guild) return;
 
@@ -290,7 +291,7 @@ export function createSanctionsRouter(client) {
     res.json(getSettings());
   });
 
-  router.put('/settings', async (req, res) => {
+  router.put('/settings', requireSanctionsManager, async (req, res) => {
     const { embed } = req.body;
     if (!embed || typeof embed !== 'object') return res.status(400).json({ error: 'Falta la plantilla de anuncio' });
     const settings = {

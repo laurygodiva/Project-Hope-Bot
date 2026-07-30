@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api/client.js';
+import { useIdentity } from '../../context/IdentityContext.jsx';
 import SanctionLineEditor from './SanctionLineEditor.jsx';
 
 function formatRemaining(ms) {
@@ -25,6 +26,7 @@ function getStatus(c, now) {
 }
 
 export default function CaseHistory({ catalog }) {
+  const { isSanctionsManager } = useIdentity();
   const [cases, setCases] = useState(null);
   const [error, setError] = useState(null);
   const [editingId, setEditingId] = useState(null);
@@ -130,14 +132,16 @@ export default function CaseHistory({ catalog }) {
                   <button type="button" className="btn-secondary" onClick={() => startEdit(c)}>
                     Editar
                   </button>
-                  <button
-                    type="button"
-                    className="btn-secondary"
-                    onClick={() => handleDelete(c.id)}
-                    title="Elimina el registro y revierte el rol/baneo aplicado"
-                  >
-                    Eliminar
-                  </button>
+                  {isSanctionsManager && (
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      onClick={() => handleDelete(c.id)}
+                      title="Elimina el registro y revierte el rol/baneo aplicado"
+                    >
+                      Eliminar
+                    </button>
+                  )}
                   <button type="button" className="btn-secondary" onClick={() => toggleArchived(c)}>
                     {c.archived ? 'Desarchivar' : 'Archivar'}
                   </button>

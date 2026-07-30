@@ -457,12 +457,6 @@ body {
   flex: 1;
 }
 
-.guide-desc {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  line-height: 1.4;
-}
 
 .color-generator input[type='text'],
 .color-generator select {
@@ -862,4 +856,12 @@ body {
   width: 22px;
   height: 22px;
   border-radius: 50%;
+}
+
+.target-user-selected {
+  cursor: default;
+}
+
+.target-user-selected button {
+  margin-left: auto;
 }

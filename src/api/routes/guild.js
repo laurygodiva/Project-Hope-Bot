@@ -12,6 +12,15 @@ function buildEmbed(embed) {
   return builder;
 }
 
+function buildMessagePayload({ content, messageType, embed }) {
+  const hasEmbed = messageType === 'embed' && embed && (embed.title || embed.description || embed.imageURL);
+  if ((!content || !content.trim()) && !hasEmbed) return null;
+  return {
+    content: content?.trim() || undefined,
+    embeds: hasEmbed ? [buildEmbed(embed)] : undefined,
+  };
+}
+
 export function createGuildRouter(client) {
   const router = Router();
 
@@ -161,20 +170,13 @@ export function createGuildRouter(client) {
     if (!guild) return;
 
     const { content, mode, username, avatarURL, messageType, embed } = req.body;
-    const hasEmbed = messageType === 'embed' && embed && (embed.title || embed.description || embed.imageURL);
-    if ((!content || !content.trim()) && !hasEmbed) {
-      return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
-    }
+    const payload = buildMessagePayload({ content, messageType, embed });
+    if (!payload) return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
 
     const channel = guild.channels.cache.get(req.params.id);
     if (!channel || !channel.isTextBased()) {
       return res.status(404).json({ error: 'Canal no encontrado o no es de texto' });
     }
-
-    const payload = {
-      content: content?.trim() || undefined,
-      embeds: hasEmbed ? [buildEmbed(embed)] : undefined,
-    };
 
     try {
       if (mode === 'webhook') {
@@ -197,6 +199,25 @@ export function createGuildRouter(client) {
       res.json({ ok: true });
     } catch (err) {
       res.status(500).json({ error: 'No se pudo enviar el mensaje (¿permisos del bot insuficientes o color/URL inválidos?)' });
+    }
+  });
+
+  router.post('/users/:id/messages', async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+
+    const { content, messageType, embed } = req.body;
+    const payload = buildMessagePayload({ content, messageType, embed });
+    if (!payload) return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
+
+    const member = await guild.members.fetch(req.params.id).catch(() => null);
+    if (!member) return res.status(404).json({ error: 'Usuario no encontrado en el servidor' });
+
+    try {
+      await member.send(payload);
+      res.json({ ok: true });
+    } catch (err) {
+      res.status(500).json({ error: 'No se pudo enviar el MD (puede tener los mensajes directos cerrados)' });
     }
   });
 

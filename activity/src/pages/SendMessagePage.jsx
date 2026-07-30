@@ -11,6 +11,10 @@ import MessagePreview from '../components/MessagePreview.jsx';
 export default function SendMessagePage() {
   const [channels, setChannels] = useState(null);
   const [channelId, setChannelId] = useState('');
+  const [destination, setDestination] = useState('channel');
+  const [userSearch, setUserSearch] = useState('');
+  const [userResults, setUserResults] = useState(null);
+  const [targetUser, setTargetUser] = useState(null);
   const [content, setContent] = useState('');
   const [mode, setMode] = useState('bot');
   const [username, setUsername] = useState('');
@@ -39,6 +43,17 @@ export default function SendMessagePage() {
       .catch((err) => setFeedback({ type: 'error', text: err.message }));
   }, []);
 
+  useEffect(() => {
+    if (destination !== 'user') return;
+    const timeout = setTimeout(() => {
+      api
+        .get(`/guild/members?search=${encodeURIComponent(userSearch)}&limit=30`)
+        .then(setUserResults)
+        .catch((err) => setFeedback({ type: 'error', text: err.message }));
+    }, 250);
+    return () => clearTimeout(timeout);
+  }, [destination, userSearch]);
+
   function buildFooterText() {
     if (!embedFooter && !showFooterDate && !showFooterTime) return '';
     const now = new Date();
@@ -55,11 +70,11 @@ export default function SendMessagePage() {
     setSending(true);
     setFeedback(null);
     try {
-      await api.post(`/guild/channels/${channelId}/messages`, {
+      const payload = {
         content,
-        mode,
-        username: mode === 'webhook' ? username : undefined,
-        avatarURL: mode === 'webhook' ? avatarURL : undefined,
+        mode: destination === 'user' ? 'bot' : mode,
+        username: destination === 'channel' && mode === 'webhook' ? username : undefined,
+        avatarURL: destination === 'channel' && mode === 'webhook' ? avatarURL : undefined,
         messageType,
         embed:
           messageType === 'embed'
@@ -73,7 +88,14 @@ export default function SendMessagePage() {
                 footerIconURL: embedFooterIconURL,
               }
             : undefined,
-      });
+      };
+
+      if (destination === 'user') {
+        await api.post(`/guild/users/${targetUser.id}/messages`, payload);
+      } else {
+        await api.post(`/guild/channels/${channelId}/messages`, payload);
+      }
+
       setFeedback({ type: 'ok', text: 'Mensaje enviado.' });
       setContent('');
       setEmbedTitle('');
@@ -93,34 +115,78 @@ export default function SendMessagePage() {
 
   if (!channels) return <p>Cargando canales...</p>;
 
+  const canSend = destination === 'user' ? Boolean(targetUser) : Boolean(channelId);
+
   return (
     <div className="send-message-page">
       <div className="send-message-layout">
         <form onSubmit={handleSend} className="send-form">
           <label>
-            <span className="field-title">Canal</span>
-            <select value={channelId} onChange={(e) => setChannelId(e.target.value)}>
-              {channels.map((c) => (
-                <option key={c.id} value={c.id}>
-                  #{c.name}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label>
-            <span className="field-title">Modo de envío</span>
+            <span className="field-title">Destino</span>
             <div className="mode-toggle">
-              <button type="button" className={mode === 'bot' ? 'active' : ''} onClick={() => setMode('bot')}>
-                Como el bot
+              <button type="button" className={destination === 'channel' ? 'active' : ''} onClick={() => setDestination('channel')}>
+                Canal
               </button>
-              <button type="button" className={mode === 'webhook' ? 'active' : ''} onClick={() => setMode('webhook')}>
-                Webhook
+              <button type="button" className={destination === 'user' ? 'active' : ''} onClick={() => setDestination('user')}>
+                Usuario (MD)
               </button>
             </div>
           </label>
 
-          {mode === 'webhook' && (
+          {destination === 'channel' ? (
+            <label>
+              <span className="field-title">Canal</span>
+              <select value={channelId} onChange={(e) => setChannelId(e.target.value)}>
+                {channels.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    #{c.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <label>
+              <span className="field-title">Usuario</span>
+              {targetUser ? (
+                <div className="mention-item target-user-selected">
+                  <img src={targetUser.avatar} alt="" />
+                  {targetUser.displayName}
+                  <button type="button" className="btn-secondary" onClick={() => setTargetUser(null)}>
+                    Cambiar
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <input type="text" value={userSearch} onChange={(e) => setUserSearch(e.target.value)} placeholder="Buscar usuario..." />
+                  <div className="mention-list">
+                    {!userResults && <p className="muted">Cargando usuarios...</p>}
+                    {userResults?.map((u) => (
+                      <button key={u.id} type="button" className="mention-item" onClick={() => setTargetUser(u)}>
+                        <img src={u.avatar} alt="" />
+                        {u.displayName}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </label>
+          )}
+
+          {destination === 'channel' && (
+            <label>
+              <span className="field-title">Modo de envío</span>
+              <div className="mode-toggle">
+                <button type="button" className={mode === 'bot' ? 'active' : ''} onClick={() => setMode('bot')}>
+                  Como el bot
+                </button>
+                <button type="button" className={mode === 'webhook' ? 'active' : ''} onClick={() => setMode('webhook')}>
+                  Webhook
+                </button>
+              </div>
+            </label>
+          )}
+
+          {destination === 'channel' && mode === 'webhook' && (
             <>
               <label>
                 <span className="field-title">Nombre a mostrar (opcional)</span>
@@ -205,7 +271,7 @@ export default function SendMessagePage() {
             </div>
           )}
 
-          <button type="submit" className="btn-primary btn-block" disabled={sending || !channelId}>
+          <button type="submit" className="btn-primary btn-block" disabled={sending || !canSend}>
             {sending ? 'Enviando...' : 'Enviar mensaje'}
           </button>
 
@@ -231,10 +297,10 @@ export default function SendMessagePage() {
           <div className="gradient-frame">
             <LinkTool onInsert={(link) => setContent((prev) => (prev ? `${prev} ${link}` : link))} />
           </div>
-          {(mode === 'webhook' || messageType === 'embed') && (
+          {(destination === 'user' || mode === 'webhook' || messageType === 'embed') && (
             <div className="gradient-frame">
               <MessagePreview
-                mode={mode}
+                mode={destination === 'user' ? 'bot' : mode}
                 username={username}
                 avatarURL={avatarURL}
                 content={content}

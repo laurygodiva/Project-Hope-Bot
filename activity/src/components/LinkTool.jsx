@@ -19,10 +19,6 @@ export default function LinkTool({ onInsert }) {
       </button>
       {open && (
         <div className="color-generator">
-          <p className="guide-desc">
-            Solo se ve azul y clicable dentro de un <strong>Embed</strong> (título/descripción). En un mensaje normal se
-            mostrará como texto plano.
-          </p>
           <label>
             Texto visible
             <input type="text" value={text} onChange={(e) => setText(e.target.value)} placeholder="Ej. Haz clic aquí" />

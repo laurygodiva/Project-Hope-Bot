@@ -87,6 +87,10 @@ export function renderMarkdownLite(str, mentions = { users: {}, roles: {}, chann
   s = s.replace(/<@&(\d+)>/g, (_, id) => store(`<span class="md-mention">@${mentions.roles[id] || 'rol'}</span>`));
   s = s.replace(/<#(\d+)>/g, (_, id) => store(`<span class="md-mention">#${mentions.channels[id] || 'canal'}</span>`));
 
+  // URLs sueltas: Discord SIEMPRE las muestra en azul y clicables, estén o no
+  // dentro de un Embed (a diferencia del enlace enmascarado [texto](url)).
+  s = s.replace(/(https?:\/\/[^\s)]+)/g, (url) => store(`<a class="md-link" href="${url}" target="_blank" rel="noopener noreferrer">${escapeHtml(url)}</a>`));
+
   s = escapeHtml(s);
 
   // Bloques de línea: encabezados, listas, citas

@@ -115,11 +115,13 @@ export function createGuildRouter(client) {
     if (!guild) return;
 
     const search = (req.query.search || '').toLowerCase();
+    const roleId = req.query.role;
     const limit = Math.min(Number(req.query.limit) || 50, 200);
 
     const members = await guild.members.fetch();
     const filtered = members
       .filter((m) => !search || m.user.username.toLowerCase().includes(search) || m.displayName.toLowerCase().includes(search))
+      .filter((m) => !roleId || m.roles.cache.has(roleId))
       .first(limit)
       .map((m) => ({
         id: m.id,

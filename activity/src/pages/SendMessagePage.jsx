@@ -127,7 +127,7 @@ export default function SendMessagePage() {
     }
   }
 
-  if (!channels) return <p>Cargando canales...</p>;
+  if (!channels) return null;
 
   const overLimit =
     content.length > LIMITS.content ||

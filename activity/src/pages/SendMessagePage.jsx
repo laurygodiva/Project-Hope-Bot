@@ -4,6 +4,7 @@ import MarkdownGuide from '../components/MarkdownGuide.jsx';
 import ColorTextGenerator from '../components/ColorTextGenerator.jsx';
 import EmojiPicker from '../components/EmojiPicker.jsx';
 import SymbolPicker from '../components/SymbolPicker.jsx';
+import EmbedPreview from '../components/EmbedPreview.jsx';
 
 export default function SendMessagePage() {
   const [channels, setChannels] = useState(null);
@@ -188,6 +189,17 @@ export default function SendMessagePage() {
         <ColorTextGenerator onInsert={(text) => setContent((prev) => (prev ? `${prev}\n${text}` : text))} />
         <EmojiPicker onInsert={(tag) => setContent((prev) => `${prev}${tag}`)} />
         <SymbolPicker onInsert={(symbol) => setContent((prev) => `${prev}${symbol}`)} />
+        {messageType === 'embed' && (
+          <EmbedPreview
+            title={embedTitle}
+            description={embedDescription}
+            color={embedColor}
+            imageURL={embedImageURL}
+            thumbnailURL={embedThumbnailURL}
+            footer={embedFooter}
+            footerIconURL={embedFooterIconURL}
+          />
+        )}
       </aside>
       </div>
     </div>

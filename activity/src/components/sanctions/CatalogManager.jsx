@@ -78,8 +78,6 @@ export default function CatalogManager({ catalog, onReload }) {
     <div className="send-message-page">
       {error && <p className="error-text">{error}</p>}
 
-      {!isSanctionsManager && <p className="muted">Solo el staff con el rol autorizado puede crear, editar o borrar tipos de sanción.</p>}
-
       {isSanctionsManager && isFormOpen && (
         <div className="gradient-frame">
           <div className="embed-fields">
@@ -212,10 +210,17 @@ export default function CatalogManager({ catalog, onReload }) {
         </div>
       )}
 
-      {isSanctionsManager && !isFormOpen && (
-        <button type="button" className="btn-primary" onClick={startCreate}>
-          + Añadir tipo de sanción
-        </button>
+      {!isFormOpen && (
+        <div className="catalog-toolbar">
+          {isSanctionsManager && (
+            <button type="button" className="btn-primary" onClick={startCreate}>
+              + Añadir tipo de sanción
+            </button>
+          )}
+          {!isSanctionsManager && (
+            <p className="muted">Solo el staff con el rol autorizado puede crear, editar o borrar tipos de sanción.</p>
+          )}
+        </div>
       )}
 
       <div className="catalog-table">

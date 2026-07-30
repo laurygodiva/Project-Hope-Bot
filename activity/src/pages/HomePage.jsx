@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
 import RoleMembers from '../components/RoleMembers.jsx';
+import MemberStatsPanel from '../components/MemberStatsPanel.jsx';
 
 export default function HomePage() {
   const [roles, setRoles] = useState(null);
@@ -18,7 +19,7 @@ export default function HomePage() {
 
   return (
     <div className="home-page">
-      <div className="gradient-frame">
+      <div className="gradient-frame home-roles-panel">
         <section className="guide-box">
           <h2>Roles ({roles.length})</h2>
           <ul className="role-list">
@@ -28,6 +29,8 @@ export default function HomePage() {
           </ul>
         </section>
       </div>
+
+      <MemberStatsPanel />
     </div>
   );
 }

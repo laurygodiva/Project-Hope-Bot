@@ -86,11 +86,6 @@ export default function AnnouncementSettings() {
     <div className="send-message-page">
       <div className="send-message-layout">
         <div className="send-form">
-          <p className="muted">
-            Este embed se envía por MD al usuario cuando se le aplica una sanción. Usa la herramienta "Mencionar" → pestaña
-            "Variables" para insertar {'{usuario}'}, {'{sanciones}'} y {'{duracion}'}.
-          </p>
-
           {!isSanctionsManager && (
             <p className="muted">Solo el staff con el rol autorizado puede editar y guardar esta plantilla.</p>
           )}

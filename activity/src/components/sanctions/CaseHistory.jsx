@@ -97,22 +97,29 @@ export default function CaseHistory({ catalog }) {
     }
   }
 
-  if (error) return <p className="error-text">{error}</p>;
   if (!cases) return null;
 
   return (
     <div className="send-message-page">
-      <label>
-        <span className="field-title">Buscar por usuario</span>
-        <input
-          type="text"
-          placeholder="Nombre o ID de usuario..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </label>
+      {error && <p className="error-text">{error}</p>}
+
+      <div className="embed-fields history-search">
+        <label>
+          <span className="field-title">Buscar por usuario</span>
+          <input
+            type="text"
+            placeholder="Nombre o ID de usuario..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </label>
+      </div>
 
       {cases.length === 0 && <p className="muted">No hay sanciones que coincidan.</p>}
+
+      {!isSanctionsManager && (
+        <p className="muted">Solo el staff con el rol autorizado puede eliminar sanciones del historial.</p>
+      )}
 
       <div className="catalog-table">
         {cases.map((c) => {

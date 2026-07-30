@@ -196,9 +196,98 @@ body {
 
 .home-page {
   padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(220px, 300px) 1fr;
   gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .home-page {
+    grid-template-columns: 1fr;
+  }
+}
+
+.home-roles-panel {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.member-stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.member-stats-total {
+  margin: 0.2rem 0 0;
+  font-size: 2.2rem;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.member-stats-legend {
+  display: flex;
+  gap: 1.25rem;
+  margin: 0.75rem 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-join {
+  background: var(--accent-gradient);
+}
+
+.legend-leave {
+  background: #ff6b6b;
+}
+
+.member-stats-chart {
+  width: 100%;
+  height: 160px;
+  display: block;
+}
+
+.bar-join {
+  fill: var(--blue-300);
+}
+
+.bar-leave {
+  fill: #ff6b6b;
+}
+
+.member-stats-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.4rem;
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  gap: 0.2rem;
+}
+
+.member-stats-labels span {
+  flex: 1;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .role-list {
@@ -1034,6 +1123,21 @@ body {
 .sanction-summary p {
   margin: 0.3rem 0 0;
   color: var(--text-muted);
+}
+
+.history-search {
+  max-width: 320px;
+  margin-bottom: 1.25rem;
+}
+
+.history-search label {
+  gap: 0.6rem;
+}
+
+.catalog-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .catalog-table {

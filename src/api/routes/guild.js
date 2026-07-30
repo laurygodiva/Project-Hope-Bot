@@ -1,6 +1,68 @@
 import { Router } from 'express';
 import { ChannelType } from 'discord.js';
 import { buildEmbed } from '../../shared/embedBuilder.js';
+import { getMemberEvents } from '../../shared/memberEventsStore.js';
+
+const RANGE_CONFIG = {
+  day: { buckets: 14, stepDays: 1, label: (d) => `${d.getDate()}/${d.getMonth() + 1}` },
+  week: { buckets: 12, stepDays: 7, label: (d) => `${d.getDate()}/${d.getMonth() + 1}` },
+  month: { buckets: 12, stepDays: 30, label: (d) => d.toLocaleDateString('es-ES', { month: 'short', year: '2-digit' }) },
+  year: { buckets: 5, stepDays: 365, label: (d) => String(d.getFullYear()) },
+};
+
+function bucketKey(date, range) {
+  const d = new Date(date);
+  if (range === 'day' || range === 'week') return d.toISOString().slice(0, 10);
+  if (range === 'month') return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+  return String(d.getFullYear());
+}
+
+function buildStatsSeries(events, range) {
+  const config = RANGE_CONFIG[range] || RANGE_CONFIG.day;
+  const now = new Date();
+  const buckets = [];
+
+  for (let i = config.buckets - 1; i >= 0; i--) {
+    let bucketDate;
+    if (range === 'month') {
+      bucketDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    } else if (range === 'year') {
+      bucketDate = new Date(now.getFullYear() - i, 0, 1);
+    } else {
+      bucketDate = new Date(now);
+      bucketDate.setDate(bucketDate.getDate() - i * config.stepDays);
+    }
+    buckets.push({ key: bucketKey(bucketDate, range), label: config.label(bucketDate), joins: 0, leaves: 0, date: bucketDate });
+  }
+
+  if (range === 'week') {
+    // Para semanas, agrupamos eventos en la ventana de 7 días de cada bucket en vez de por día exacto
+    for (const ev of events) {
+      const evDate = new Date(ev.timestamp);
+      for (let i = buckets.length - 1; i >= 0; i--) {
+        const bucketStart = new Date(buckets[i].date);
+        const bucketEnd = new Date(bucketStart);
+        bucketEnd.setDate(bucketEnd.getDate() + 7);
+        if (evDate >= bucketStart && evDate < bucketEnd) {
+          if (ev.type === 'join') buckets[i].joins++;
+          else buckets[i].leaves++;
+          break;
+        }
+      }
+    }
+  } else {
+    const byKey = new Map(buckets.map((b) => [b.key, b]));
+    for (const ev of events) {
+      const key = bucketKey(ev.timestamp, range);
+      const bucket = byKey.get(key);
+      if (!bucket) continue;
+      if (ev.type === 'join') bucket.joins++;
+      else bucket.leaves++;
+    }
+  }
+
+  return buckets.map(({ key, label, joins, leaves }) => ({ key, label, joins, leaves }));
+}
 
 function buildMessagePayload({ content, messageType, embed }) {
   const hasEmbed = messageType === 'embed' && embed && (embed.title || embed.description || embed.imageURL);
@@ -100,6 +162,17 @@ export function createGuildRouter(client) {
     }
 
     res.json([...botEmojis, ...guildEmojis]);
+  });
+
+  router.get('/stats', (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+
+    const range = ['day', 'week', 'month', 'year'].includes(req.query.range) ? req.query.range : 'day';
+    const events = getMemberEvents();
+    const series = buildStatsSeries(events, range);
+
+    res.json({ totalMembers: guild.memberCount, range, series });
   });
 
   router.get('/roles', (req, res) => {

@@ -12,16 +12,19 @@ const FG_COLORS = [
   { code: 37, name: 'Blanco', hex: '#ffffff' },
 ];
 
+// Verificados a mano por el usuario probando en Discord real (2026-07-30):
+// Discord renderiza los fondos con la paleta ANSI estándar de terminal,
+// NO con la paleta "solarized" que usa para el texto (FG).
 const BG_COLORS = [
   { code: null, name: 'Ninguno', hex: 'transparent' },
-  { code: 40, name: 'Azul oscuro', hex: '#002b36' },
-  { code: 41, name: 'Naranja', hex: '#cb4b16' },
-  { code: 42, name: 'Azul mármol', hex: '#586e75' },
-  { code: 43, name: 'Turquesa grisáceo', hex: '#657b83' },
-  { code: 44, name: 'Gris', hex: '#839496' },
-  { code: 45, name: 'Índigo', hex: '#6c71c4' },
-  { code: 46, name: 'Gris claro', hex: '#93a1a1' },
-  { code: 47, name: 'Blanco', hex: '#fdf6e3' },
+  { code: 40, name: 'Negro', hex: '#1e1f22' },
+  { code: 41, name: 'Rojo', hex: '#dc322f' },
+  { code: 42, name: 'Verde', hex: '#3ba55d' },
+  { code: 43, name: 'Naranja', hex: '#e67e22' },
+  { code: 44, name: 'Azul oscuro', hex: '#1f3a5f' },
+  { code: 45, name: 'Rosa', hex: '#d33682' },
+  { code: 46, name: 'Turquesa', hex: '#1abc9c' },
+  { code: 47, name: 'Blanco', hex: '#ffffff' },
 ];
 
 function buildAnsiBlock({ text, bold, underline, fg, bg }) {
@@ -120,8 +123,8 @@ export default function ColorTextGenerator({ onInsert }) {
 
           <div className="color-generator-test">
             <p className="guide-note">
-              ¿Los colores no coinciden con la vista previa? Inserta esto, envíalo, y dime qué número corresponde a
-              qué color real para corregir las etiquetas.
+              Herramienta de verificación: inserta los 8 fondos numerados para comprobar que la vista previa sigue
+              coincidiendo con lo real.
             </p>
             <button type="button" className="btn-secondary" onClick={() => onInsert(buildTestBlock())}>
               Insertar prueba de los 8 fondos numerados

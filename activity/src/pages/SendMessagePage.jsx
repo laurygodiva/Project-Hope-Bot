@@ -80,7 +80,7 @@ export default function SendMessagePage() {
       <div className="send-message-layout">
       <form onSubmit={handleSend} className="send-form">
         <label>
-          Canal
+          <span className="field-title">Canal</span>
           <select value={channelId} onChange={(e) => setChannelId(e.target.value)}>
             {channels.map((c) => (
               <option key={c.id} value={c.id}>
@@ -91,7 +91,7 @@ export default function SendMessagePage() {
         </label>
 
         <label>
-          Modo de envío
+          <span className="field-title">Modo de envío</span>
           <div className="mode-toggle">
             <button type="button" className={mode === 'bot' ? 'active' : ''} onClick={() => setMode('bot')}>
               Como el bot
@@ -105,18 +105,18 @@ export default function SendMessagePage() {
         {mode === 'webhook' && (
           <>
             <label>
-              Nombre a mostrar (opcional)
+              <span className="field-title">Nombre a mostrar (opcional)</span>
               <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Ej. Anuncios" />
             </label>
             <label>
-              URL de avatar (opcional)
+              <span className="field-title">URL de avatar (opcional)</span>
               <input type="text" value={avatarURL} onChange={(e) => setAvatarURL(e.target.value)} placeholder="https://..." />
             </label>
           </>
         )}
 
         <label>
-          Tipo de mensaje
+          <span className="field-title">Tipo de mensaje</span>
           <div className="mode-toggle">
             <button type="button" className={messageType === 'text' ? 'active' : ''} onClick={() => setMessageType('text')}>
               Texto normal
@@ -128,7 +128,7 @@ export default function SendMessagePage() {
         </label>
 
         <label>
-          {messageType === 'embed' ? 'Texto adicional (opcional, va antes del embed)' : 'Mensaje'}
+          <span className="field-title">{messageType === 'embed' ? 'Texto adicional (opcional)' : 'Mensaje'}</span>
           <textarea rows={4} value={content} onChange={(e) => setContent(e.target.value)} required={messageType === 'text'} />
         </label>
 
@@ -136,23 +136,23 @@ export default function SendMessagePage() {
           <fieldset className="embed-fields">
             <legend>Contenido del embed</legend>
             <label>
-              Título
+              <span className="field-title">Título</span>
               <input type="text" value={embedTitle} onChange={(e) => setEmbedTitle(e.target.value)} />
             </label>
             <label>
-              Descripción
+              <span className="field-title">Descripción</span>
               <textarea rows={4} value={embedDescription} onChange={(e) => setEmbedDescription(e.target.value)} />
             </label>
             <label>
-              Color
+              <span className="field-title">Color</span>
               <input type="color" value={embedColor} onChange={(e) => setEmbedColor(e.target.value)} />
             </label>
             <label>
-              Imagen (URL, grande, debajo del texto)
+              <span className="field-title">Imagen (URL, grande, debajo del texto)</span>
               <input type="text" value={embedImageURL} onChange={(e) => setEmbedImageURL(e.target.value)} placeholder="https://..." />
             </label>
             <label>
-              Miniatura (URL, pequeña, arriba a la derecha)
+              <span className="field-title">Miniatura (URL, pequeña, arriba a la derecha)</span>
               <input
                 type="text"
                 value={embedThumbnailURL}
@@ -161,11 +161,11 @@ export default function SendMessagePage() {
               />
             </label>
             <label>
-              Pie de página (opcional)
+              <span className="field-title">Pie de página (opcional)</span>
               <input type="text" value={embedFooter} onChange={(e) => setEmbedFooter(e.target.value)} />
             </label>
             <label>
-              Icono del pie de página (URL, opcional)
+              <span className="field-title">Icono del pie de página (URL, opcional)</span>
               <input
                 type="text"
                 value={embedFooterIconURL}

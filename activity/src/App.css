@@ -153,6 +153,7 @@ body {
   gap: 1rem;
   position: sticky;
   top: 1.5rem;
+  margin-top: 1.7rem;
 }
 
 @media (max-width: 940px) {
@@ -173,17 +174,42 @@ body {
   font-weight: 600;
 }
 
+.field-title {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--blue-100);
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .field-title {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
 .send-form select,
 .send-form input,
 .send-form textarea {
   width: 100%;
   background: var(--surface);
   color: var(--text);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: 8px;
   padding: 0.6rem;
   font-family: inherit;
   font-weight: normal;
+}
+
+.send-form select:focus,
+.send-form input:focus,
+.send-form textarea:focus {
+  outline: none;
+  border-color: transparent;
+  border-image: var(--accent-gradient) 1;
 }
 
 .mode-toggle {
@@ -238,7 +264,8 @@ body {
 }
 
 .guide-box {
-  border: 1px solid var(--border);
+  border: 2px solid transparent;
+  border-image: var(--accent-gradient) 1;
   border-radius: 8px;
   padding: 0.75rem 1rem;
   background: var(--surface);
@@ -254,6 +281,21 @@ body {
   font-size: 0.9rem;
   width: 100%;
   text-align: left;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.guide-toggle:hover {
+  color: var(--blue-100);
+}
+
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+  .guide-toggle:hover {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
 }
 
 .guide-table {
@@ -295,10 +337,17 @@ body {
 .color-generator select {
   background: var(--surface-alt);
   color: var(--text);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: 6px;
   padding: 0.5rem;
   font-weight: normal;
+}
+
+.color-generator input[type='text']:focus,
+.color-generator select:focus {
+  outline: none;
+  border-color: transparent;
+  border-image: var(--accent-gradient) 1;
 }
 
 .color-generator-row {
@@ -334,9 +383,15 @@ body {
 .emoji-picker-panel input {
   background: var(--surface-alt);
   color: var(--text);
-  border: 1px solid var(--border);
+  border: 2px solid var(--border);
   border-radius: 6px;
   padding: 0.45rem;
+}
+
+.emoji-picker-panel input:focus {
+  outline: none;
+  border-color: transparent;
+  border-image: var(--accent-gradient) 1;
 }
 
 .emoji-grid {
@@ -359,7 +414,7 @@ body {
 }
 
 .emoji-item:hover {
-  background: var(--surface-alt);
+  background: var(--accent-gradient);
 }
 
 .emoji-item img {
@@ -393,7 +448,8 @@ body {
 }
 
 .symbol-item:hover {
-  background: var(--blue-700);
+  background: var(--accent-gradient);
+  border-color: transparent;
 }
 
 .btn-primary {
@@ -426,13 +482,15 @@ body {
 }
 
 .btn-secondary:hover {
-  background: var(--blue-700);
+  background: var(--accent-gradient);
+  border-color: transparent;
+  color: white;
 }
 
 .btn-primary.btn-block {
-  height: 42px;
+  height: 56px;
   padding: 0 0.75rem;
   border-radius: 8px;
-  font-size: 0.85rem;
+  font-size: 1.05rem;
   width: 100%;
 }

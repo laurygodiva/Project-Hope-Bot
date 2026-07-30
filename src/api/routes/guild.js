@@ -87,5 +87,41 @@ export function createGuildRouter(client) {
     }
   });
 
+  router.post('/channels/:id/messages', async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+
+    const { content, mode, username, avatarURL } = req.body;
+    if (!content || !content.trim()) return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
+
+    const channel = guild.channels.cache.get(req.params.id);
+    if (!channel || !channel.isTextBased()) {
+      return res.status(404).json({ error: 'Canal no encontrado o no es de texto' });
+    }
+
+    try {
+      if (mode === 'webhook') {
+        const webhooks = await channel.fetchWebhooks();
+        let webhook = webhooks.find((w) => w.owner?.id === guild.client.user.id);
+        if (!webhook) {
+          webhook = await channel.createWebhook({
+            name: 'Panel de administración',
+            reason: 'Webhook creado por la Activity de administración',
+          });
+        }
+        await webhook.send({
+          content,
+          username: username || undefined,
+          avatarURL: avatarURL || undefined,
+        });
+      } else {
+        await channel.send({ content });
+      }
+      res.json({ ok: true });
+    } catch (err) {
+      res.status(500).json({ error: 'No se pudo enviar el mensaje (¿permisos del bot insuficientes?)' });
+    }
+  });
+
   return router;
 }

@@ -24,20 +24,13 @@ export default function EmojiPicker({ onInsert }) {
   }
 
   return (
-    <div className="emoji-picker">
-      <button type="button" className="btn-secondary" onClick={() => setOpen((o) => !o)}>
-        😀 Insertar emoji
+    <div className="guide-box">
+      <button type="button" className="guide-toggle" onClick={() => setOpen((o) => !o)}>
+        {open ? '▾' : '▸'} Emojis
       </button>
-
       {open && (
-        <div className="emoji-dropdown">
-          <input
-            type="text"
-            placeholder="Buscar emoji..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            autoFocus
-          />
+        <div className="emoji-picker-panel">
+          <input type="text" placeholder="Buscar emoji..." value={search} onChange={(e) => setSearch(e.target.value)} />
 
           {error && <p className="error-text">{error}</p>}
           {!emojis && !error && <p className="muted">Cargando emojis...</p>}

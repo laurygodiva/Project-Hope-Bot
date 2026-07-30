@@ -3,7 +3,6 @@ import { api } from '../api/client.js';
 import MarkdownGuide from '../components/MarkdownGuide.jsx';
 import ColorTextGenerator from '../components/ColorTextGenerator.jsx';
 import EmojiPicker from '../components/EmojiPicker.jsx';
-import StickerPicker from '../components/StickerPicker.jsx';
 
 export default function SendMessagePage() {
   const [channels, setChannels] = useState(null);
@@ -20,7 +19,6 @@ export default function SendMessagePage() {
   const [embedThumbnailURL, setEmbedThumbnailURL] = useState('');
   const [embedFooter, setEmbedFooter] = useState('');
   const [embedFooterIconURL, setEmbedFooterIconURL] = useState('');
-  const [stickerId, setStickerId] = useState(null);
   const [sending, setSending] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
@@ -58,7 +56,6 @@ export default function SendMessagePage() {
                 footerIconURL: embedFooterIconURL,
               }
             : undefined,
-        stickerId,
       });
       setFeedback({ type: 'ok', text: 'Mensaje enviado.' });
       setContent('');
@@ -68,7 +65,6 @@ export default function SendMessagePage() {
       setEmbedThumbnailURL('');
       setEmbedFooter('');
       setEmbedFooterIconURL('');
-      setStickerId(null);
     } catch (err) {
       setFeedback({ type: 'error', text: err.message });
     } finally {
@@ -137,8 +133,6 @@ export default function SendMessagePage() {
           <textarea rows={4} value={content} onChange={(e) => setContent(e.target.value)} required={messageType === 'text'} />
         </label>
 
-        <EmojiPicker onInsert={(tag) => setContent((prev) => `${prev}${tag}`)} />
-
         {messageType === 'embed' && (
           <fieldset className="embed-fields">
             <legend>Contenido del embed</legend>
@@ -193,7 +187,7 @@ export default function SendMessagePage() {
       <aside className="send-message-sidebar">
         <MarkdownGuide />
         <ColorTextGenerator onInsert={(text) => setContent((prev) => (prev ? `${prev}\n${text}` : text))} />
-        <StickerPicker selectedId={stickerId} onSelect={setStickerId} />
+        <EmojiPicker onInsert={(tag) => setContent((prev) => `${prev}${tag}`)} />
       </aside>
       </div>
     </div>

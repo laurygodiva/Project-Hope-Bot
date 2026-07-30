@@ -62,18 +62,6 @@ export function createGuildRouter(client) {
     res.json([...botEmojis, ...guildEmojis]);
   });
 
-  router.get('/stickers', (req, res) => {
-    const guild = getGuild(res);
-    if (!guild) return;
-    const stickers = guild.stickers.cache.map((s) => ({
-      id: s.id,
-      name: s.name,
-      description: s.description,
-      url: s.url,
-    }));
-    res.json(stickers);
-  });
-
   router.get('/roles', (req, res) => {
     const guild = getGuild(res);
     if (!guild) return;
@@ -143,13 +131,10 @@ export function createGuildRouter(client) {
     const guild = getGuild(res);
     if (!guild) return;
 
-    const { content, mode, username, avatarURL, messageType, embed, stickerId } = req.body;
+    const { content, mode, username, avatarURL, messageType, embed } = req.body;
     const hasEmbed = messageType === 'embed' && embed && (embed.title || embed.description || embed.imageURL);
-    if ((!content || !content.trim()) && !hasEmbed && !stickerId) {
+    if ((!content || !content.trim()) && !hasEmbed) {
       return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
-    }
-    if (stickerId && mode === 'webhook') {
-      return res.status(400).json({ error: 'Los webhooks no pueden enviar stickers, usa el modo "Como el bot"' });
     }
 
     const channel = guild.channels.cache.get(req.params.id);
@@ -160,7 +145,6 @@ export function createGuildRouter(client) {
     const payload = {
       content: content?.trim() || undefined,
       embeds: hasEmbed ? [buildEmbed(embed)] : undefined,
-      stickers: stickerId ? [stickerId] : undefined,
     };
 
     try {

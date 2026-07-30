@@ -1,10 +1,28 @@
 import { Router } from 'express';
 import { computeDecision, aggregateDecisions, SEVERITY_MAP, AGGRAVATORS } from '../../shared/sanctionsEngine.js';
-import { getCatalog, saveCatalog, getCases, saveCases, getQueue, saveQueue } from '../../shared/sanctionsStore.js';
+import {
+  getCatalog,
+  saveCatalog,
+  getCases,
+  saveCases,
+  getQueue,
+  saveQueue,
+  getSettings,
+  saveSettings,
+} from '../../shared/sanctionsStore.js';
 import { logger } from '../../shared/logger.js';
 
 function findEntry(catalog, id) {
   return catalog.find((e) => String(e.id) === String(id));
+}
+
+function renderTemplate(template, { targetId, decisiones, agg }) {
+  const sanciones = decisiones.map((d) => d.titulo).join(', ');
+  const duracion = agg.hasPerma ? 'Permanente' : agg.totalMs > 0 ? `${agg.total_days} día(s)` : 'Sin baneo';
+  return template
+    .replaceAll('{usuario}', `<@${targetId}>`)
+    .replaceAll('{sanciones}', sanciones)
+    .replaceAll('{duracion}', duracion);
 }
 
 export function createSanctionsRouter(client) {
@@ -104,6 +122,77 @@ export function createSanctionsRouter(client) {
     res.json(filtered.slice(-100).reverse());
   });
 
+  router.put('/cases/:id', async (req, res) => {
+    const catalog = getCatalog();
+    const cases = getCases();
+    const caseObj = cases.find((c) => c.id === req.params.id);
+    if (!caseObj) return res.status(404).json({ error: 'Caso no encontrado' });
+
+    const { targetName, lineas } = req.body;
+    if (targetName !== undefined) caseObj.targetName = targetName;
+
+    if (Array.isArray(lineas) && lineas.length > 0) {
+      try {
+        const decisiones = lineas.map((ln) => {
+          const entry = findEntry(catalog, ln.catalogId);
+          if (!entry) throw new Error(`Tipo de sanción ${ln.catalogId} no encontrado`);
+          return computeDecision(entry, { faccion: ln.faccion, intencion: ln.intencion, impacto: ln.impacto || [] });
+        });
+        const agg = aggregateDecisions(decisiones);
+        caseObj.lineas = lineas;
+        caseObj.decisiones = decisiones;
+        caseObj.total = { pdr: agg.totalPdr, auto_ms: agg.totalMs, ends_at_iso: agg.total_ends_at_iso, permaban: agg.hasPerma };
+        caseObj.edited = true;
+        caseObj.editedAt = new Date().toISOString();
+      } catch (err) {
+        return res.status(400).json({ error: err.message });
+      }
+    }
+
+    await saveCases(cases);
+    res.json(caseObj);
+  });
+
+  router.delete('/cases/:id', async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+
+    const cases = getCases();
+    const caseObj = cases.find((c) => c.id === req.params.id);
+    if (!caseObj) return res.status(404).json({ error: 'Caso no encontrado' });
+
+    // Revertir el castigo aplicado, si lo hubo
+    try {
+      if (caseObj.actions?.banned) {
+        await guild.members.unban(caseObj.targetId, 'Sanción eliminada desde la Activity de administración').catch(() => {});
+      } else if (caseObj.actions?.role_applied && process.env.SANCTIONS_ROLE_ID) {
+        const member = await guild.members.fetch(caseObj.targetId).catch(() => null);
+        if (member?.roles.cache.has(process.env.SANCTIONS_ROLE_ID)) {
+          await member.roles.remove(process.env.SANCTIONS_ROLE_ID, 'Sanción eliminada desde la Activity de administración');
+        }
+      }
+    } catch (err) {
+      logger.error('sanctions', `No se pudo revertir el castigo al borrar el caso: ${err.message}`);
+    }
+
+    const queue = getQueue().filter((t) => t.caseId !== req.params.id);
+    await saveQueue(queue);
+
+    await saveCases(cases.filter((c) => c.id !== req.params.id));
+    res.json({ ok: true });
+  });
+
+  router.get('/settings', (req, res) => {
+    res.json(getSettings());
+  });
+
+  router.put('/settings', async (req, res) => {
+    const { dmTemplate } = req.body;
+    if (typeof dmTemplate !== 'string') return res.status(400).json({ error: 'Falta la plantilla' });
+    await saveSettings({ dmTemplate });
+    res.json({ dmTemplate });
+  });
+
   router.post('/apply', async (req, res) => {
     const guild = getGuild(res);
     if (!guild) return;
@@ -144,6 +233,16 @@ export function createSanctionsRouter(client) {
       }
     } catch (err) {
       actions.errors.push(`Error aplicando castigo automático: ${err.message}`);
+    }
+
+    const settings = getSettings();
+    if (settings.dmTemplate) {
+      try {
+        const member = await guild.members.fetch(targetId).catch(() => null);
+        if (member) await member.send(renderTemplate(settings.dmTemplate, { targetId, decisiones, agg }));
+      } catch (err) {
+        actions.errors.push('No se pudo enviar el MD de aviso (puede tener los MD cerrados)');
+      }
     }
 
     const createdAt = new Date().toISOString();

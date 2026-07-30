@@ -68,7 +68,7 @@ export default function NewSanctionForm({ catalog }) {
           <UserPicker value={targetUser} onChange={setTargetUser} />
         </label>
 
-        <span className="field-title">Líneas de sanción</span>
+        <span className="field-title">Sanciones</span>
         {lines.map((line, i) => (
           <SanctionLineEditor
             key={i}
@@ -81,7 +81,7 @@ export default function NewSanctionForm({ catalog }) {
         ))}
 
         <button type="button" className="btn-secondary" onClick={() => setLines((prev) => [...prev, emptyLine()])}>
-          + Añadir línea
+          + Añadir sanción
         </button>
 
         {previewError && <p className="error-text">{previewError}</p>}

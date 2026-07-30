@@ -69,7 +69,7 @@ export default function CatalogManager({ catalog, onReload }) {
               />
             </label>
             <label>
-              <span className="field-title">Familia</span>
+              <span className="field-title">Categoría</span>
               <input type="text" value={form.familia} onChange={(e) => setForm({ ...form, familia: e.target.value })} />
             </label>
             <label>

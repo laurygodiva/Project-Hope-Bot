@@ -997,7 +997,14 @@ body {
 
 .sanctions-subnav {
   margin-bottom: 1.5rem;
-  max-width: 480px;
+  max-width: 640px;
+}
+
+.case-edit {
+  margin: 0.5rem 0 1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .sanction-line {

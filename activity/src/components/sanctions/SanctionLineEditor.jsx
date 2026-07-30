@@ -43,7 +43,7 @@ export default function SanctionLineEditor({ catalog, line, onChange, onRemove, 
         </label>
 
         <label>
-          <span className="field-title">Impacto</span>
+          <span className="field-title">Afectados</span>
           <div className="color-generator-row">
             {IMPACTO_OPTIONS.map((opt) => (
               <label key={opt.value} className="checkbox-label">
@@ -65,7 +65,7 @@ export default function SanctionLineEditor({ catalog, line, onChange, onRemove, 
         )}
 
         <button type="button" className="btn-secondary" onClick={onRemove}>
-          Quitar línea
+          Quitar sanción
         </button>
       </div>
     </div>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
 import MarkdownGuide from '../components/MarkdownGuide.jsx';
 import ColorTextGenerator from '../components/ColorTextGenerator.jsx';
+import FontConverter from '../components/FontConverter.jsx';
 import EmojiPicker from '../components/EmojiPicker.jsx';
 import SymbolPicker from '../components/SymbolPicker.jsx';
 import MentionPicker from '../components/MentionPicker.jsx';
@@ -315,6 +316,9 @@ export default function SendMessagePage() {
           </div>
           <div className="gradient-frame">
             <ColorTextGenerator onInsert={(text) => setContent((prev) => (prev ? `${prev}\n${text}` : text))} />
+          </div>
+          <div className="gradient-frame">
+            <FontConverter onInsert={(text) => setContent((prev) => `${prev}${text}`)} />
           </div>
           <div className="gradient-frame">
             <EmojiPicker onInsert={(tag) => setContent((prev) => `${prev}${tag}`)} />

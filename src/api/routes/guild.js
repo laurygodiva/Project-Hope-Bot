@@ -151,7 +151,7 @@ export function createGuildRouter(client) {
     const events = getMemberEvents();
     const series = buildStatsSeries(events, range);
 
-    res.json({ totalMembers: guild.memberCount, range, series });
+    res.json({ totalMembers: guild.memberCount, range, series, totalEventsLogged: events.length });
   });
 
   router.get('/roles', (req, res) => {

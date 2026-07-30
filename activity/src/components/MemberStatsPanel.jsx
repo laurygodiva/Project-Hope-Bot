@@ -36,6 +36,7 @@ export default function MemberStatsPanel() {
           <div>
             <span className="field-title catalog-col-heading">Miembros totales</span>
             <h2 className="member-stats-total">{stats ? stats.totalMembers : '—'}</h2>
+            {stats && <p className="muted">Eventos registrados: {stats.totalEventsLogged}</p>}
           </div>
           <div className="mode-toggle">
             {RANGES.map((r) => (

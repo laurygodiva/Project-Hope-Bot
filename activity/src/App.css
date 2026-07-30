@@ -710,8 +710,7 @@ body {
 
 .btn-primary.btn-block {
   height: 42px;
-  width: auto;
-  align-self: center;
+  width: 100%;
   padding: 0 0.75rem;
   border-radius: 8px;
   font-size: 0.85rem;

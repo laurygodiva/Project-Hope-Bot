@@ -32,12 +32,9 @@ function countPriorOccurrences(cases, catalogId, targetId, excludeCaseId) {
 
 function renderTemplate(template, { targetId, decisiones, agg }) {
   const sanciones = decisiones.map((d) => d.titulo).join(', ');
-  const duracion = agg.hasPerma ? 'Permanente' : agg.totalMs > 0 ? `${agg.total_days} día(s)` : 'Sin baneo';
-  const fin = agg.hasPerma
-    ? 'Permanente'
-    : agg.total_ends_at_iso
-      ? `<t:${Math.floor(Date.parse(agg.total_ends_at_iso) / 1000)}:F>`
-      : '—';
+  const endsAtUnix = agg.total_ends_at_iso ? Math.floor(Date.parse(agg.total_ends_at_iso) / 1000) : null;
+  const duracion = agg.hasPerma ? 'Permanente' : endsAtUnix ? `<t:${endsAtUnix}:R>` : 'Sin baneo';
+  const fin = agg.hasPerma ? 'Permanente' : endsAtUnix ? `<t:${endsAtUnix}:F>` : '—';
   return template
     .replaceAll('{usuario}', `<@${targetId}>`)
     .replaceAll('{sanciones}', sanciones)

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { api } from '../api/client.js';
 
 function escapeHtml(str) {
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -10,7 +11,7 @@ const ANSI_BG = { 40: '#1e1f22', 41: '#dc322f', 42: '#3ba55d', 43: '#e67e22', 44
 function renderAnsi(raw) {
   let html = '';
   let style = {};
-  const regex = /\[([0-9;]*)m/g;
+  const regex = /\[([0-9;]*)m/g;
   let lastIndex = 0;
   let match;
 
@@ -41,7 +42,14 @@ function renderAnsi(raw) {
   return html || escapeHtml(raw);
 }
 
-export function renderMarkdownLite(str) {
+export function extractMentionIds(text) {
+  const userIds = [...text.matchAll(/<@!?(\d+)>/g)].map((m) => m[1]);
+  const roleIds = [...text.matchAll(/<@&(\d+)>/g)].map((m) => m[1]);
+  const channelIds = [...text.matchAll(/<#(\d+)>/g)].map((m) => m[1]);
+  return { userIds, roleIds, channelIds };
+}
+
+export function renderMarkdownLite(str, mentions = { users: {}, roles: {}, channels: {} }) {
   if (!str) return '';
 
   const placeholders = [];
@@ -65,6 +73,11 @@ export function renderMarkdownLite(str) {
     const url = `https://cdn.discordapp.com/emojis/${id}.${animated ? 'gif' : 'png'}`;
     return store(`<img class="md-emoji" src="${url}" alt=":${name}:" />`);
   });
+
+  // Menciones: usuarios, roles y canales
+  s = s.replace(/<@!?(\d+)>/g, (_, id) => store(`<span class="md-mention">@${mentions.users[id] || 'usuario'}</span>`));
+  s = s.replace(/<@&(\d+)>/g, (_, id) => store(`<span class="md-mention">@${mentions.roles[id] || 'rol'}</span>`));
+  s = s.replace(/<#(\d+)>/g, (_, id) => store(`<span class="md-mention">#${mentions.channels[id] || 'canal'}</span>`));
 
   s = escapeHtml(s);
 
@@ -96,6 +109,44 @@ export function renderMarkdownLite(str) {
   return s;
 }
 
+function useMentionNames(...texts) {
+  const [mentions, setMentions] = useState({ users: {}, roles: {}, channels: {} });
+
+  useEffect(() => {
+    const combined = texts.filter(Boolean).join('\n');
+    const { userIds, roleIds, channelIds } = extractMentionIds(combined);
+
+    const missingUsers = userIds.filter((id) => !(id in mentions.users));
+    const missingRoles = roleIds.filter((id) => !(id in mentions.roles));
+    const missingChannels = channelIds.filter((id) => !(id in mentions.channels));
+
+    if (!missingUsers.length && !missingRoles.length && !missingChannels.length) return;
+
+    const timeout = setTimeout(() => {
+      const params = new URLSearchParams({
+        userIds: missingUsers.join(','),
+        roleIds: missingRoles.join(','),
+        channelIds: missingChannels.join(','),
+      });
+      api
+        .get(`/guild/mention-names?${params.toString()}`)
+        .then((data) => {
+          setMentions((prev) => ({
+            users: { ...prev.users, ...data.users },
+            roles: { ...prev.roles, ...data.roles },
+            channels: { ...prev.channels, ...data.channels },
+          }));
+        })
+        .catch(() => {});
+    }, 300);
+
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, texts);
+
+  return mentions;
+}
+
 export default function MessagePreview({
   mode,
   username,
@@ -111,6 +162,7 @@ export default function MessagePreview({
   footerIconURL,
 }) {
   const [open, setOpen] = useState(true);
+  const mentions = useMentionNames(content, title, description);
 
   return (
     <div className="guide-box">
@@ -127,15 +179,20 @@ export default function MessagePreview({
           )}
 
           {content && (
-            <div className="message-preview-content" dangerouslySetInnerHTML={{ __html: renderMarkdownLite(content) }} />
+            <div className="message-preview-content" dangerouslySetInnerHTML={{ __html: renderMarkdownLite(content, mentions) }} />
           )}
 
           {showEmbed && (
             <div className="embed-preview" style={{ borderLeftColor: color || '#5b66ff' }}>
               {thumbnailURL && <img className="embed-preview-thumb" src={thumbnailURL} alt="" />}
-              {title && <div className="embed-preview-title" dangerouslySetInnerHTML={{ __html: renderMarkdownLite(title) }} />}
+              {title && (
+                <div className="embed-preview-title" dangerouslySetInnerHTML={{ __html: renderMarkdownLite(title, mentions) }} />
+              )}
               {description && (
-                <div className="embed-preview-desc" dangerouslySetInnerHTML={{ __html: renderMarkdownLite(description) }} />
+                <div
+                  className="embed-preview-desc"
+                  dangerouslySetInnerHTML={{ __html: renderMarkdownLite(description, mentions) }}
+                />
               )}
               {imageURL && <img className="embed-preview-image" src={imageURL} alt="" />}
               {footer && (

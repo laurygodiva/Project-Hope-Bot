@@ -730,6 +730,14 @@ body {
   display: inline-block;
 }
 
+.md-mention {
+  background: rgba(88, 101, 242, 0.3);
+  color: #c9cdfb;
+  font-weight: 500;
+  padding: 0 2px;
+  border-radius: 3px;
+}
+
 .message-preview-author {
   display: flex;
   align-items: center;

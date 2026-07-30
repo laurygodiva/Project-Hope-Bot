@@ -33,6 +33,35 @@ export function createGuildRouter(client) {
     res.json(channels);
   });
 
+  router.get('/mention-names', async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+
+    const userIds = String(req.query.userIds || '').split(',').filter(Boolean);
+    const roleIds = String(req.query.roleIds || '').split(',').filter(Boolean);
+    const channelIds = String(req.query.channelIds || '').split(',').filter(Boolean);
+
+    const users = {};
+    for (const id of userIds) {
+      const member = await guild.members.fetch(id).catch(() => null);
+      if (member) users[id] = member.displayName;
+    }
+
+    const roles = {};
+    for (const id of roleIds) {
+      const role = guild.roles.cache.get(id);
+      if (role) roles[id] = role.name;
+    }
+
+    const channels = {};
+    for (const id of channelIds) {
+      const channel = guild.channels.cache.get(id);
+      if (channel) channels[id] = channel.name;
+    }
+
+    res.json({ users, roles, channels });
+  });
+
   router.get('/emojis', async (req, res) => {
     const guild = getGuild(res);
     if (!guild) return;

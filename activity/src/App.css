@@ -709,6 +709,7 @@ body {
 }
 
 .btn-primary.btn-block {
+  flex: none;
   height: 42px;
   width: 100%;
   padding: 0 0.75rem;

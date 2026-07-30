@@ -8,9 +8,6 @@ const RANGES = [
   { id: 'year', label: 'Año' },
 ];
 
-const CHART_HEIGHT = 160;
-const CHART_BOTTOM = 20;
-
 export default function MemberStatsPanel() {
   const [range, setRange] = useState('day');
   const [stats, setStats] = useState(null);
@@ -27,7 +24,6 @@ export default function MemberStatsPanel() {
 
   const series = stats?.series || [];
   const maxValue = Math.max(1, ...series.flatMap((s) => [s.joins, s.leaves]));
-  const barWidth = series.length ? 100 / series.length : 0;
 
   return (
     <div className="gradient-frame">
@@ -57,40 +53,27 @@ export default function MemberStatsPanel() {
         </div>
 
         {series.length > 0 && (
-          <>
-            <svg className="member-stats-chart" viewBox={`0 0 100 ${CHART_HEIGHT}`} preserveAspectRatio="none">
-              {series.map((s, i) => {
-                const x = i * barWidth;
-                const joinHeight = (s.joins / maxValue) * (CHART_HEIGHT - CHART_BOTTOM);
-                const leaveHeight = (s.leaves / maxValue) * (CHART_HEIGHT - CHART_BOTTOM);
-                return (
-                  <g key={s.key}>
-                    <rect
-                      x={x + barWidth * 0.15}
-                      y={CHART_HEIGHT - CHART_BOTTOM - joinHeight}
-                      width={barWidth * 0.3}
-                      height={joinHeight}
-                      className="bar-join"
-                      rx="1"
-                    />
-                    <rect
-                      x={x + barWidth * 0.55}
-                      y={CHART_HEIGHT - CHART_BOTTOM - leaveHeight}
-                      width={barWidth * 0.3}
-                      height={leaveHeight}
-                      className="bar-leave"
-                      rx="1"
-                    />
-                  </g>
-                );
-              })}
-            </svg>
-            <div className="member-stats-labels">
-              {series.map((s) => (
-                <span key={s.key}>{s.label}</span>
-              ))}
-            </div>
-          </>
+          <div className="member-stats-chart">
+            {series.map((s) => {
+              const joinPct = (s.joins / maxValue) * 100;
+              const leavePct = (s.leaves / maxValue) * 100;
+              return (
+                <div key={s.key} className="stats-bucket">
+                  <div className="stats-bars">
+                    <div className="stats-bar-col">
+                      {s.joins > 0 && <span className="stats-bar-value">{s.joins}</span>}
+                      <div className="bar-join" style={{ height: `${joinPct}%` }} />
+                    </div>
+                    <div className="stats-bar-col">
+                      {s.leaves > 0 && <span className="stats-bar-value">{s.leaves}</span>}
+                      <div className="bar-leave" style={{ height: `${leavePct}%` }} />
+                    </div>
+                  </div>
+                  <span className="stats-bucket-label">{s.label}</span>
+                </div>
+              );
+            })}
+          </div>
         )}
       </section>
     </div>

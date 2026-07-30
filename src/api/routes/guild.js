@@ -1,5 +1,16 @@
 import { Router } from 'express';
-import { ChannelType } from 'discord.js';
+import { ChannelType, EmbedBuilder } from 'discord.js';
+
+function buildEmbed(embed) {
+  const builder = new EmbedBuilder();
+  if (embed.title) builder.setTitle(embed.title);
+  if (embed.description) builder.setDescription(embed.description);
+  if (embed.color) builder.setColor(embed.color);
+  if (embed.imageURL) builder.setImage(embed.imageURL);
+  if (embed.thumbnailURL) builder.setThumbnail(embed.thumbnailURL);
+  if (embed.footer) builder.setFooter({ text: embed.footer });
+  return builder;
+}
 
 export function createGuildRouter(client) {
   const router = Router();
@@ -91,13 +102,21 @@ export function createGuildRouter(client) {
     const guild = getGuild(res);
     if (!guild) return;
 
-    const { content, mode, username, avatarURL } = req.body;
-    if (!content || !content.trim()) return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
+    const { content, mode, username, avatarURL, messageType, embed } = req.body;
+    const hasEmbed = messageType === 'embed' && embed && (embed.title || embed.description || embed.imageURL);
+    if ((!content || !content.trim()) && !hasEmbed) {
+      return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
+    }
 
     const channel = guild.channels.cache.get(req.params.id);
     if (!channel || !channel.isTextBased()) {
       return res.status(404).json({ error: 'Canal no encontrado o no es de texto' });
     }
+
+    const payload = {
+      content: content?.trim() || undefined,
+      embeds: hasEmbed ? [buildEmbed(embed)] : undefined,
+    };
 
     try {
       if (mode === 'webhook') {
@@ -110,16 +129,16 @@ export function createGuildRouter(client) {
           });
         }
         await webhook.send({
-          content,
+          ...payload,
           username: username || undefined,
           avatarURL: avatarURL || undefined,
         });
       } else {
-        await channel.send({ content });
+        await channel.send(payload);
       }
       res.json({ ok: true });
     } catch (err) {
-      res.status(500).json({ error: 'No se pudo enviar el mensaje (¿permisos del bot insuficientes?)' });
+      res.status(500).json({ error: 'No se pudo enviar el mensaje (¿permisos del bot insuficientes o color/URL inválidos?)' });
     }
   });
 

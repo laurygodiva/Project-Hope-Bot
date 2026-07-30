@@ -8,6 +8,13 @@ export default function SendMessagePage() {
   const [mode, setMode] = useState('bot');
   const [username, setUsername] = useState('');
   const [avatarURL, setAvatarURL] = useState('');
+  const [messageType, setMessageType] = useState('text');
+  const [embedTitle, setEmbedTitle] = useState('');
+  const [embedDescription, setEmbedDescription] = useState('');
+  const [embedColor, setEmbedColor] = useState('#5865f2');
+  const [embedImageURL, setEmbedImageURL] = useState('');
+  const [embedThumbnailURL, setEmbedThumbnailURL] = useState('');
+  const [embedFooter, setEmbedFooter] = useState('');
   const [sending, setSending] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
@@ -32,9 +39,26 @@ export default function SendMessagePage() {
         mode,
         username: mode === 'webhook' ? username : undefined,
         avatarURL: mode === 'webhook' ? avatarURL : undefined,
+        messageType,
+        embed:
+          messageType === 'embed'
+            ? {
+                title: embedTitle,
+                description: embedDescription,
+                color: embedColor,
+                imageURL: embedImageURL,
+                thumbnailURL: embedThumbnailURL,
+                footer: embedFooter,
+              }
+            : undefined,
       });
       setFeedback({ type: 'ok', text: 'Mensaje enviado.' });
       setContent('');
+      setEmbedTitle('');
+      setEmbedDescription('');
+      setEmbedImageURL('');
+      setEmbedThumbnailURL('');
+      setEmbedFooter('');
     } catch (err) {
       setFeedback({ type: 'error', text: err.message });
     } finally {
@@ -86,9 +110,56 @@ export default function SendMessagePage() {
         )}
 
         <label>
-          Mensaje
-          <textarea rows={5} value={content} onChange={(e) => setContent(e.target.value)} required />
+          Tipo de mensaje
+          <div className="mode-toggle">
+            <button type="button" className={messageType === 'text' ? 'active' : ''} onClick={() => setMessageType('text')}>
+              Texto normal
+            </button>
+            <button type="button" className={messageType === 'embed' ? 'active' : ''} onClick={() => setMessageType('embed')}>
+              Embed
+            </button>
+          </div>
         </label>
+
+        <label>
+          {messageType === 'embed' ? 'Texto adicional (opcional, va antes del embed)' : 'Mensaje'}
+          <textarea rows={4} value={content} onChange={(e) => setContent(e.target.value)} required={messageType === 'text'} />
+        </label>
+
+        {messageType === 'embed' && (
+          <fieldset className="embed-fields">
+            <legend>Contenido del embed</legend>
+            <label>
+              Título
+              <input type="text" value={embedTitle} onChange={(e) => setEmbedTitle(e.target.value)} />
+            </label>
+            <label>
+              Descripción
+              <textarea rows={4} value={embedDescription} onChange={(e) => setEmbedDescription(e.target.value)} />
+            </label>
+            <label>
+              Color
+              <input type="color" value={embedColor} onChange={(e) => setEmbedColor(e.target.value)} />
+            </label>
+            <label>
+              Imagen (URL, grande, debajo del texto)
+              <input type="text" value={embedImageURL} onChange={(e) => setEmbedImageURL(e.target.value)} placeholder="https://..." />
+            </label>
+            <label>
+              Miniatura (URL, pequeña, arriba a la derecha)
+              <input
+                type="text"
+                value={embedThumbnailURL}
+                onChange={(e) => setEmbedThumbnailURL(e.target.value)}
+                placeholder="https://..."
+              />
+            </label>
+            <label>
+              Pie de página (opcional)
+              <input type="text" value={embedFooter} onChange={(e) => setEmbedFooter(e.target.value)} />
+            </label>
+          </fieldset>
+        )}
 
         <button type="submit" className="btn-primary" disabled={sending || !channelId}>
           {sending ? 'Enviando...' : 'Enviar mensaje'}

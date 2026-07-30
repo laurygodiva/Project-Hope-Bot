@@ -8,7 +8,7 @@ function buildEmbed(embed) {
   if (embed.color) builder.setColor(embed.color);
   if (embed.imageURL) builder.setImage(embed.imageURL);
   if (embed.thumbnailURL) builder.setThumbnail(embed.thumbnailURL);
-  if (embed.footer) builder.setFooter({ text: embed.footer });
+  if (embed.footer) builder.setFooter({ text: embed.footer, iconURL: embed.footerIconURL || undefined });
   return builder;
 }
 

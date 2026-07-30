@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
+import MarkdownGuide from '../components/MarkdownGuide.jsx';
+import ColorTextGenerator from '../components/ColorTextGenerator.jsx';
 
 export default function SendMessagePage() {
   const [channels, setChannels] = useState(null);
@@ -15,6 +17,7 @@ export default function SendMessagePage() {
   const [embedImageURL, setEmbedImageURL] = useState('');
   const [embedThumbnailURL, setEmbedThumbnailURL] = useState('');
   const [embedFooter, setEmbedFooter] = useState('');
+  const [embedFooterIconURL, setEmbedFooterIconURL] = useState('');
   const [sending, setSending] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
@@ -49,6 +52,7 @@ export default function SendMessagePage() {
                 imageURL: embedImageURL,
                 thumbnailURL: embedThumbnailURL,
                 footer: embedFooter,
+                footerIconURL: embedFooterIconURL,
               }
             : undefined,
       });
@@ -59,6 +63,7 @@ export default function SendMessagePage() {
       setEmbedImageURL('');
       setEmbedThumbnailURL('');
       setEmbedFooter('');
+      setEmbedFooterIconURL('');
     } catch (err) {
       setFeedback({ type: 'error', text: err.message });
     } finally {
@@ -158,8 +163,20 @@ export default function SendMessagePage() {
               Pie de página (opcional)
               <input type="text" value={embedFooter} onChange={(e) => setEmbedFooter(e.target.value)} />
             </label>
+            <label>
+              Icono del pie de página (URL, opcional)
+              <input
+                type="text"
+                value={embedFooterIconURL}
+                onChange={(e) => setEmbedFooterIconURL(e.target.value)}
+                placeholder="https://..."
+              />
+            </label>
           </fieldset>
         )}
+
+        <MarkdownGuide />
+        <ColorTextGenerator onInsert={(text) => setContent((prev) => (prev ? `${prev}\n${text}` : text))} />
 
         <button type="submit" className="btn-primary" disabled={sending || !channelId}>
           {sending ? 'Enviando...' : 'Enviar mensaje'}

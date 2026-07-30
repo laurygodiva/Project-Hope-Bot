@@ -5,7 +5,21 @@ import { api, setAuthToken } from '../api/client.js';
 const IdentityContext = createContext(null);
 
 export function IdentityProvider({ children }) {
-  const [state, setState] = useState({ status: 'loading', user: null, isAdmin: false, error: null });
+  const [state, setState] = useState({
+    status: 'loading',
+    phase: 'authorizing',
+    user: null,
+    isAdmin: false,
+    error: null,
+    guild: null,
+  });
+
+  useEffect(() => {
+    api
+      .get('/activity/guild-icon')
+      .then((guild) => setState((prev) => ({ ...prev, guild })))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     async function verify() {
@@ -20,12 +34,14 @@ export function IdentityProvider({ children }) {
           scope: ['identify'],
         });
 
+        setState((prev) => ({ ...prev, phase: 'verifying' }));
+
         const data = await api.post('/activity/token', { code });
         setAuthToken(data.token);
 
-        setState({ status: 'ready', user: data.user, isAdmin: data.isAdmin, error: null });
+        setState((prev) => ({ ...prev, status: 'ready', phase: 'ready', user: data.user, isAdmin: data.isAdmin, error: null }));
       } catch (err) {
-        setState({ status: 'error', user: null, isAdmin: false, error: err.message });
+        setState((prev) => ({ ...prev, status: 'error', error: err.message }));
       }
     }
     verify();

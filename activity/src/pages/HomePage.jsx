@@ -20,23 +20,26 @@ export default function HomePage() {
 
   return (
     <div className="home-page">
-      <h1>Panel de administración</h1>
-      <section>
-        <h2>Canales ({channels.length})</h2>
-        <ul>
-          {channels.slice(0, 10).map((c) => (
-            <li key={c.id}>{c.name}</li>
-          ))}
-        </ul>
-      </section>
-      <section>
-        <h2>Roles ({roles.length})</h2>
-        <ul>
-          {roles.slice(0, 10).map((r) => (
-            <li key={r.id}>{r.name}</li>
-          ))}
-        </ul>
-      </section>
+      <div className="gradient-frame">
+        <section className="guide-box">
+          <h2>Canales ({channels.length})</h2>
+          <ul>
+            {channels.slice(0, 10).map((c) => (
+              <li key={c.id}>{c.name}</li>
+            ))}
+          </ul>
+        </section>
+      </div>
+      <div className="gradient-frame">
+        <section className="guide-box">
+          <h2>Roles ({roles.length})</h2>
+          <ul>
+            {roles.slice(0, 10).map((r) => (
+              <li key={r.id}>{r.name}</li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </div>
   );
 }

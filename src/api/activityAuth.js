@@ -9,6 +9,14 @@ const TOKEN_TTL = '15m';
 export function createActivityAuthRouter(client) {
   const router = Router();
 
+  // Público (sin auth): solo expone el nombre/icono del servidor, dato ya
+  // público en Discord, para pintar la pantalla de carga antes del login.
+  router.get('/guild-icon', (req, res) => {
+    const guild = client.guilds.cache.get(process.env.DISCORD_GUILD_ID);
+    if (!guild) return res.status(500).json({ error: 'Servidor de Discord no disponible' });
+    res.json({ name: guild.name, iconURL: guild.iconURL({ size: 128 }) });
+  });
+
   // La Activity (Embedded App SDK) obtiene un "code" de autorización dentro
   // del iframe de Discord y nos lo manda aquí para intercambiarlo por la
   // identidad real del usuario, sin pedirle que inicie sesión a mano.

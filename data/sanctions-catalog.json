@@ -1,0 +1,463 @@
+[
+  {
+    "id": 2601,
+    "familia": "Admin abuse",
+    "titulo": "Admin Abuse",
+    "descripcion": "Cualquier tipo de abuso de poder o influencia.",
+    "severidad_base": 5,
+    "tipo_base": "Baneo 7d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Expulsión permanente del Staff",
+        "duracion_iso": "P36500D"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 1903,
+    "familia": "AFK",
+    "titulo": "AFK",
+    "descripcion": "Estar AFK dentro del servidor.",
+    "severidad_base": 1,
+    "tipo_base": "Aviso",
+    "auto": {
+      "enabled": false,
+      "role": "castigado",
+      "duration_from_severity": false
+    },
+    "acciones_manuales": [],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 4205,
+    "familia": "Metagaming",
+    "titulo": "Metagaming",
+    "descripcion": "Uso de información obtenida de forma OOC.",
+    "severidad_base": 3,
+    "tipo_base": "Baneo 3d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 2075,
+    "familia": "Power Gaming",
+    "titulo": "Power Gaming",
+    "descripcion": "Abusar de mecánicas para actuar de forma surrealista.",
+    "severidad_base": 3,
+    "tipo_base": "Baneo 3d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 1209,
+    "familia": "Falta de Fair Play",
+    "titulo": "Falta de Fair Play",
+    "descripcion": "No respetar una igualdad de condiciones.",
+    "severidad_base": 2,
+    "tipo_base": "Sanción",
+    "auto": {
+      "enabled": false,
+      "role": "castigado",
+      "duration_from_severity": false
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Rollback si se considera",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 8850,
+    "familia": "Interpretación de PJ",
+    "titulo": "Interpretación de PJ",
+    "descripcion": "No respetar la interpretación del personaje.",
+    "severidad_base": 2,
+    "tipo_base": "Sanción",
+    "auto": {
+      "enabled": false,
+      "role": "castigado",
+      "duration_from_severity": false
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Posible CK al PJ (según gravedad)",
+        "duracion_iso": "P36500D"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 3402,
+    "familia": "Rol de Entorno",
+    "titulo": "Rol de Entorno",
+    "descripcion": "No respetar el rol de entorno de cualquier parte del mapa.",
+    "severidad_base": 4,
+    "tipo_base": "Baneo 5d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Rollback si se considera",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 8650,
+    "familia": "Bugs",
+    "titulo": "Abuso de Bugs",
+    "descripcion": "Abusar de bugs del juego/servidor.",
+    "severidad_base": 3,
+    "tipo_base": "Baneo 3d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Retirada de ítems al usuario",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 3376,
+    "familia": "Hacks",
+    "titulo": "Uso de Hacks",
+    "descripcion": "Usar cualquier sistema externo no autorizado o malicioso.",
+    "severidad_base": 6,
+    "tipo_base": "Permaban",
+    "auto": {
+      "enabled": false,
+      "role": "castigado",
+      "duration_from_severity": false
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Devolver ítems perdidos a la víctima (si hubiera)",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 7433,
+    "familia": "Evasión de Rol",
+    "titulo": "Evasión de Rol",
+    "descripcion": "Tirar de F8 o evadir el rol a un usuario.",
+    "severidad_base": 4,
+    "tipo_base": "Baneo 5d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Rollback si se considera",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 8040,
+    "familia": "Forzar Rol",
+    "titulo": "Forzar Rol",
+    "descripcion": "Forzar cualquier tipo de rol a un jugador.",
+    "severidad_base": 4,
+    "tipo_base": "Baneo 5d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Rollback si se considera",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 3011,
+    "familia": "Roles Agresivos",
+    "titulo": "Roles Agresivos",
+    "descripcion": "Iniciar un rol agresivo sin una escalada razonable.",
+    "severidad_base": 5,
+    "tipo_base": "Baneo 7d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 1803,
+    "familia": "Roles de Tortura",
+    "titulo": "Roles de Tortura",
+    "descripcion": "No respetar las pautas de roles de tortura de la normativa.",
+    "severidad_base": 6,
+    "tipo_base": "Permaban",
+    "auto": {
+      "enabled": false,
+      "role": "castigado",
+      "duration_from_severity": false
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Rollback si se considera",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 9722,
+    "familia": "Roles de Violación",
+    "titulo": "Roles de Violación",
+    "descripcion": "Realizar dicho rol, incluso de forma pactada.",
+    "severidad_base": 6,
+    "tipo_base": "Permaban",
+    "auto": {
+      "enabled": false,
+      "role": "castigado",
+      "duration_from_severity": false
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Rollback si se considera",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 1661,
+    "familia": "Spam",
+    "titulo": "Spam",
+    "descripcion": "Hacer spam en canales públicos del Discord.",
+    "severidad_base": 5,
+    "tipo_base": "Baneo 7d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Aplicar comando /shh en chat general",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 5020,
+    "familia": "Vehicle Deathmatch",
+    "titulo": "Vehicle Deathmatch (VDM)",
+    "descripcion": "Realizar PK a un jugador usando un vehículo.",
+    "severidad_base": 4,
+    "tipo_base": "Baneo 5d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Devolver ítems perdidos a la víctima",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 9440,
+    "familia": "Deathmatch",
+    "titulo": "Deathmatch (DM)",
+    "descripcion": "PK a un jugador sin rol previo ni justificación.",
+    "severidad_base": 6,
+    "tipo_base": "Permaban",
+    "auto": {
+      "enabled": false,
+      "role": "castigado",
+      "duration_from_severity": false
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Devolver ítems perdidos a la víctima",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 6625,
+    "familia": "Revenge Kill",
+    "titulo": "Revenge Kill",
+    "descripcion": "Vengar un PK sin respetar sus efectos.",
+    "severidad_base": 6,
+    "tipo_base": "Permaban",
+    "auto": {
+      "enabled": false,
+      "role": "castigado",
+      "duration_from_severity": false
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Devolver ítems perdidos a la víctima",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 3088,
+    "familia": "Comportamiento Inapropiado OOC",
+    "titulo": "Comportamiento Inapropiado",
+    "descripcion": "Comentarios fuera de lugar, faltas de respeto, vejaciones…",
+    "severidad_base": 4,
+    "tipo_base": "Baneo 5d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Aplicar comando /shh en chat general",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 6511,
+    "familia": "Streaming",
+    "titulo": "Streaming",
+    "descripcion": "Retransmitir faltas de la normativa en directo.",
+    "severidad_base": 2,
+    "tipo_base": "Sanción",
+    "auto": {
+      "enabled": false,
+      "role": "castigado",
+      "duration_from_severity": false
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Retirar permisos de Creador de Contenido",
+        "duracion_iso": "P36500D"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 9365,
+    "familia": "No valoración de Vida",
+    "titulo": "No valoración de Vida (NVV)",
+    "descripcion": "Actuar de forma surrealista que fuerza un PK.",
+    "severidad_base": 4,
+    "tipo_base": "Baneo 5d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "CK al personaje",
+        "duracion_iso": "P36500D"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 7217,
+    "familia": "Atracos y Robos",
+    "titulo": "Atracos y Robos",
+    "descripcion": "No respetar tiempos de espera o armas restringidas.",
+    "severidad_base": 3,
+    "tipo_base": "Baneo 3d",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": true
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Rollback si se considera",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 2569,
+    "familia": "Salir de Rol",
+    "titulo": "Salir de Rol",
+    "descripcion": "Salir de la interpretación de PJ y actuar/hablar OOC.",
+    "severidad_base": 2,
+    "tipo_base": "Sanción",
+    "auto": {
+      "enabled": false,
+      "role": "castigado",
+      "duration_from_severity": false
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "Rollback si se considera",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  },
+  {
+    "id": 1,
+    "familia": "prueba",
+    "titulo": "test",
+    "descripcion": "testeo",
+    "severidad_base": 3,
+    "tipo_base": "Baneo 3 minutos",
+    "auto": {
+      "enabled": true,
+      "role": "castigado",
+      "duration_from_severity": false,
+      "auto_duration_iso": "PT3M"
+    },
+    "acciones_manuales": [
+      {
+        "descripcion": "testeando",
+        "duracion_iso": "PT0S"
+      }
+    ],
+    "notas_evidencia": ""
+  }
+]

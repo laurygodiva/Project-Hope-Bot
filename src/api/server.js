@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { createActivityAuthRouter } from './activityAuth.js';
 import { createGuildRouter } from './routes/guild.js';
+import { createSanctionsRouter } from './routes/sanctions.js';
 import { requireAdmin } from './middleware/requireAdmin.js';
 import { logger } from '../shared/logger.js';
 
@@ -16,11 +17,14 @@ export function startServer(client) {
   // proxy de Vite en desarrollo local NO lo quita. Así funciona en ambos casos.
   const activityAuthRouter = createActivityAuthRouter(client);
   const guildRouter = createGuildRouter(client);
+  const sanctionsRouter = createSanctionsRouter(client);
 
   app.use('/api/activity', activityAuthRouter);
   app.use('/activity', activityAuthRouter);
   app.use('/api/guild', requireAdmin, guildRouter);
   app.use('/guild', requireAdmin, guildRouter);
+  app.use('/api/sanctions', requireAdmin, sanctionsRouter);
+  app.use('/sanctions', requireAdmin, sanctionsRouter);
 
   app.get('/api/health', (req, res) => res.json({ ok: true }));
   app.get('/health', (req, res) => res.json({ ok: true }));

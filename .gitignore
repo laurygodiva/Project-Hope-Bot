@@ -3,3 +3,5 @@ node_modules/
 activity/.env
 activity/dist/
 *.log
+data/sanctions-cases.json
+data/sanctions-queue.json

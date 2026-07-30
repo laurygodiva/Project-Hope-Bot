@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { Client, GatewayIntentBits, REST, Routes } from 'discord.js';
 import { loadEvents, loadCommands } from './src/shared/loaders.js';
 import { startServer } from './src/api/server.js';
+import { startSanctionsScheduler } from './src/shared/sanctionsScheduler.js';
 import { logger } from './src/shared/logger.js';
 import path from 'node:path';
 import url from 'node:url';
@@ -37,6 +38,7 @@ async function main() {
   }
 
   startServer(client);
+  startSanctionsScheduler(client);
 }
 
 main().catch((err) => {

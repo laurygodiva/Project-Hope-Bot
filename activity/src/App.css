@@ -194,11 +194,13 @@ body {
 .send-form select,
 .send-form input,
 .send-form textarea {
+  appearance: none;
+  -webkit-appearance: none;
   width: 100%;
   background: var(--surface);
   color: var(--text);
   border: 2px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 0.6rem;
   font-family: inherit;
   font-weight: normal;
@@ -208,8 +210,8 @@ body {
 .send-form input:focus,
 .send-form textarea:focus {
   outline: none;
-  border-color: transparent;
-  border-image: var(--accent-gradient) 1;
+  border-color: var(--blue-300);
+  box-shadow: 0 0 0 3px rgba(134, 50, 242, 0.35);
 }
 
 .mode-toggle {
@@ -241,9 +243,16 @@ body {
   color: #57f287;
 }
 
+.gradient-frame {
+  background: var(--accent-gradient);
+  border-radius: 18px;
+  padding: 2px;
+}
+
 .embed-fields {
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  border: none;
+  border-radius: 16px;
+  background: var(--surface);
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -264,9 +273,7 @@ body {
 }
 
 .guide-box {
-  border: 2px solid transparent;
-  border-image: var(--accent-gradient) 1;
-  border-radius: 18px;
+  border-radius: 16px;
   padding: 0.75rem 1rem;
   background: var(--surface);
 }
@@ -335,10 +342,12 @@ body {
 
 .color-generator input[type='text'],
 .color-generator select {
+  appearance: none;
+  -webkit-appearance: none;
   background: var(--surface-alt);
   color: var(--text);
   border: 2px solid var(--border);
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 0.5rem;
   font-weight: normal;
 }
@@ -346,8 +355,8 @@ body {
 .color-generator input[type='text']:focus,
 .color-generator select:focus {
   outline: none;
-  border-color: transparent;
-  border-image: var(--accent-gradient) 1;
+  border-color: var(--blue-300);
+  box-shadow: 0 0 0 3px rgba(134, 50, 242, 0.35);
 }
 
 .color-generator-row {
@@ -384,14 +393,14 @@ body {
   background: var(--surface-alt);
   color: var(--text);
   border: 2px solid var(--border);
-  border-radius: 6px;
+  border-radius: 8px;
   padding: 0.45rem;
 }
 
 .emoji-picker-panel input:focus {
   outline: none;
-  border-color: transparent;
-  border-image: var(--accent-gradient) 1;
+  border-color: var(--blue-300);
+  box-shadow: 0 0 0 3px rgba(134, 50, 242, 0.35);
 }
 
 .emoji-grid {
@@ -488,10 +497,10 @@ body {
 }
 
 .btn-primary.btn-block {
-  height: 68px;
-  padding: 0 2.5rem;
-  border-radius: 14px;
-  font-size: 1.05rem;
+  height: 84px;
+  padding: 0 3rem;
+  border-radius: 16px;
+  font-size: 1.2rem;
   width: auto;
   align-self: center;
 }
@@ -529,24 +538,91 @@ body {
   padding-right: 72px;
 }
 
-.embed-preview-desc code {
+.embed-preview-desc code,
+.embed-preview-title code,
+.message-preview-content code {
   background: #1e1f22;
   padding: 0.1rem 0.3rem;
   border-radius: 4px;
   font-size: 0.85em;
 }
 
-.embed-preview-desc .md-code-block {
+.md-code-block {
   display: block;
   padding: 0.5rem;
   white-space: pre-wrap;
 }
 
-.embed-preview-desc .md-quote {
+.md-quote {
   display: block;
   border-left: 3px solid #4e5058;
   padding-left: 0.5rem;
   color: #b5bac1;
+  margin: 0.2rem 0;
+}
+
+.md-list-item {
+  display: block;
+  margin: 0.1rem 0;
+}
+
+.md-h1 {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: white;
+  margin: 0.3rem 0;
+}
+
+.md-h2 {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  margin: 0.3rem 0;
+}
+
+.md-h3 {
+  display: block;
+  font-size: 1rem;
+  font-weight: 700;
+  color: white;
+  margin: 0.3rem 0;
+}
+
+.md-emoji {
+  width: 1.35em;
+  height: 1.35em;
+  object-fit: contain;
+  vertical-align: bottom;
+  display: inline-block;
+}
+
+.message-preview-author {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.message-preview-author img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--surface-alt);
+}
+
+.message-preview-author span {
+  font-weight: 700;
+  color: white;
+  font-size: 0.95rem;
+}
+
+.message-preview-content {
+  color: #dbdee1;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
 }
 
 .embed-preview-image {

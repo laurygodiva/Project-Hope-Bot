@@ -359,3 +359,43 @@ body {
   font-size: 0.85rem;
   margin: 0;
 }
+
+.sticker-picker {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.sticker-grid {
+  grid-template-columns: repeat(4, 1fr);
+  max-height: 220px;
+}
+
+.sticker-grid .emoji-item img {
+  width: 56px;
+  height: 56px;
+}
+
+.emoji-item.selected {
+  background: #5865f2;
+}
+
+.sticker-selected {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #14151a;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+}
+
+.sticker-selected img {
+  width: 32px;
+  height: 32px;
+}
+
+.sticker-selected span {
+  flex: 1;
+  font-size: 0.85rem;
+}

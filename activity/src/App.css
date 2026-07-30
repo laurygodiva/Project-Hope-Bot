@@ -709,11 +709,11 @@ body {
 }
 
 .btn-primary.btn-block {
-  height: 100px;
+  height: 42px;
   width: 100%;
-  padding: 0 1rem;
-  border-radius: 10px;
-  font-size: 1.2rem;
+  padding: 0 0.75rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
   line-height: 1;
 }
 

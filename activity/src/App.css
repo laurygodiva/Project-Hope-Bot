@@ -296,3 +296,66 @@ body {
   font-size: 0.8rem;
   color: #999;
 }
+
+.emoji-picker {
+  position: relative;
+}
+
+.emoji-dropdown {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  z-index: 10;
+  background: #1e1f25;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 0.75rem;
+  width: 280px;
+  max-height: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.emoji-dropdown input {
+  background: #14151a;
+  color: white;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 0.45rem;
+}
+
+.emoji-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.35rem;
+  overflow-y: auto;
+  max-height: 190px;
+}
+
+.emoji-item {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 0.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emoji-item:hover {
+  background: #2c2d34;
+}
+
+.emoji-item img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.muted {
+  color: #888;
+  font-size: 0.85rem;
+  margin: 0;
+}

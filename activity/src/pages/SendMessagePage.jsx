@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
 import MarkdownGuide from '../components/MarkdownGuide.jsx';
 import ColorTextGenerator from '../components/ColorTextGenerator.jsx';
+import EmojiPicker from '../components/EmojiPicker.jsx';
 
 export default function SendMessagePage() {
   const [channels, setChannels] = useState(null);
@@ -131,6 +132,8 @@ export default function SendMessagePage() {
           {messageType === 'embed' ? 'Texto adicional (opcional, va antes del embed)' : 'Mensaje'}
           <textarea rows={4} value={content} onChange={(e) => setContent(e.target.value)} required={messageType === 'text'} />
         </label>
+
+        <EmojiPicker onInsert={(tag) => setContent((prev) => `${prev}${tag}`)} />
 
         {messageType === 'embed' && (
           <fieldset className="embed-fields">

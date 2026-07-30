@@ -33,6 +33,35 @@ export function createGuildRouter(client) {
     res.json(channels);
   });
 
+  router.get('/emojis', async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+
+    const guildEmojis = guild.emojis.cache.map((e) => ({
+      id: e.id,
+      name: e.name,
+      animated: e.animated,
+      url: e.imageURL({ extension: e.animated ? 'gif' : 'png', size: 32 }),
+      source: 'guild',
+    }));
+
+    let botEmojis = [];
+    try {
+      const fetched = await client.application.emojis.fetch();
+      botEmojis = fetched.map((e) => ({
+        id: e.id,
+        name: e.name,
+        animated: e.animated,
+        url: e.imageURL({ extension: e.animated ? 'gif' : 'png', size: 32 }),
+        source: 'bot',
+      }));
+    } catch {
+      // el bot puede no tener emojis propios todavía
+    }
+
+    res.json([...botEmojis, ...guildEmojis]);
+  });
+
   router.get('/roles', (req, res) => {
     const guild = getGuild(res);
     if (!guild) return;

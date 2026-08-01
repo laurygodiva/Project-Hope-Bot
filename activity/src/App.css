@@ -1351,6 +1351,7 @@ a {
   .home-page,
   .send-message-page {
     padding: 1rem;
+    padding-left: calc(1rem + var(--discord-overlay-right));
     padding-right: calc(1rem + var(--discord-overlay-right));
   }
 

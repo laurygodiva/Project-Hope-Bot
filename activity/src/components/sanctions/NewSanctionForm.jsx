@@ -68,22 +68,6 @@ export default function NewSanctionForm({ catalog }) {
           <UserPicker value={targetUser} onChange={setTargetUser} />
         </label>
 
-        <span className="field-title">Sanciones</span>
-        {lines.map((line, i) => (
-          <SanctionLineEditor
-            key={i}
-            catalog={catalog}
-            line={line}
-            decision={preview?.decisiones?.find((d, di) => di === i && d.id === line.catalogId)}
-            onChange={(next) => setLines((prev) => prev.map((l, li) => (li === i ? next : l)))}
-            onRemove={() => setLines((prev) => prev.filter((_, li) => li !== i))}
-          />
-        ))}
-
-        <button type="button" className="btn-secondary" onClick={() => setLines((prev) => [...prev, emptyLine()])}>
-          + Añadir sanción
-        </button>
-
         {previewError && <p className="error-text">{previewError}</p>}
 
         {preview?.agg && (
@@ -108,6 +92,24 @@ export default function NewSanctionForm({ catalog }) {
 
         {feedback && <p className={feedback.type === 'error' ? 'error-text' : 'ok-text'}>{feedback.text}</p>}
       </div>
+
+      <aside className="send-message-sidebar">
+        <span className="field-title">Sanciones</span>
+        {lines.map((line, i) => (
+          <SanctionLineEditor
+            key={i}
+            catalog={catalog}
+            line={line}
+            decision={preview?.decisiones?.find((d, di) => di === i && d.id === line.catalogId)}
+            onChange={(next) => setLines((prev) => prev.map((l, li) => (li === i ? next : l)))}
+            onRemove={() => setLines((prev) => prev.filter((_, li) => li !== i))}
+          />
+        ))}
+
+        <button type="button" className="btn-secondary" onClick={() => setLines((prev) => [...prev, emptyLine()])}>
+          + Añadir sanción
+        </button>
+      </aside>
     </div>
   );
 }

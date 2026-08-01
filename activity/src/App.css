@@ -1368,34 +1368,8 @@ a {
     padding-right: calc(1rem + var(--discord-overlay-right));
   }
 
-  .home-page {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .send-message-layout {
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .send-message-sidebar {
-    width: 100%;
-    position: static;
-  }
-
   .send-form {
     max-width: none;
-  }
-
-  .catalog-staff-split {
-    grid-template-columns: 1fr;
-  }
-
-  .catalog-row,
-  .case-row {
-    grid-template-columns: 1fr;
-    justify-items: start;
-    gap: 0.3rem;
   }
 
   .catalog-actions,
@@ -1422,6 +1396,33 @@ a {
 
   .stats-bar-value {
     font-size: 0.55rem;
+  }
+}
+
+/* Solo por debajo de esto apilamos en una única columna: hasta aquí hay
+   sitio de sobra para aprovechar dos columnas (roles+gráfica, formulario+
+   herramientas, usuario+líneas de sanción...) incluso en móvil apaisado. */
+@media (max-width: 640px) {
+  .home-page {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .send-message-layout {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .send-message-sidebar {
+    width: 100%;
+    position: static;
+  }
+
+  .catalog-row,
+  .case-row {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 0.3rem;
   }
 }
 

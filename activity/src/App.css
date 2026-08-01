@@ -1348,10 +1348,6 @@ a {
 
 /* ==== Responsive: pantallas estrechas (móvil, incluido apaisado) ==== */
 @media (max-width: 1000px) {
-  body {
-    padding-right: var(--discord-overlay-right);
-  }
-
   .home-page,
   .send-message-page {
     padding: 1rem;

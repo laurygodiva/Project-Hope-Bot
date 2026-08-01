@@ -557,12 +557,13 @@ body {
 
 .mode-toggle {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
 }
 
 .mode-toggle button,
 .btn-block {
-  flex: 1;
+  flex: 1 1 120px;
   height: 42px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -1316,6 +1317,97 @@ body {
 
 .catalog-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.4rem;
   justify-self: end;
+}
+
+/* ==== Responsive: pantallas estrechas (móvil, incluido apaisado) ==== */
+@media (max-width: 700px) {
+  .home-page,
+  .send-message-page {
+    padding: 1rem;
+  }
+
+  .tab-nav {
+    padding: 0.6rem 1rem 0;
+    flex-wrap: wrap;
+  }
+
+  .send-message-layout {
+    gap: 1.25rem;
+  }
+
+  .send-form {
+    max-width: none;
+  }
+
+  .catalog-row,
+  .case-row {
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 0.3rem;
+  }
+
+  .catalog-actions,
+  .catalog-actions-bottom {
+    justify-self: start;
+    width: 100%;
+  }
+
+  .status-badge {
+    align-self: flex-start;
+  }
+
+  .catalog-staff-split {
+    grid-template-columns: 1fr;
+  }
+
+  .member-stats-header {
+    align-items: stretch;
+  }
+
+  .member-stats-header .mode-toggle {
+    width: 100%;
+  }
+
+  .stats-bucket-label {
+    font-size: 0.55rem;
+  }
+
+  .stats-bar-value {
+    font-size: 0.55rem;
+  }
+}
+
+@media (max-height: 480px) {
+  .home-roles-panel {
+    max-height: 40vh;
+  }
+
+  .loading-screen,
+  .screen {
+    gap: 0.5rem;
+  }
+
+  .loading-logo {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+@media (max-width: 420px) {
+  .send-message-sidebar,
+  .send-form {
+    width: 100%;
+  }
+
+  .mode-toggle button,
+  .btn-block {
+    flex-basis: 100%;
+  }
+
+  .member-stats-total {
+    font-size: 1.8rem;
+  }
 }

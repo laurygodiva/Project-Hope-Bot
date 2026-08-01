@@ -202,12 +202,6 @@ body {
   align-items: start;
 }
 
-@media (max-width: 860px) {
-  .home-page {
-    grid-template-columns: 1fr;
-  }
-}
-
 .home-roles-panel .role-list {
   max-height: 65vh;
   overflow-y: auto;
@@ -1396,6 +1390,15 @@ a {
 
   .stats-bar-value {
     font-size: 0.55rem;
+  }
+}
+
+/* Proporciones más estrechas para la columna de roles en móvil, de forma
+   que quepa cómodamente junto a la gráfica en vez de comerse la mitad del
+   ancho como en escritorio. */
+@media (max-width: 1000px) {
+  .home-page {
+    grid-template-columns: minmax(130px, 34%) 1fr;
   }
 }
 

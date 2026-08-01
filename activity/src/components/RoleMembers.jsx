@@ -5,6 +5,7 @@ export default function RoleMembers({ role }) {
   const [open, setOpen] = useState(false);
   const [members, setMembers] = useState(null);
   const [error, setError] = useState(null);
+  const [copiedId, setCopiedId] = useState(null);
 
   function toggle() {
     setOpen((o) => !o);
@@ -14,6 +15,12 @@ export default function RoleMembers({ role }) {
         .then(setMembers)
         .catch((err) => setError(err.message));
     }
+  }
+
+  function copyId(id) {
+    navigator.clipboard?.writeText(id).catch(() => {});
+    setCopiedId(id);
+    setTimeout(() => setCopiedId((prev) => (prev === id ? null : prev)), 1200);
   }
 
   return (
@@ -28,11 +35,17 @@ export default function RoleMembers({ role }) {
           {!members && !error && <p className="muted">Cargando usuarios...</p>}
           {members?.length === 0 && <p className="muted">Nadie tiene este rol.</p>}
           {members?.map((m) => (
-            <div key={m.id} className="role-member">
+            <button
+              key={m.id}
+              type="button"
+              className="role-member"
+              onClick={() => copyId(m.id)}
+              title="Copiar ID del usuario"
+            >
               <img src={m.avatar} alt="" />
               <span className="role-member-name">{m.displayName}</span>
-              <span className="role-member-id">{m.id}</span>
-            </div>
+              {copiedId === m.id && <span className="badge">ID copiada</span>}
+            </button>
           ))}
         </div>
       )}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
 import RoleMembers from '../components/RoleMembers.jsx';
 import MemberStatsPanel from '../components/MemberStatsPanel.jsx';
+import UserRoleSearch from '../components/UserRoleSearch.jsx';
 
 export default function HomePage() {
   const [roles, setRoles] = useState(null);
@@ -22,6 +23,7 @@ export default function HomePage() {
       <div className="gradient-frame home-roles-panel">
         <section className="guide-box">
           <h2>Roles ({roles.length})</h2>
+          <UserRoleSearch roles={roles} />
           <ul className="role-list">
             {roles.map((r) => (
               <RoleMembers key={r.id} role={r} />

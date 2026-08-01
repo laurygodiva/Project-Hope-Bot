@@ -334,6 +334,49 @@ body {
   max-width: 100%;
 }
 
+.user-role-search {
+  margin: 0.75rem 0 1rem;
+}
+
+.user-role-search input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  background: var(--surface-alt);
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  font-family: inherit;
+}
+
+.user-role-search input:focus {
+  outline: none;
+  border-color: var(--blue-300);
+  box-shadow: 0 0 0 3px rgba(134, 50, 242, 0.35);
+}
+
+.user-role-search-results {
+  margin-top: 0.5rem;
+  padding-left: 0;
+  max-height: 240px;
+}
+
+.user-role-search-item {
+  align-items: flex-start;
+}
+
+.user-role-search-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.user-role-search-info .muted {
+  font-size: 0.75rem;
+}
+
 .role-list {
   margin: 0;
   padding: 0;
@@ -384,8 +427,19 @@ body {
   align-items: center;
   gap: 0.5rem;
   background: var(--surface-alt);
+  border: none;
   border-radius: 8px;
   padding: 0.35rem 0.6rem;
+  width: 100%;
+  color: var(--text);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+
+.role-member:hover {
+  background: var(--accent-gradient);
+  color: white;
 }
 
 .role-member img {
@@ -399,11 +453,9 @@ body {
   font-size: 0.85rem;
 }
 
-.role-member-id {
+.role-member .badge {
   margin-left: auto;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  font-family: monospace;
+  font-size: 0.7rem;
 }
 
 .tab-nav {

@@ -1322,24 +1322,73 @@ body {
   justify-self: end;
 }
 
+/* Discord dibuja sus propios controles flotantes (cerrar/minimizar arriba a
+   la derecha, flecha abajo a la derecha) ENCIMA del iframe de la Activity en
+   móvil, sin avisar a la página. Reservamos un margen fijo a la derecha para
+   que nada importante (botones, texto) quede tapado debajo. */
+:root {
+  --discord-overlay-right: 0px;
+}
+
+@media (max-width: 1000px) {
+  :root {
+    --discord-overlay-right: 88px;
+  }
+}
+
+/* iOS/WebViews exigen un primer toque "de calentamiento" en cualquier
+   elemento con estilos :hover antes de disparar el click real. Desactivar el
+   manejo de gestos por defecto del navegador hace que el primer toque ya
+   cuente como click. */
+button,
+.mention-item,
+a {
+  touch-action: manipulation;
+}
+
 /* ==== Responsive: pantallas estrechas (móvil, incluido apaisado) ==== */
-@media (max-width: 700px) {
+@media (max-width: 1000px) {
+  body {
+    padding-right: var(--discord-overlay-right);
+  }
+
   .home-page,
   .send-message-page {
     padding: 1rem;
+    padding-right: calc(1rem + var(--discord-overlay-right));
   }
 
   .tab-nav {
     padding: 0.6rem 1rem 0;
+    padding-right: calc(1rem + var(--discord-overlay-right));
     flex-wrap: wrap;
   }
 
+  .identity-banner {
+    padding-right: calc(1rem + var(--discord-overlay-right));
+  }
+
+  .home-page {
+    display: flex;
+    flex-direction: column;
+  }
+
   .send-message-layout {
+    flex-direction: column;
     gap: 1.25rem;
+  }
+
+  .send-message-sidebar {
+    width: 100%;
+    position: static;
   }
 
   .send-form {
     max-width: none;
+  }
+
+  .catalog-staff-split {
+    grid-template-columns: 1fr;
   }
 
   .catalog-row,
@@ -1357,10 +1406,6 @@ body {
 
   .status-badge {
     align-self: flex-start;
-  }
-
-  .catalog-staff-split {
-    grid-template-columns: 1fr;
   }
 
   .member-stats-header {

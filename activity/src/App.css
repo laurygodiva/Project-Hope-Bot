@@ -197,7 +197,7 @@ body {
 .home-page {
   padding: 1.5rem;
   display: grid;
-  grid-template-columns: minmax(275px, 375px) 1fr;
+  grid-template-columns: minmax(220px, 280px) 1fr;
   gap: 1rem;
   align-items: start;
 }
@@ -208,9 +208,10 @@ body {
   }
 }
 
-.home-roles-panel {
-  max-height: 70vh;
+.home-roles-panel .role-list {
+  max-height: 65vh;
   overflow-y: auto;
+  padding-right: 4px;
 }
 
 .member-stats-header {
@@ -1328,11 +1329,13 @@ body {
    que nada importante (botones, texto) quede tapado debajo. */
 :root {
   --discord-overlay-right: 0px;
+  --discord-overlay-left: 0px;
 }
 
 @media (max-width: 1000px) {
   :root {
     --discord-overlay-right: 88px;
+    --discord-overlay-left: 24px;
   }
 }
 
@@ -1351,7 +1354,7 @@ a {
   .home-page,
   .send-message-page {
     padding: 1rem;
-    padding-left: calc(1rem + var(--discord-overlay-right));
+    padding-left: calc(1rem + var(--discord-overlay-left));
     padding-right: calc(1rem + var(--discord-overlay-right));
   }
 
@@ -1424,7 +1427,7 @@ a {
 }
 
 @media (max-height: 480px) {
-  .home-roles-panel {
+  .home-roles-panel .role-list {
     max-height: 40vh;
   }
 

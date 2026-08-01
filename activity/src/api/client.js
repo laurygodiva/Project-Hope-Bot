@@ -10,6 +10,7 @@ async function request(path, options = {}) {
   const res = await fetch(`${API_URL}${path}`, {
     headers: {
       'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': 'true',
       ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
       ...options.headers,
     },

@@ -12,8 +12,10 @@ export default function MemberStatsPanel() {
   const [range, setRange] = useState('day');
   const [stats, setStats] = useState(null);
   const [error, setError] = useState(null);
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
+    setSelected(null);
     api
       .get(`/guild/stats?range=${range}`)
       .then(setStats)
@@ -24,6 +26,12 @@ export default function MemberStatsPanel() {
 
   const series = stats?.series || [];
   const maxValue = Math.max(1, ...series.flatMap((s) => [s.joins, s.leaves]));
+  const selectedBucket = selected && series.find((s) => s.key === selected.key);
+  const selectedList = selectedBucket && (selected.type === 'join' ? selectedBucket.joinUsers : selectedBucket.leaveUsers);
+
+  function toggleSelected(key, type) {
+    setSelected((prev) => (prev && prev.key === key && prev.type === type ? null : { key, type }));
+  }
 
   return (
     <div className="gradient-frame">
@@ -62,17 +70,51 @@ export default function MemberStatsPanel() {
                   <div className="stats-bars">
                     <div className="stats-bar-col">
                       {s.joins > 0 && <span className="stats-bar-value">{s.joins}</span>}
-                      <div className="bar-join" style={{ height: `${joinPct}%` }} />
+                      <div
+                        className="bar-join"
+                        role={s.joins > 0 ? 'button' : undefined}
+                        style={{ height: `${joinPct}%`, cursor: s.joins > 0 ? 'pointer' : 'default' }}
+                        onClick={() => s.joins > 0 && toggleSelected(s.key, 'join')}
+                      />
                     </div>
                     <div className="stats-bar-col">
                       {s.leaves > 0 && <span className="stats-bar-value">{s.leaves}</span>}
-                      <div className="bar-leave" style={{ height: `${leavePct}%` }} />
+                      <div
+                        className="bar-leave"
+                        role={s.leaves > 0 ? 'button' : undefined}
+                        style={{ height: `${leavePct}%`, cursor: s.leaves > 0 ? 'pointer' : 'default' }}
+                        onClick={() => s.leaves > 0 && toggleSelected(s.key, 'leave')}
+                      />
                     </div>
                   </div>
                   <span className="stats-bucket-label">{s.label}</span>
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {selected && (
+          <div className="stats-detail-panel">
+            <div className="stats-detail-header">
+              <strong>
+                {selected.type === 'join' ? 'Entradas' : 'Salidas'} · {selectedBucket?.label}
+              </strong>
+              <button type="button" className="btn-secondary" onClick={() => setSelected(null)}>
+                Cerrar
+              </button>
+            </div>
+            {(!selectedList || selectedList.length === 0) && <p className="muted">No hay datos de usuarios para este tramo.</p>}
+            {selectedList?.length > 0 && (
+              <div className="mention-list">
+                {selectedList.map((u, i) => (
+                  <div key={`${u.userId}-${i}`} className="mention-item stats-detail-item">
+                    {u.avatar && <img src={u.avatar} alt="" />}
+                    {u.username}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </section>

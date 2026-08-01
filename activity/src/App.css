@@ -199,11 +199,25 @@ body {
   display: grid;
   grid-template-columns: minmax(220px, 280px) 1fr;
   gap: 1rem;
-  align-items: start;
+  align-items: stretch;
+}
+
+.home-roles-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.home-roles-panel .guide-box {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 .home-roles-panel .role-list {
-  max-height: 65vh;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding-right: 4px;
 }
@@ -332,6 +346,39 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+}
+
+.bar-join,
+.bar-leave {
+  transition: filter 0.15s ease;
+}
+
+.bar-join:hover,
+.bar-leave:hover {
+  filter: brightness(1.25);
+}
+
+.stats-detail-panel {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border);
+}
+
+.stats-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.stats-detail-item {
+  cursor: default;
+}
+
+.stats-detail-item:hover {
+  background: var(--surface-alt);
+  color: var(--text);
 }
 
 .user-role-search {
@@ -1466,6 +1513,15 @@ a {
   .home-page {
     display: flex;
     flex-direction: column;
+  }
+
+  .home-roles-panel {
+    flex: none;
+  }
+
+  .home-roles-panel .role-list {
+    flex: none;
+    max-height: 50vh;
   }
 
   .send-message-layout {

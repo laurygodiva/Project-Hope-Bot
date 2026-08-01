@@ -29,18 +29,33 @@ function buildStatsSeries(events, range) {
       end = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i * stepDays + 1);
       start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - (i + 1) * stepDays + 1);
     }
-    buckets.push({ key: start.toISOString(), label: labelFor(range, start), start, end, joins: 0, leaves: 0 });
+    buckets.push({
+      key: start.toISOString(),
+      label: labelFor(range, start),
+      start,
+      end,
+      joins: 0,
+      leaves: 0,
+      joinUsers: [],
+      leaveUsers: [],
+    });
   }
 
   for (const ev of events) {
     const evDate = new Date(ev.timestamp);
     const bucket = buckets.find((b) => evDate >= b.start && evDate < b.end);
     if (!bucket) continue;
-    if (ev.type === 'join') bucket.joins++;
-    else bucket.leaves++;
+    const userInfo = { userId: ev.userId || null, username: ev.username || ev.userId || 'Desconocido', avatar: ev.avatar || null };
+    if (ev.type === 'join') {
+      bucket.joins++;
+      bucket.joinUsers.push(userInfo);
+    } else {
+      bucket.leaves++;
+      bucket.leaveUsers.push(userInfo);
+    }
   }
 
-  return buckets.map(({ key, label, joins, leaves }) => ({ key, label, joins, leaves }));
+  return buckets.map(({ key, label, joins, leaves, joinUsers, leaveUsers }) => ({ key, label, joins, leaves, joinUsers, leaveUsers }));
 }
 
 function buildMessagePayload({ content, messageType, embed }) {

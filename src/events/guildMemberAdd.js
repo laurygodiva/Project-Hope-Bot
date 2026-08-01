@@ -5,7 +5,13 @@ export default {
   name: 'guildMemberAdd',
   execute(member) {
     logger.info('member-events', `guildMemberAdd recibido para ${member.user?.tag || member.id}`);
-    appendMemberEvent({ type: 'join', timestamp: new Date().toISOString() })
+    appendMemberEvent({
+      type: 'join',
+      timestamp: new Date().toISOString(),
+      userId: member.id,
+      username: member.user?.tag || member.user?.username || member.id,
+      avatar: member.user?.displayAvatarURL?.({ size: 64 }) || null,
+    })
       .then(() => logger.success('member-events', `Entrada registrada: ${member.user?.tag || member.id}`))
       .catch((err) => logger.error('member-events', `No se pudo registrar entrada de ${member.id}: ${err.message}`));
   },

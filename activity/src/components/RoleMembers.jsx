@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { api } from '../api/client.js';
+import { copyToClipboard } from '../utils/clipboard.js';
 
 export default function RoleMembers({ role }) {
   const [open, setOpen] = useState(false);
   const [members, setMembers] = useState(null);
   const [error, setError] = useState(null);
-  const [copiedId, setCopiedId] = useState(null);
+  const [revealedId, setRevealedId] = useState(null);
+  const inputRef = useRef(null);
 
   function toggle() {
     setOpen((o) => !o);
@@ -17,11 +19,17 @@ export default function RoleMembers({ role }) {
     }
   }
 
-  function copyId(id) {
-    navigator.clipboard?.writeText(id).catch(() => {});
-    setCopiedId(id);
-    setTimeout(() => setCopiedId((prev) => (prev === id ? null : prev)), 1200);
+  function revealId(id) {
+    setRevealedId((prev) => (prev === id ? null : id));
+    copyToClipboard(id);
   }
+
+  useEffect(() => {
+    if (revealedId && inputRef.current) {
+      inputRef.current.focus();
+      inputRef.current.select();
+    }
+  }, [revealedId]);
 
   return (
     <li className="role-item">
@@ -35,17 +43,18 @@ export default function RoleMembers({ role }) {
           {!members && !error && <p className="muted">Cargando usuarios...</p>}
           {members?.length === 0 && <p className="muted">Nadie tiene este rol.</p>}
           {members?.map((m) => (
-            <button
-              key={m.id}
-              type="button"
-              className="role-member"
-              onClick={() => copyId(m.id)}
-              title="Copiar ID del usuario"
-            >
-              <img src={m.avatar} alt="" />
-              <span className="role-member-name">{m.displayName}</span>
-              {copiedId === m.id && <span className="badge">ID copiada</span>}
-            </button>
+            <div key={m.id}>
+              <button type="button" className="role-member" onClick={() => revealId(m.id)} title="Mostrar/copiar ID del usuario">
+                <img src={m.avatar} alt="" />
+                <span className="role-member-name">{m.displayName}</span>
+              </button>
+              {revealedId === m.id && (
+                <div className="role-member-id-reveal">
+                  <input ref={inputRef} type="text" readOnly value={m.id} onClick={(e) => e.target.select()} />
+                  <span className="muted">Ctrl+C para copiar</span>
+                </div>
+              )}
+            </div>
           ))}
         </div>
       )}

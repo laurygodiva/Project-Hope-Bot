@@ -1,4 +1,4 @@
-import { getStickyChannels } from '../shared/stickyStore.js';
+import { getStickyMessageIds } from '../shared/stickyStore.js';
 import { logger } from '../shared/logger.js';
 
 export default {
@@ -6,9 +6,8 @@ export default {
   async execute(message) {
     if (!message.guild) return;
 
-    const sticky = getStickyChannels();
-    const pinnedId = sticky[message.channelId];
-    if (!pinnedId || message.id === pinnedId) return;
+    const stickyIds = getStickyMessageIds(message.channelId);
+    if (stickyIds.length === 0 || stickyIds.includes(message.id)) return;
 
     try {
       await message.delete();

@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { ChannelType } from 'discord.js';
 import { buildEmbed } from '../../shared/embedBuilder.js';
 import { getMemberEvents } from '../../shared/memberEventsStore.js';
-import { getStickyChannels, setStickyChannel, removeStickyChannel } from '../../shared/stickyStore.js';
+import { getStickyMessageIds, addStickyMessage, removeStickyMessage } from '../../shared/stickyStore.js';
 import { requireSanctionsManager } from '../middleware/requireSanctionsManager.js';
 
 const RANGE_BUCKETS = { day: 14, week: 12, month: 12, year: 5 };
@@ -285,9 +285,45 @@ export function createGuildRouter(client) {
     }
   });
 
-  router.get('/channels/:id/sticky', (req, res) => {
-    const sticky = getStickyChannels();
-    res.json({ messageId: sticky[req.params.id] || null });
+  function summarizeStickyMessage(msg) {
+    const embed = msg.embeds[0];
+    return {
+      messageId: msg.id,
+      content: msg.content || '',
+      messageType: embed ? 'embed' : 'text',
+      embed: embed
+        ? {
+            title: embed.title || '',
+            description: embed.description || '',
+            color: embed.color != null ? `#${embed.color.toString(16).padStart(6, '0')}` : '#5b66ff',
+            imageURL: embed.image?.url || '',
+            thumbnailURL: embed.thumbnail?.url || '',
+            footer: embed.footer?.text || '',
+            footerIconURL: embed.footer?.iconURL || '',
+          }
+        : undefined,
+    };
+  }
+
+  router.get('/channels/:id/sticky', async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+
+    const channel = guild.channels.cache.get(req.params.id);
+    if (!channel || !channel.isTextBased()) return res.json([]);
+
+    const ids = getStickyMessageIds(req.params.id);
+    const results = [];
+    for (const id of ids) {
+      try {
+        const msg = await channel.messages.fetch(id);
+        results.push(summarizeStickyMessage(msg));
+      } catch {
+        // El mensaje ya no existe (borrado a mano); lo quitamos del registro.
+        await removeStickyMessage(req.params.id, id);
+      }
+    }
+    res.json(results);
   });
 
   router.post('/channels/:id/sticky', requireSanctionsManager, async (req, res) => {
@@ -305,15 +341,45 @@ export function createGuildRouter(client) {
 
     try {
       const sent = await channel.send(payload);
-      await setStickyChannel(req.params.id, sent.id);
-      res.json({ messageId: sent.id });
+      await addStickyMessage(req.params.id, sent.id);
+      res.json(summarizeStickyMessage(sent));
     } catch (err) {
       res.status(500).json({ error: 'No se pudo fijar el mensaje (¿permisos del bot insuficientes?)' });
     }
   });
 
-  router.delete('/channels/:id/sticky', requireSanctionsManager, async (req, res) => {
-    await removeStickyChannel(req.params.id);
+  router.put('/channels/:id/sticky/:messageId', requireSanctionsManager, async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+
+    const { content, messageType, embed } = req.body;
+    const payload = buildMessagePayload({ content, messageType, embed });
+    if (!payload) return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
+
+    const channel = guild.channels.cache.get(req.params.id);
+    if (!channel || !channel.isTextBased()) {
+      return res.status(404).json({ error: 'Canal no encontrado o no es de texto' });
+    }
+
+    try {
+      const msg = await channel.messages.fetch(req.params.messageId);
+      const edited = await msg.edit(payload);
+      res.json(summarizeStickyMessage(edited));
+    } catch (err) {
+      res.status(500).json({ error: 'No se pudo editar el mensaje fijado (¿lo enviaste por webhook?)' });
+    }
+  });
+
+  router.delete('/channels/:id/sticky/:messageId', requireSanctionsManager, async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+
+    const channel = guild.channels.cache.get(req.params.id);
+    if (channel?.isTextBased()) {
+      const msg = await channel.messages.fetch(req.params.messageId).catch(() => null);
+      if (msg) await msg.delete().catch(() => {});
+    }
+    await removeStickyMessage(req.params.id, req.params.messageId);
     res.json({ ok: true });
   });
 

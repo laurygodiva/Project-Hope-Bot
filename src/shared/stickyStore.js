@@ -26,18 +26,28 @@ async function writeJson(file, data) {
   await fsp.rename(tmp, file);
 }
 
+// { [channelId]: string[] de messageId } — un canal puede tener varios
+// mensajes fijados a la vez.
 export function getStickyChannels() {
   return readJson(STICKY_PATH, {});
 }
 
-export async function setStickyChannel(channelId, messageId) {
+export function getStickyMessageIds(channelId) {
+  return getStickyChannels()[channelId] || [];
+}
+
+export async function addStickyMessage(channelId, messageId) {
   const map = getStickyChannels();
-  map[channelId] = messageId;
+  const list = map[channelId] || [];
+  if (!list.includes(messageId)) list.push(messageId);
+  map[channelId] = list;
   await writeJson(STICKY_PATH, map);
 }
 
-export async function removeStickyChannel(channelId) {
+export async function removeStickyMessage(channelId, messageId) {
   const map = getStickyChannels();
-  delete map[channelId];
+  const list = (map[channelId] || []).filter((id) => id !== messageId);
+  if (list.length) map[channelId] = list;
+  else delete map[channelId];
   await writeJson(STICKY_PATH, map);
 }

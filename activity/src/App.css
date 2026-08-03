@@ -1321,6 +1321,37 @@ body {
   gap: 1rem;
 }
 
+.sticky-panel {
+  gap: 0.75rem;
+}
+
+.sticky-item {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sticky-item-preview {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.sticky-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .sticky-controls {
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid var(--border);

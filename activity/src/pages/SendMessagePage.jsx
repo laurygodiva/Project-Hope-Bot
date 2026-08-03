@@ -9,6 +9,7 @@ import SymbolPicker from '../components/SymbolPicker.jsx';
 import MentionPicker from '../components/MentionPicker.jsx';
 import LinkTool from '../components/LinkTool.jsx';
 import MessagePreview from '../components/MessagePreview.jsx';
+import StickyMessagesPanel from '../components/StickyMessagesPanel.jsx';
 import { loadWebhookPresets, saveWebhookPreset, deleteWebhookPreset } from '../utils/webhookPresets.js';
 
 const LIMITS = { content: 2000, title: 256, description: 4096, footer: 2048 };
@@ -42,8 +43,8 @@ export default function SendMessagePage() {
   const [sending, setSending] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [webhookPresets, setWebhookPresets] = useState(() => loadWebhookPresets());
-  const [stickyMessageId, setStickyMessageId] = useState(null);
-  const [stickyLoading, setStickyLoading] = useState(false);
+  const [stickyChecked, setStickyChecked] = useState(false);
+  const [stickyRefreshKey, setStickyRefreshKey] = useState(0);
 
   function handleSaveWebhookPreset() {
     if (!username) return;
@@ -78,15 +79,8 @@ export default function SendMessagePage() {
   }, [destination, userSearch]);
 
   useEffect(() => {
-    if (destination !== 'channel' || !channelId || !isSanctionsManager) {
-      setStickyMessageId(null);
-      return;
-    }
-    api
-      .get(`/guild/channels/${channelId}/sticky`)
-      .then((data) => setStickyMessageId(data.messageId))
-      .catch(() => setStickyMessageId(null));
-  }, [destination, channelId, isSanctionsManager]);
+    setStickyChecked(false);
+  }, [destination, channelId, mode]);
 
   function buildFooterText() {
     if (!embedFooter && !showFooterDate && !showFooterTime) return '';
@@ -121,36 +115,6 @@ export default function SendMessagePage() {
     };
   }
 
-  async function handleSetSticky() {
-    if (!channelId) return;
-    setStickyLoading(true);
-    setFeedback(null);
-    try {
-      const data = await api.post(`/guild/channels/${channelId}/sticky`, buildPayload());
-      setStickyMessageId(data.messageId);
-      setFeedback({ type: 'ok', text: 'Mensaje fijado: cualquier otro mensaje en este canal se borrará al instante.' });
-    } catch (err) {
-      setFeedback({ type: 'error', text: err.message });
-    } finally {
-      setStickyLoading(false);
-    }
-  }
-
-  async function handleRemoveSticky() {
-    if (!channelId) return;
-    setStickyLoading(true);
-    setFeedback(null);
-    try {
-      await api.delete(`/guild/channels/${channelId}/sticky`);
-      setStickyMessageId(null);
-      setFeedback({ type: 'ok', text: 'Fijado desactivado. El canal ya no se limpia automáticamente.' });
-    } catch (err) {
-      setFeedback({ type: 'error', text: err.message });
-    } finally {
-      setStickyLoading(false);
-    }
-  }
-
   async function handleSend(e) {
     e.preventDefault();
     setSending(true);
@@ -160,11 +124,16 @@ export default function SendMessagePage() {
 
       if (destination === 'user') {
         await api.post(`/guild/users/${targetUser.id}/messages`, payload);
+        setFeedback({ type: 'ok', text: 'Mensaje enviado.' });
+      } else if (stickyChecked) {
+        await api.post(`/guild/channels/${channelId}/sticky`, payload);
+        setFeedback({ type: 'ok', text: 'Mensaje enviado y fijado: cualquier otro mensaje en este canal se borrará al instante.' });
+        setStickyRefreshKey((k) => k + 1);
       } else {
         await api.post(`/guild/channels/${channelId}/messages`, payload);
+        setFeedback({ type: 'ok', text: 'Mensaje enviado.' });
       }
 
-      setFeedback({ type: 'ok', text: 'Mensaje enviado.' });
       setContent('');
       setEmbedTitle('');
       setEmbedDescription('');
@@ -174,6 +143,7 @@ export default function SendMessagePage() {
       setEmbedFooterIconURL('');
       setShowFooterDate(false);
       setShowFooterTime(false);
+      setStickyChecked(false);
     } catch (err) {
       setFeedback({ type: 'error', text: err.message });
     } finally {
@@ -219,22 +189,16 @@ export default function SendMessagePage() {
                 </select>
               </label>
 
-              {isSanctionsManager && (
+              {isSanctionsManager && mode === 'bot' && (
                 <div className="sticky-controls">
+                  <label className="checkbox-label">
+                    <input type="checkbox" checked={stickyChecked} onChange={(e) => setStickyChecked(e.target.checked)} />
+                    Fijar este mensaje
+                  </label>
                   <p className="muted">
-                    Fijar mantiene este mensaje como el único del canal: cualquier otro mensaje que aparezca ahí se borra al
-                    instante automáticamente. Solo el rol autorizado puede usarlo.
+                    Al enviarlo quedará fijado: cualquier otro mensaje que aparezca en el canal se borrará al instante
+                    automáticamente. Puede haber varios mensajes fijados a la vez; gestiónalos en la columna de la derecha.
                   </p>
-                  <div className="color-generator-actions">
-                    <button type="button" className="btn-secondary" onClick={handleSetSticky} disabled={stickyLoading || !channelId}>
-                      {stickyLoading ? 'Procesando...' : stickyMessageId ? 'Actualizar mensaje fijado' : 'Fijar este mensaje'}
-                    </button>
-                    {stickyMessageId && (
-                      <button type="button" className="btn-secondary" onClick={handleRemoveSticky} disabled={stickyLoading}>
-                        Quitar fijado
-                      </button>
-                    )}
-                  </div>
                 </div>
               )}
             </>
@@ -403,7 +367,7 @@ export default function SendMessagePage() {
           )}
 
           <button type="submit" className="btn-primary btn-block" disabled={sending || !canSend}>
-            {sending ? 'Enviando...' : 'Enviar mensaje'}
+            {sending ? 'Enviando...' : stickyChecked ? 'Enviar y fijar mensaje' : 'Enviar mensaje'}
           </button>
 
           {feedback && <p className={feedback.type === 'error' ? 'error-text' : 'ok-text'}>{feedback.text}</p>}
@@ -450,6 +414,12 @@ export default function SendMessagePage() {
             </div>
           )}
         </aside>
+
+        {isSanctionsManager && destination === 'channel' && channelId && (
+          <aside className="send-message-sidebar">
+            <StickyMessagesPanel channelId={channelId} refreshKey={stickyRefreshKey} />
+          </aside>
+        )}
       </div>
     </div>
   );

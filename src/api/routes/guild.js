@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { ChannelType } from 'discord.js';
 import { buildEmbed } from '../../shared/embedBuilder.js';
 import { getMemberEvents } from '../../shared/memberEventsStore.js';
+import { getStickyChannels, setStickyChannel, removeStickyChannel } from '../../shared/stickyStore.js';
+import { requireSanctionsManager } from '../middleware/requireSanctionsManager.js';
 
 const RANGE_BUCKETS = { day: 14, week: 12, month: 12, year: 5 };
 
@@ -281,6 +283,38 @@ export function createGuildRouter(client) {
     } catch (err) {
       res.status(500).json({ error: 'No se pudo enviar el mensaje (¿permisos del bot insuficientes o color/URL inválidos?)' });
     }
+  });
+
+  router.get('/channels/:id/sticky', (req, res) => {
+    const sticky = getStickyChannels();
+    res.json({ messageId: sticky[req.params.id] || null });
+  });
+
+  router.post('/channels/:id/sticky', requireSanctionsManager, async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+
+    const { content, messageType, embed } = req.body;
+    const payload = buildMessagePayload({ content, messageType, embed });
+    if (!payload) return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
+
+    const channel = guild.channels.cache.get(req.params.id);
+    if (!channel || !channel.isTextBased()) {
+      return res.status(404).json({ error: 'Canal no encontrado o no es de texto' });
+    }
+
+    try {
+      const sent = await channel.send(payload);
+      await setStickyChannel(req.params.id, sent.id);
+      res.json({ messageId: sent.id });
+    } catch (err) {
+      res.status(500).json({ error: 'No se pudo fijar el mensaje (¿permisos del bot insuficientes?)' });
+    }
+  });
+
+  router.delete('/channels/:id/sticky', requireSanctionsManager, async (req, res) => {
+    await removeStickyChannel(req.params.id);
+    res.json({ ok: true });
   });
 
   router.post('/users/:id/messages', async (req, res) => {

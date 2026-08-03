@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
+import { useIdentity } from '../context/IdentityContext.jsx';
 import MarkdownGuide from '../components/MarkdownGuide.jsx';
 import ColorTextGenerator from '../components/ColorTextGenerator.jsx';
 import FontConverter from '../components/FontConverter.jsx';
@@ -17,6 +18,7 @@ function CharCounter({ length, max }) {
 }
 
 export default function SendMessagePage() {
+  const { isSanctionsManager } = useIdentity();
   const [channels, setChannels] = useState(null);
   const [channelId, setChannelId] = useState('');
   const [destination, setDestination] = useState('channel');
@@ -40,6 +42,8 @@ export default function SendMessagePage() {
   const [sending, setSending] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [webhookPresets, setWebhookPresets] = useState(() => loadWebhookPresets());
+  const [stickyMessageId, setStickyMessageId] = useState(null);
+  const [stickyLoading, setStickyLoading] = useState(false);
 
   function handleSaveWebhookPreset() {
     if (!username) return;
@@ -73,6 +77,17 @@ export default function SendMessagePage() {
     return () => clearTimeout(timeout);
   }, [destination, userSearch]);
 
+  useEffect(() => {
+    if (destination !== 'channel' || !channelId || !isSanctionsManager) {
+      setStickyMessageId(null);
+      return;
+    }
+    api
+      .get(`/guild/channels/${channelId}/sticky`)
+      .then((data) => setStickyMessageId(data.messageId))
+      .catch(() => setStickyMessageId(null));
+  }, [destination, channelId, isSanctionsManager]);
+
   function buildFooterText() {
     if (!embedFooter && !showFooterDate && !showFooterTime) return '';
     const now = new Date();
@@ -84,30 +99,64 @@ export default function SendMessagePage() {
     return embedFooter || suffix;
   }
 
+  function buildPayload() {
+    return {
+      content,
+      mode: destination === 'user' ? 'bot' : mode,
+      username: destination === 'channel' && mode === 'webhook' ? username : undefined,
+      avatarURL: destination === 'channel' && mode === 'webhook' ? avatarURL : undefined,
+      messageType,
+      embed:
+        messageType === 'embed'
+          ? {
+              title: embedTitle,
+              description: embedDescription,
+              color: embedColor,
+              imageURL: embedImageURL,
+              thumbnailURL: embedThumbnailURL,
+              footer: buildFooterText(),
+              footerIconURL: embedFooterIconURL,
+            }
+          : undefined,
+    };
+  }
+
+  async function handleSetSticky() {
+    if (!channelId) return;
+    setStickyLoading(true);
+    setFeedback(null);
+    try {
+      const data = await api.post(`/guild/channels/${channelId}/sticky`, buildPayload());
+      setStickyMessageId(data.messageId);
+      setFeedback({ type: 'ok', text: 'Mensaje fijado: cualquier otro mensaje en este canal se borrará al instante.' });
+    } catch (err) {
+      setFeedback({ type: 'error', text: err.message });
+    } finally {
+      setStickyLoading(false);
+    }
+  }
+
+  async function handleRemoveSticky() {
+    if (!channelId) return;
+    setStickyLoading(true);
+    setFeedback(null);
+    try {
+      await api.delete(`/guild/channels/${channelId}/sticky`);
+      setStickyMessageId(null);
+      setFeedback({ type: 'ok', text: 'Fijado desactivado. El canal ya no se limpia automáticamente.' });
+    } catch (err) {
+      setFeedback({ type: 'error', text: err.message });
+    } finally {
+      setStickyLoading(false);
+    }
+  }
+
   async function handleSend(e) {
     e.preventDefault();
     setSending(true);
     setFeedback(null);
     try {
-      const payload = {
-        content,
-        mode: destination === 'user' ? 'bot' : mode,
-        username: destination === 'channel' && mode === 'webhook' ? username : undefined,
-        avatarURL: destination === 'channel' && mode === 'webhook' ? avatarURL : undefined,
-        messageType,
-        embed:
-          messageType === 'embed'
-            ? {
-                title: embedTitle,
-                description: embedDescription,
-                color: embedColor,
-                imageURL: embedImageURL,
-                thumbnailURL: embedThumbnailURL,
-                footer: buildFooterText(),
-                footerIconURL: embedFooterIconURL,
-              }
-            : undefined,
-      };
+      const payload = buildPayload();
 
       if (destination === 'user') {
         await api.post(`/guild/users/${targetUser.id}/messages`, payload);
@@ -158,16 +207,37 @@ export default function SendMessagePage() {
           </label>
 
           {destination === 'channel' ? (
-            <label>
-              <span className="field-title">Canal</span>
-              <select value={channelId} onChange={(e) => setChannelId(e.target.value)}>
-                {channels.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    #{c.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <>
+              <label>
+                <span className="field-title">Canal</span>
+                <select value={channelId} onChange={(e) => setChannelId(e.target.value)}>
+                  {channels.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      #{c.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              {isSanctionsManager && (
+                <div className="sticky-controls">
+                  <p className="muted">
+                    Fijar mantiene este mensaje como el único del canal: cualquier otro mensaje que aparezca ahí se borra al
+                    instante automáticamente. Solo el rol autorizado puede usarlo.
+                  </p>
+                  <div className="color-generator-actions">
+                    <button type="button" className="btn-secondary" onClick={handleSetSticky} disabled={stickyLoading || !channelId}>
+                      {stickyLoading ? 'Procesando...' : stickyMessageId ? 'Actualizar mensaje fijado' : 'Fijar este mensaje'}
+                    </button>
+                    {stickyMessageId && (
+                      <button type="button" className="btn-secondary" onClick={handleRemoveSticky} disabled={stickyLoading}>
+                        Quitar fijado
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             <label>
               <span className="field-title">Usuario</span>

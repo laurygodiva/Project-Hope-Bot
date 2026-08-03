@@ -1,1 +1,30 @@
-[]
+[
+  {
+    "type": "leave",
+    "timestamp": "2026-08-03T16:38:11.238Z",
+    "userId": "756961475284959432",
+    "username": "lay_10",
+    "avatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.webp?size=64"
+  },
+  {
+    "type": "join",
+    "timestamp": "2026-08-03T16:38:19.312Z",
+    "userId": "756961475284959432",
+    "username": "lay_10",
+    "avatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.webp?size=64"
+  },
+  {
+    "type": "join",
+    "timestamp": "2026-08-03T20:39:04.339Z",
+    "userId": "1287355634492112938",
+    "username": "mohanajitv97",
+    "avatar": "https://cdn.discordapp.com/avatars/1287355634492112938/9296b9e56c3f5819417a8918c298b463.webp?size=64"
+  },
+  {
+    "type": "join",
+    "timestamp": "2026-08-03T21:42:54.984Z",
+    "userId": "411195754435051530",
+    "username": "projectalpha",
+    "avatar": "https://cdn.discordapp.com/avatars/411195754435051530/9797970be4b22150c79d4d6530e82c02.webp?size=64"
+  }
+]

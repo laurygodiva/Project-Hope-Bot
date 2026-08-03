@@ -222,6 +222,17 @@ body {
   padding-right: 4px;
 }
 
+.home-stats-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.home-stats-panel .guide-box {
+  flex: 1;
+  min-height: 0;
+}
+
 .member-stats-header {
   display: flex;
   justify-content: space-between;

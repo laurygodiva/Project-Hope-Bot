@@ -34,7 +34,7 @@ export default function MemberStatsPanel() {
   }
 
   return (
-    <div className="gradient-frame">
+    <div className="gradient-frame home-stats-panel">
       <section className="guide-box member-stats">
         <div className="member-stats-header">
           <div>

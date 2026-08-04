@@ -114,6 +114,16 @@ export function createTicketsRouter(client) {
     }
   });
 
+  router.get('/unread-summary', requireStaff, (req, res) => {
+    const userId = req.activityUser.userId;
+    const claimed = getTickets().filter((t) => t.status === 'claimed' && t.claimedBy?.id === userId);
+    const byCategory = { soporte: false, reporte: false, ck: false };
+    for (const t of claimed) {
+      if (hasUnreadForClaimer(t, userId)) byCategory[t.category] = true;
+    }
+    res.json({ any: Object.values(byCategory).some(Boolean), byCategory });
+  });
+
   router.get('/mine', (req, res) => {
     const userId = req.activityUser.userId;
     const mine = getTickets()

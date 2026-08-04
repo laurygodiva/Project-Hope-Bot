@@ -1,35 +1,5 @@
 [
   {
-    "id": 22222,
-    "familia": "AFK",
-    "titulo": "bbb",
-    "descripcion": "prueba de descripcion",
-    "severidad_base": 1,
-    "tipo_base": "Aviso",
-    "acciones_manuales": [],
-    "pdr_cost": 3,
-    "castigo_manual": "prueba",
-    "severidad_base_staff": null,
-    "castigo_manual_staff": "",
-    "pdr_cost_staff": null,
-    "reiterado_limit": 2
-  },
-  {
-    "id": 435324643,
-    "familia": "AFK",
-    "titulo": "AFK",
-    "descripcion": "sdfsefgedr",
-    "severidad_base": 2,
-    "tipo_base": "Sanción",
-    "acciones_manuales": [],
-    "pdr_cost": 2,
-    "castigo_manual": "Ninguna",
-    "severidad_base_staff": null,
-    "castigo_manual_staff": "",
-    "pdr_cost_staff": null,
-    "reiterado_limit": 10
-  },
-  {
     "id": 121212,
     "familia": "AFK",
     "titulo": "AFK de servicio",

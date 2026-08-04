@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage.jsx';
 import SendMessagePage from './pages/SendMessagePage.jsx';
 import SanctionsPage from './pages/SanctionsPage.jsx';
 import TicketsPage from './pages/TicketsPage.jsx';
+import { useTicketsUnread } from './hooks/useTicketsUnread.js';
 import './App.css';
 
 const ADMIN_TABS = [
@@ -21,6 +22,7 @@ function AppShell() {
   const { isAdmin, status } = useIdentity();
   const tabs = isAdmin ? ADMIN_TABS : MEMBER_TABS;
   const [tab, setTab] = useState(tabs[0].id);
+  const ticketsUnread = useTicketsUnread();
 
   useEffect(() => {
     if (status === 'ready' && !tabs.find((t) => t.id === tab)) setTab(tabs[0].id);
@@ -35,6 +37,7 @@ function AppShell() {
           {tabs.map((t) => (
             <button key={t.id} className={t.id === tab ? 'active' : ''} onClick={() => setTab(t.id)}>
               {t.label}
+              {t.id === 'tickets' && ticketsUnread.any && <span className="nav-unread-dot" />}
             </button>
           ))}
         </nav>

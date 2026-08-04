@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useIdentity } from '../context/IdentityContext.jsx';
+import { useTicketsUnread } from '../hooks/useTicketsUnread.js';
 import CreateTicketForm from '../components/tickets/CreateTicketForm.jsx';
 import TicketBoard from '../components/tickets/TicketBoard.jsx';
 import MyTicketsPanel from '../components/tickets/MyTicketsPanel.jsx';
@@ -20,6 +21,7 @@ export default function TicketsPage() {
   const { isAdmin } = useIdentity();
   const tabs = isAdmin ? STAFF_TABS : MEMBER_TABS;
   const [subTab, setSubTab] = useState('create');
+  const ticketsUnread = useTicketsUnread();
 
   return (
     <div className="send-message-page">
@@ -27,6 +29,7 @@ export default function TicketsPage() {
         {tabs.map((t) => (
           <button key={t.id} className={subTab === t.id ? 'active' : ''} onClick={() => setSubTab(t.id)}>
             {t.label}
+            {ticketsUnread.byCategory[t.id] && <span className="nav-unread-dot" />}
           </button>
         ))}
       </nav>

@@ -1902,6 +1902,17 @@ a {
   color: white;
 }
 
+.nav-unread-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #3ddc84;
+  box-shadow: 0 0 0 2px rgba(61, 220, 132, 0.25);
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+
 .ticket-unread-dot {
   position: absolute;
   top: 0.6rem;

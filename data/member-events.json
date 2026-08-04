@@ -26,5 +26,19 @@
     "userId": "411195754435051530",
     "username": "projectalpha",
     "avatar": "https://cdn.discordapp.com/avatars/411195754435051530/9797970be4b22150c79d4d6530e82c02.webp?size=64"
+  },
+  {
+    "type": "leave",
+    "timestamp": "2026-08-04T02:48:52.945Z",
+    "userId": "756961475284959432",
+    "username": "lay_10",
+    "avatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.webp?size=64"
+  },
+  {
+    "type": "join",
+    "timestamp": "2026-08-04T02:49:09.166Z",
+    "userId": "756961475284959432",
+    "username": "lay_10",
+    "avatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.webp?size=64"
   }
 ]

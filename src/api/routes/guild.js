@@ -419,7 +419,7 @@ export function createGuildRouter(client) {
     }
   });
 
-  router.get('/guild/message-logs/deleted', (req, res) => {
+  router.get('/message-logs/deleted', (req, res) => {
     const { messageId, channelId, userId } = req.query;
     let entries = getDeletedMessages();
     if (messageId) entries = entries.filter((e) => e.messageId.includes(messageId));
@@ -428,7 +428,7 @@ export function createGuildRouter(client) {
     res.json(entries.slice(0, 200));
   });
 
-  router.get('/guild/message-logs/edited', (req, res) => {
+  router.get('/message-logs/edited', (req, res) => {
     const { messageId, channelId, userId } = req.query;
     let entries = getEditedMessages();
     if (messageId) entries = entries.filter((e) => e.messageId.includes(messageId));

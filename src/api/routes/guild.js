@@ -4,6 +4,7 @@ import { buildEmbed } from '../../shared/embedBuilder.js';
 import { getMemberEvents } from '../../shared/memberEventsStore.js';
 import { getStickyMessageIds, addStickyMessage, removeStickyMessage } from '../../shared/stickyStore.js';
 import { getDeletedMessages, getEditedMessages } from '../../shared/messageLogStore.js';
+import { getTickets } from '../../shared/ticketStore.js';
 import {
   getDangerFlags,
   clearDangerFlags,
@@ -541,6 +542,26 @@ export function createGuildRouter(client) {
     if (!req.activityUser?.isFounder) return res.status(403).json({ error: 'Solo el Fundador puede quitar vetados' });
     const list = await removeFromBlacklist(req.params.id);
     res.json(list);
+  });
+
+  router.get('/ratings', (req, res) => {
+    if (!req.activityUser?.isFounder) return res.status(403).json({ error: 'Solo el Fundador puede ver las valoraciones' });
+    const ratings = getTickets()
+      .filter((t) => t.rating)
+      .map((t) => ({
+        ticketId: t.id,
+        title: t.title,
+        category: t.category,
+        ticketCreatedAt: t.createdAt,
+        staffId: t.claimedBy?.id || null,
+        staffTag: t.claimedBy?.tag || 'Desconocido',
+        staffAvatar: t.claimedBy?.avatar || null,
+        stars: t.rating.stars,
+        comment: t.rating.comment,
+        ratedAt: t.rating.ratedAt,
+      }))
+      .sort((a, b) => new Date(b.ratedAt) - new Date(a.ratedAt));
+    res.json(ratings);
   });
 
   return router;

@@ -19,6 +19,9 @@ export default function TicketDetail({ ticketId, onClose, onChanged }) {
   const [sending, setSending] = useState(false);
   const [actionBusy, setActionBusy] = useState(false);
   const [participantId, setParticipantId] = useState('');
+  const [ratingStars, setRatingStars] = useState(0);
+  const [ratingComment, setRatingComment] = useState('');
+  const [ratingBusy, setRatingBusy] = useState(false);
   const bottomRef = useRef(null);
 
   function load() {
@@ -107,6 +110,19 @@ export default function TicketDetail({ ticketId, onClose, onChanged }) {
       setError(err.message);
     } finally {
       setActionBusy(false);
+    }
+  }
+
+  async function handleSubmitRating(e) {
+    e.preventDefault();
+    setRatingBusy(true);
+    try {
+      const updated = await api.post(`/tickets/${ticketId}/rating`, { stars: ratingStars, comment: ratingComment });
+      setTicket(updated);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setRatingBusy(false);
     }
   }
 
@@ -257,7 +273,49 @@ export default function TicketDetail({ ticketId, onClose, onChanged }) {
             </button>
           </form>
         ) : (
-          <p className="muted">Este ticket está cerrado.</p>
+          <div className="ticket-rating-area">
+            <p className="muted">Este ticket está cerrado.</p>
+
+            {ticket.rating ? (
+              <div className="ticket-rating-display">
+                <span className="ticket-rating-stars">
+                  {'★'.repeat(ticket.rating.stars)}
+                  {'☆'.repeat(5 - ticket.rating.stars)}
+                </span>
+                {ticket.rating.comment && <p className="message-log-content">{ticket.rating.comment}</p>}
+                <span className="muted">Valorado el {formatDate(ticket.rating.ratedAt)}</span>
+              </div>
+            ) : (
+              ticket.creatorId === user.id &&
+              ticket.claimedBy && (
+                <form onSubmit={handleSubmitRating} className="ticket-rating-form">
+                  <span className="field-title">Valorar al staff</span>
+                  <div className="ticket-rating-picker">
+                    {[0, 1, 2, 3, 4, 5].map((n) => (
+                      <button
+                        key={n}
+                        type="button"
+                        className={`ticket-rating-star ${n <= ratingStars ? 'filled' : ''}`}
+                        onClick={() => setRatingStars(n)}
+                        title={`${n} estrella${n === 1 ? '' : 's'}`}
+                      >
+                        {n <= ratingStars ? '★' : '☆'}
+                      </button>
+                    ))}
+                  </div>
+                  <textarea
+                    rows={2}
+                    value={ratingComment}
+                    onChange={(e) => setRatingComment(e.target.value)}
+                    placeholder="Comentario (opcional)..."
+                  />
+                  <button type="submit" className="btn-primary" disabled={ratingBusy}>
+                    Enviar valoración
+                  </button>
+                </form>
+              )
+            )}
+          </div>
         )}
       </div>
     </div>

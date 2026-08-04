@@ -12,6 +12,7 @@ import {
   markTicketRead,
   deleteTicket,
   addParticipant,
+  setTicketRating,
   getTicketParticipantIds,
   hasUnreadForUser,
 } from '../../shared/ticketStore.js';
@@ -255,6 +256,25 @@ export function createTicketsRouter(client) {
     const ticket = getTicket(req.params.id);
     if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
     const updated = await closeTicket(req.params.id, actorFromReq(req));
+    res.json(updated);
+  });
+
+  router.post('/:id/rating', async (req, res) => {
+    const ticket = getTicket(req.params.id);
+    if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
+    if (ticket.creatorId !== req.activityUser.userId) {
+      return res.status(403).json({ error: 'Solo quien creó el ticket puede valorarlo' });
+    }
+    if (ticket.status !== 'closed') return res.status(400).json({ error: 'El ticket todavía no está cerrado' });
+    if (!ticket.claimedBy) return res.status(400).json({ error: 'Este ticket no tuvo staff asignado' });
+    if (ticket.rating) return res.status(409).json({ error: 'Ya has valorado este ticket' });
+
+    const stars = Number(req.body.stars);
+    if (!Number.isInteger(stars) || stars < 0 || stars > 5) {
+      return res.status(400).json({ error: 'La valoración debe ser un número entero entre 0 y 5' });
+    }
+
+    const updated = await setTicketRating(req.params.id, { stars, comment: req.body.comment }, req.activityUser.userId);
     res.json(updated);
   });
 

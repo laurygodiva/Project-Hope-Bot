@@ -41,6 +41,7 @@ export default function MyTicketsPanel() {
         {tickets?.map((t) => (
           <div key={t.id} className="gradient-frame">
             <div className="guide-box ticket-card" role="button" tabIndex={0} onClick={() => setActive(t.id)}>
+              {t.unread && <span className="ticket-unread-dot" title="Tienes mensajes sin leer" />}
               <div className="message-log-row">
                 <strong>{t.title}</strong>
                 <span className="muted">{CATEGORY_LABEL[t.category]} · {STATUS_LABEL[t.status]}</span>

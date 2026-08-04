@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
+import { useIdentity } from '../context/IdentityContext.jsx';
 import RoleMembers from '../components/RoleMembers.jsx';
 import MemberStatsPanel from '../components/MemberStatsPanel.jsx';
 import UserRoleSearch from '../components/UserRoleSearch.jsx';
 import BlacklistPanel from '../components/BlacklistPanel.jsx';
+import StaffRatingsPanel from '../components/StaffRatingsPanel.jsx';
 
 export default function HomePage() {
+  const { isFounder } = useIdentity();
   const [roles, setRoles] = useState(null);
   const [error, setError] = useState(null);
 
@@ -39,7 +42,15 @@ export default function HomePage() {
         </div>
       </div>
 
-      <MemberStatsPanel />
+      <div className="home-right-column">
+        <MemberStatsPanel />
+
+        {isFounder && (
+          <div className="gradient-frame home-stats-panel">
+            <StaffRatingsPanel />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

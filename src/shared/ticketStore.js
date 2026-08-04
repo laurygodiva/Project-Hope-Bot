@@ -62,6 +62,7 @@ export async function createTicket({ category, title, description, links, images
     notifyOptIn: [],
     lastReadBy: {},
     participants: [],
+    rating: null,
   };
   tickets.push(ticket);
   await saveTickets(tickets);
@@ -155,6 +156,16 @@ export async function addParticipant(id, userId) {
   const participants = new Set(ticket.participants || []);
   participants.add(userId);
   ticket.participants = [...participants];
+  await saveTickets(tickets);
+  return ticket;
+}
+
+export async function setTicketRating(id, { stars, comment }, raterId) {
+  const tickets = getTickets();
+  const ticket = tickets.find((t) => t.id === id);
+  if (!ticket) return null;
+  if (ticket.rating) return ticket;
+  ticket.rating = { stars, comment: comment || '', raterId, ratedAt: new Date().toISOString() };
   await saveTickets(tickets);
   return ticket;
 }

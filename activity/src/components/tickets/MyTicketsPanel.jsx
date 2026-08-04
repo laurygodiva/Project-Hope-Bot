@@ -3,7 +3,7 @@ import { api } from '../../api/client.js';
 import { useIdentity } from '../../context/IdentityContext.jsx';
 import TicketDetail from './TicketDetail.jsx';
 
-const CATEGORY_LABEL = { soporte: 'Soporte', reporte: 'Reporte', ck: 'CK' };
+const CATEGORY_LABEL = { soporte: 'Soporte', reporte: 'Reporte', ck: 'CK', playmaker: 'Solicitar Playmaker' };
 const STATUS_LABEL = { new: 'Nuevo', claimed: 'Reclamado', closed: 'Cerrado' };
 
 function formatDate(iso) {

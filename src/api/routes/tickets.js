@@ -18,7 +18,7 @@ import { uploadTicketImages } from '../../shared/ticketAttachments.js';
 
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024, files: 5 } });
 
-const CATEGORIES = ['soporte', 'reporte', 'ck'];
+const CATEGORIES = ['soporte', 'reporte', 'ck', 'playmaker'];
 
 function requireStaff(req, res, next) {
   if (!req.activityUser?.isAdmin) return res.status(403).json({ error: 'No tienes permisos de staff' });
@@ -117,7 +117,7 @@ export function createTicketsRouter(client) {
   router.get('/unread-summary', requireStaff, (req, res) => {
     const userId = req.activityUser.userId;
     const claimed = getTickets().filter((t) => t.status === 'claimed' && t.claimedBy?.id === userId);
-    const byCategory = { soporte: false, reporte: false, ck: false };
+    const byCategory = { soporte: false, reporte: false, ck: false, playmaker: false };
     for (const t of claimed) {
       if (hasUnreadForClaimer(t, userId)) byCategory[t.category] = true;
     }

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
 import { useIdentity } from '../context/IdentityContext.jsx';
 
-const EMPTY = { any: false, byCategory: { soporte: false, reporte: false, ck: false } };
+const EMPTY = { any: false, byCategory: { soporte: false, reporte: false, ck: false, playmaker: false } };
 
 export function useTicketsUnread() {
   const { isAdmin } = useIdentity();

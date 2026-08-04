@@ -5,6 +5,7 @@ const CATEGORIES = [
   { id: 'soporte', label: 'Soporte' },
   { id: 'reporte', label: 'Reporte' },
   { id: 'ck', label: 'CK' },
+  { id: 'playmaker', label: 'Solicitar Playmaker' },
 ];
 
 export default function CreateTicketForm({ onCreated }) {

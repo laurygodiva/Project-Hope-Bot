@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { api } from '../../api/client.js';
 import { useIdentity } from '../../context/IdentityContext.jsx';
 
-const CATEGORY_LABEL = { soporte: 'Soporte', reporte: 'Reporte', ck: 'CK' };
+const CATEGORY_LABEL = { soporte: 'Soporte', reporte: 'Reporte', ck: 'CK', playmaker: 'Solicitar Playmaker' };
 
 function formatDate(iso) {
   if (!iso) return '';

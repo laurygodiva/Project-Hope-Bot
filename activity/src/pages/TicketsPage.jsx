@@ -10,6 +10,7 @@ const STAFF_TABS = [
   { id: 'soporte', label: 'Soporte' },
   { id: 'reporte', label: 'Reporte' },
   { id: 'ck', label: 'CK' },
+  { id: 'playmaker', label: 'Solicitar Playmaker' },
 ];
 
 const MEMBER_TABS = [
@@ -39,6 +40,7 @@ export default function TicketsPage() {
       {subTab === 'soporte' && <TicketBoard category="soporte" />}
       {subTab === 'reporte' && <TicketBoard category="reporte" />}
       {subTab === 'ck' && <TicketBoard category="ck" />}
+      {subTab === 'playmaker' && <TicketBoard category="playmaker" />}
     </div>
   );
 }

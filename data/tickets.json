@@ -83,42 +83,5 @@
       "423596492801179649": "2026-08-04T02:14:15.042Z"
     },
     "notifyOptIn": []
-  },
-  {
-    "id": "ac6535ae-edf3-4d35-bf9e-60416d63c2ec",
-    "category": "soporte",
-    "title": "DGGH",
-    "description": "GHJ",
-    "links": [],
-    "images": [],
-    "creatorId": "756961475284959432",
-    "creatorTag": "lay_10",
-    "creatorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
-    "status": "claimed",
-    "claimedBy": {
-      "id": "423596492801179649",
-      "tag": "laurygodiva",
-      "avatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64"
-    },
-    "messages": [
-      {
-        "id": "b68ec8b0-2452-4bd3-ab36-5c149ca22a72",
-        "authorId": "756961475284959432",
-        "authorTag": "lay_10",
-        "authorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
-        "content": "RTYDRGHDRTTYU",
-        "images": [],
-        "createdAt": "2026-08-04T02:55:46.842Z"
-      }
-    ],
-    "createdAt": "2026-08-04T02:55:29.513Z",
-    "lastMessageAt": "2026-08-04T02:55:46.842Z",
-    "closedAt": null,
-    "closedBy": null,
-    "notifyOptIn": [],
-    "lastReadBy": {
-      "423596492801179649": "2026-08-04T02:56:43.301Z",
-      "756961475284959432": "2026-08-04T02:58:12.533Z"
-    }
   }
 ]

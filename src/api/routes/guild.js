@@ -3,6 +3,7 @@ import { ChannelType } from 'discord.js';
 import { buildEmbed } from '../../shared/embedBuilder.js';
 import { getMemberEvents } from '../../shared/memberEventsStore.js';
 import { getStickyMessageIds, addStickyMessage, removeStickyMessage } from '../../shared/stickyStore.js';
+import { getDeletedMessages, getEditedMessages } from '../../shared/messageLogStore.js';
 import { requireSanctionsManager } from '../middleware/requireSanctionsManager.js';
 
 const RANGE_BUCKETS = { day: 14, week: 12, month: 12, year: 5 };
@@ -416,6 +417,24 @@ export function createGuildRouter(client) {
     } catch (err) {
       res.status(500).json({ error: 'No se pudo enviar el MD (puede tener los mensajes directos cerrados)' });
     }
+  });
+
+  router.get('/guild/message-logs/deleted', (req, res) => {
+    const { messageId, channelId, userId } = req.query;
+    let entries = getDeletedMessages();
+    if (messageId) entries = entries.filter((e) => e.messageId.includes(messageId));
+    if (channelId) entries = entries.filter((e) => e.channelId === channelId);
+    if (userId) entries = entries.filter((e) => e.authorId === userId || e.deletedBy?.id === userId);
+    res.json(entries.slice(0, 200));
+  });
+
+  router.get('/guild/message-logs/edited', (req, res) => {
+    const { messageId, channelId, userId } = req.query;
+    let entries = getEditedMessages();
+    if (messageId) entries = entries.filter((e) => e.messageId.includes(messageId));
+    if (channelId) entries = entries.filter((e) => e.channelId === channelId);
+    if (userId) entries = entries.filter((e) => e.authorId === userId);
+    res.json(entries.slice(0, 200));
   });
 
   return router;

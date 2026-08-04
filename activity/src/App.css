@@ -1319,6 +1319,70 @@ body {
   max-width: 640px;
 }
 
+.message-log-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.message-log-filters label {
+  flex: 1 1 220px;
+  min-width: 200px;
+  position: relative;
+}
+
+.message-log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.message-log-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.message-log-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.message-log-author {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.message-log-author img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.message-log-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--surface-alt);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  margin: 0;
+}
+
+.message-log-original {
+  opacity: 0.7;
+  text-decoration: line-through;
+}
+
+.message-log-footer {
+  font-size: 0.85rem;
+}
+
 .case-edit {
   margin: 0.5rem 0 1rem 1rem;
   display: flex;

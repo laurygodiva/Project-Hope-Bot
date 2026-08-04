@@ -131,7 +131,7 @@ export default function TicketDetail({ ticketId, onClose, onChanged }) {
         <div className="ticket-modal-toolbar">
           <label className="checkbox-label">
             <input type="checkbox" checked={notificationsEnabled} onChange={(e) => toggleNotifications(e.target.checked)} />
-            Notificarme por MD cuando escriban aquí
+            Notificaciones por MD
           </label>
 
           {canModerate && (

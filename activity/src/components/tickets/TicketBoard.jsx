@@ -12,7 +12,15 @@ function formatDate(iso) {
 function TicketCard({ ticket, onOpen, children }) {
   return (
     <div className="gradient-frame">
-      <div className="guide-box ticket-card" role="button" tabIndex={0} onClick={() => onOpen(ticket.id)}>
+      <div
+        className="guide-box ticket-card"
+        role="button"
+        tabIndex={0}
+        onClick={(e) => {
+          if (e.target.closest('.ticket-card-actions')) return;
+          onOpen(ticket.id);
+        }}
+      >
         {ticket.unread && <span className="ticket-unread-dot" title="Tienes mensajes sin leer" />}
         <strong>{ticket.title}</strong>
         <span className="muted">{ticket.creatorTag}</span>
@@ -37,6 +45,7 @@ export default function TicketBoard({ category }) {
   const [openTickets, setOpenTickets] = useState(null);
   const [history, setHistory] = useState(null);
   const [error, setError] = useState(null);
+  const [confirmingId, setConfirmingId] = useState(null);
 
   function load() {
     const params = new URLSearchParams({ category });
@@ -66,7 +75,11 @@ export default function TicketBoard({ category }) {
 
   async function handleDelete(id, e) {
     e.stopPropagation();
-    if (!confirm('¿Eliminar este ticket del historial? Esta acción no se puede deshacer.')) return;
+    if (confirmingId !== id) {
+      setConfirmingId(id);
+      return;
+    }
+    setConfirmingId(null);
     try {
       await api.delete(`/tickets/${id}`);
       load();
@@ -116,9 +129,16 @@ export default function TicketBoard({ category }) {
           {history?.map((t) => (
             <TicketCard key={t.id} ticket={t} onOpen={setActive}>
               {isFounder && (
-                <button type="button" className="btn-secondary ticket-delete-btn" onClick={(e) => handleDelete(t.id, e)}>
-                  Eliminar
-                </button>
+                <div className="ticket-card-actions">
+                  <button
+                    type="button"
+                    className={`btn-secondary ticket-delete-btn ${confirmingId === t.id ? 'confirming' : ''}`}
+                    onClick={(e) => handleDelete(t.id, e)}
+                    onBlur={() => setConfirmingId((id) => (id === t.id ? null : id))}
+                  >
+                    {confirmingId === t.id ? '¿Seguro? Toca de nuevo' : 'Eliminar'}
+                  </button>
+                </div>
               )}
             </TicketCard>
           ))}

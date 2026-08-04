@@ -854,6 +854,7 @@ body {
 }
 
 .checkbox-label {
+  display: flex;
   flex-direction: row !important;
   align-items: center;
   gap: 0.4rem !important;
@@ -1815,9 +1816,18 @@ a {
   box-shadow: 0 0 0 3px rgba(61, 220, 132, 0.25);
 }
 
-.ticket-delete-btn {
+.ticket-card-actions {
   align-self: flex-start;
+}
+
+.ticket-delete-btn {
   font-size: 0.8rem;
+}
+
+.ticket-delete-btn.confirming {
+  background: #ff6b6b;
+  border-color: transparent;
+  color: white;
 }
 
 .ticket-column {

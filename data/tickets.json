@@ -26,7 +26,10 @@
       "tag": "laurygodiva",
       "avatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64"
     },
-    "notifyOptOut": []
+    "notifyOptOut": [],
+    "lastReadBy": {
+      "423596492801179649": "2026-08-04T02:09:21.545Z"
+    }
   },
   {
     "id": "c74061c7-470c-4aef-ab3e-866a1c88690c",
@@ -107,6 +110,90 @@
     },
     "notifyOptOut": [
       "756961475284959432"
-    ]
+    ],
+    "lastReadBy": {
+      "423596492801179649": "2026-08-04T02:11:59.738Z"
+    }
+  },
+  {
+    "id": "288ff67b-b630-4ff2-91f4-1c994283e12c",
+    "category": "soporte",
+    "title": "erdfz",
+    "description": "asdas",
+    "links": [],
+    "images": [],
+    "creatorId": "423596492801179649",
+    "creatorTag": "laurygodiva",
+    "creatorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
+    "status": "closed",
+    "claimedBy": {
+      "id": "756961475284959432",
+      "tag": "lay_10",
+      "avatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64"
+    },
+    "messages": [],
+    "createdAt": "2026-08-04T02:08:41.515Z",
+    "lastMessageAt": "2026-08-04T02:08:41.515Z",
+    "closedAt": "2026-08-04T02:09:16.491Z",
+    "closedBy": {
+      "id": "756961475284959432",
+      "tag": "lay_10",
+      "avatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64"
+    },
+    "notifyOptIn": [],
+    "lastReadBy": {
+      "423596492801179649": "2026-08-04T02:11:45.136Z",
+      "756961475284959432": "2026-08-04T02:09:15.273Z"
+    }
+  },
+  {
+    "id": "2bf10e6c-f4e7-4e6c-a545-9ae30b099dd1",
+    "category": "soporte",
+    "title": "sdfgsdlfgds",
+    "description": "sdfgsfg",
+    "links": [],
+    "images": [],
+    "creatorId": "756961475284959432",
+    "creatorTag": "lay_10",
+    "creatorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
+    "status": "closed",
+    "claimedBy": {
+      "id": "423596492801179649",
+      "tag": "laurygodiva",
+      "avatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64"
+    },
+    "messages": [
+      {
+        "id": "c2f32b7e-aa65-4cd3-a12f-2abd84368d96",
+        "authorId": "423596492801179649",
+        "authorTag": "laurygodiva",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
+        "content": "asdasd",
+        "images": [],
+        "createdAt": "2026-08-04T02:10:43.484Z"
+      },
+      {
+        "id": "6753adb9-722d-428e-bbb7-07b15380a80d",
+        "authorId": "756961475284959432",
+        "authorTag": "lay_10",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
+        "content": "lalsdjnfasldjknvzxdxv",
+        "images": [],
+        "createdAt": "2026-08-04T02:10:50.491Z"
+      }
+    ],
+    "createdAt": "2026-08-04T02:10:02.988Z",
+    "lastMessageAt": "2026-08-04T02:10:50.491Z",
+    "closedAt": "2026-08-04T02:10:56.197Z",
+    "closedBy": {
+      "id": "423596492801179649",
+      "tag": "laurygodiva",
+      "avatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64"
+    },
+    "notifyOptIn": [],
+    "lastReadBy": {
+      "423596492801179649": "2026-08-04T02:10:53.600Z",
+      "756961475284959432": "2026-08-04T02:10:59.183Z"
+    }
   }
 ]

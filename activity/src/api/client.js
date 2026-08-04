@@ -7,9 +7,10 @@ export function setAuthToken(token) {
 }
 
 async function request(path, options = {}) {
+  const isFormData = options.body instanceof FormData;
   const res = await fetch(`${API_URL}${path}`, {
     headers: {
-      'Content-Type': 'application/json',
+      ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       'ngrok-skip-browser-warning': 'true',
       ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
       ...options.headers,
@@ -30,7 +31,8 @@ async function request(path, options = {}) {
 
 export const api = {
   get: (path) => request(path),
-  post: (path, body) => request(path, { method: 'POST', body: body ? JSON.stringify(body) : undefined }),
+  post: (path, body) => request(path, { method: 'POST', body: body instanceof FormData ? body : body ? JSON.stringify(body) : undefined }),
+  postForm: (path, formData) => request(path, { method: 'POST', body: formData }),
   put: (path, body) => request(path, { method: 'PUT', body: body ? JSON.stringify(body) : undefined }),
   patch: (path, body) => request(path, { method: 'PATCH', body: JSON.stringify(body) }),
   delete: (path, body) => request(path, { method: 'DELETE', body: body ? JSON.stringify(body) : undefined }),

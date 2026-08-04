@@ -3,7 +3,9 @@ import cors from 'cors';
 import { createActivityAuthRouter } from './activityAuth.js';
 import { createGuildRouter } from './routes/guild.js';
 import { createSanctionsRouter } from './routes/sanctions.js';
+import { createTicketsRouter } from './routes/tickets.js';
 import { requireAdmin } from './middleware/requireAdmin.js';
+import { requireGuildMember } from './middleware/requireGuildMember.js';
 import { logger } from '../shared/logger.js';
 
 export function startServer(client) {
@@ -18,6 +20,7 @@ export function startServer(client) {
   const activityAuthRouter = createActivityAuthRouter(client);
   const guildRouter = createGuildRouter(client);
   const sanctionsRouter = createSanctionsRouter(client);
+  const ticketsRouter = createTicketsRouter(client);
 
   app.use('/api/activity', activityAuthRouter);
   app.use('/activity', activityAuthRouter);
@@ -25,6 +28,8 @@ export function startServer(client) {
   app.use('/guild', requireAdmin, guildRouter);
   app.use('/api/sanctions', requireAdmin, sanctionsRouter);
   app.use('/sanctions', requireAdmin, sanctionsRouter);
+  app.use('/api/tickets', requireGuildMember, ticketsRouter);
+  app.use('/tickets', requireGuildMember, ticketsRouter);
 
   app.get('/api/health', (req, res) => res.json({ ok: true }));
   app.get('/health', (req, res) => res.json({ ok: true }));

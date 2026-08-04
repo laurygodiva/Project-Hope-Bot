@@ -48,22 +48,12 @@ export default function IdentityGate({ children }) {
     );
   }
 
-  if (!isAdmin) {
-    return (
-      <div className="screen">
-        <img className="avatar" src={avatarUrl(user)} alt={user.username} />
-        <h2>{user.username}</h2>
-        <p>No tienes permisos de administrador en este servidor.</p>
-      </div>
-    );
-  }
-
   return (
     <div className="identity-wrapper">
       <div className="identity-banner">
         <img className="avatar-small" src={avatarUrl(user)} alt={user.username} />
         <span>{user.username}</span>
-        <span className="badge">Admin</span>
+        {isAdmin && <span className="badge">Admin</span>}
       </div>
       {children}
     </div>

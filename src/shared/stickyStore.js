@@ -27,9 +27,22 @@ async function writeJson(file, data) {
 }
 
 // { [channelId]: string[] de messageId } — un canal puede tener varios
-// mensajes fijados a la vez.
+// mensajes fijados a la vez. toArray normaliza entradas del formato antiguo
+// (un único messageId como string, de antes de soportar varios) para que un
+// dato viejo en disco no rompa el push/filter de más abajo.
+function toArray(value) {
+  if (Array.isArray(value)) return value;
+  if (typeof value === 'string') return [value];
+  return [];
+}
+
 export function getStickyChannels() {
-  return readJson(STICKY_PATH, {});
+  const raw = readJson(STICKY_PATH, {});
+  const normalized = {};
+  for (const [channelId, value] of Object.entries(raw)) {
+    normalized[channelId] = toArray(value);
+  }
+  return normalized;
 }
 
 export function getStickyMessageIds(channelId) {

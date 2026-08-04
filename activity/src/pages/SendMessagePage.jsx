@@ -197,7 +197,7 @@ export default function SendMessagePage() {
                   </label>
                   <p className="muted">
                     Al enviarlo quedará fijado: cualquier otro mensaje que aparezca en el canal se borrará al instante
-                    automáticamente. Puede haber varios mensajes fijados a la vez; gestiónalos en la columna de la derecha.
+                    automáticamente.
                   </p>
                 </div>
               )}

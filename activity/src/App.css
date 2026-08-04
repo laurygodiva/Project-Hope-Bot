@@ -199,7 +199,7 @@ body {
   display: grid;
   grid-template-columns: minmax(220px, 280px) 1fr;
   gap: 1rem;
-  align-items: stretch;
+  align-items: start;
 }
 
 .home-left-column {
@@ -218,27 +218,6 @@ body {
 
 .home-blacklist-panel {
   flex-shrink: 0;
-  max-height: 340px;
-  display: flex;
-  flex-direction: column;
-}
-
-.home-blacklist-panel .guide-box {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  flex: 1;
-}
-
-.blacklist-body {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-}
-
-.blacklist-subnav {
-  margin: 0.5rem 0 0.75rem;
-  flex-wrap: wrap;
 }
 
 .blacklist-list {

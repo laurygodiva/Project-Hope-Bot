@@ -516,6 +516,7 @@ export function createGuildRouter(client) {
   });
 
   router.post('/blacklist/vetados', async (req, res) => {
+    if (!req.activityUser?.isFounder) return res.status(403).json({ error: 'Solo el Fundador puede añadir vetados' });
     const guild = getGuild(res);
     if (!guild) return;
     const { userId, reason } = req.body;
@@ -537,6 +538,7 @@ export function createGuildRouter(client) {
   });
 
   router.delete('/blacklist/vetados/:id', async (req, res) => {
+    if (!req.activityUser?.isFounder) return res.status(403).json({ error: 'Solo el Fundador puede quitar vetados' });
     const list = await removeFromBlacklist(req.params.id);
     res.json(list);
   });

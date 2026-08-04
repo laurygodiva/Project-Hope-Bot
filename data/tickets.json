@@ -80,8 +80,78 @@
       "756961475284959432"
     ],
     "lastReadBy": {
-      "423596492801179649": "2026-08-04T02:14:15.042Z"
+      "423596492801179649": "2026-08-04T03:49:29.463Z"
     },
     "notifyOptIn": []
+  },
+  {
+    "id": "2acafd52-d3bd-4a3f-871a-2a74ae2fe82b",
+    "category": "ck",
+    "title": "ck voluntario",
+    "description": "quiero matar a linda connor por linda, quiero decir, por guapa, pero es que es muy pesada...",
+    "links": [],
+    "images": [],
+    "creatorId": "423596492801179649",
+    "creatorTag": "laurygodiva",
+    "creatorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
+    "status": "new",
+    "claimedBy": null,
+    "messages": [
+      {
+        "id": "c1d3cf03-c4d4-496d-af6c-e48ff2061e6e",
+        "authorId": "756961475284959432",
+        "authorTag": "lay_10",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
+        "content": "ñiygyugiugh",
+        "images": [],
+        "createdAt": "2026-08-04T03:50:31.182Z"
+      },
+      {
+        "id": "7d1b621c-e84d-4610-8fb4-38bcab9a8f88",
+        "authorId": "423596492801179649",
+        "authorTag": "laurygodiva",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
+        "content": "pos vale",
+        "images": [],
+        "createdAt": "2026-08-04T03:50:42.199Z"
+      },
+      {
+        "id": "fc323249-ed02-41b1-b59a-22ea67a6100f",
+        "authorId": "756961475284959432",
+        "authorTag": "lay_10",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
+        "content": "lyuglyg",
+        "images": [],
+        "createdAt": "2026-08-04T03:50:51.121Z"
+      },
+      {
+        "id": "cf3508e4-9adb-49d1-bc28-34d21bce2454",
+        "authorId": "423596492801179649",
+        "authorTag": "laurygodiva",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
+        "content": "e?",
+        "images": [],
+        "createdAt": "2026-08-04T03:51:07.828Z"
+      },
+      {
+        "id": "7bf4addb-9475-412c-8000-5a896928953c",
+        "authorId": "756961475284959432",
+        "authorTag": "lay_10",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
+        "content": ".jlyjkygliuhñoihljugykhygluikhñolk",
+        "images": [],
+        "createdAt": "2026-08-04T03:51:16.971Z"
+      }
+    ],
+    "createdAt": "2026-08-04T03:50:13.737Z",
+    "lastMessageAt": "2026-08-04T03:51:16.971Z",
+    "closedAt": null,
+    "closedBy": null,
+    "notifyOptIn": [],
+    "lastReadBy": {
+      "423596492801179649": "2026-08-04T03:51:07.628Z",
+      "756961475284959432": "2026-08-04T03:52:40.081Z"
+    },
+    "participants": []
   }
 ]

@@ -167,10 +167,13 @@ export function getTicketParticipantIds(ticket) {
   return ids;
 }
 
-// Solo el staff que reclamó el ticket ve el aviso de "no leído", y solo si el
+// Solo alguien involucrado en el ticket (lo creó, lo reclamó como staff, o
+// fue añadido como participante) ve el aviso de "no leído", y solo si el
 // último mensaje no es suyo (si fue el último en escribir, no hay nada pendiente).
-export function hasUnreadForClaimer(ticket, viewerId) {
-  if (!ticket.claimedBy || ticket.claimedBy.id !== viewerId) return false;
+export function hasUnreadForUser(ticket, viewerId) {
+  const involved =
+    ticket.creatorId === viewerId || ticket.claimedBy?.id === viewerId || (ticket.participants || []).includes(viewerId);
+  if (!involved) return false;
   if (ticket.messages.length === 0) return false;
   const last = ticket.messages[ticket.messages.length - 1];
   if (last.authorId === viewerId) return false;

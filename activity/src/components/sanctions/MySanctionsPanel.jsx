@@ -53,7 +53,7 @@ export default function MySanctionsPanel() {
         {cases.map((c) => {
           const status = getStatus(c, now);
           return (
-            <div key={c.id} className="catalog-row case-row">
+            <div key={c.id} className="catalog-row my-sanctions-row">
               <span className="catalog-title">{c.decisiones.map((d) => d.titulo).join(', ')}</span>
               <span className="catalog-severity">
                 {c.total.permaban ? 'PermaBan' : c.total.auto_ms > 0 ? `${Math.round(c.total.auto_ms / 86400000)}d` : 'Sin baneo'}

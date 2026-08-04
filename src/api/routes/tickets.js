@@ -13,7 +13,7 @@ import {
   deleteTicket,
   addParticipant,
   getTicketParticipantIds,
-  hasUnreadForClaimer,
+  hasUnreadForUser,
 } from '../../shared/ticketStore.js';
 import { uploadTicketImages } from '../../shared/ticketAttachments.js';
 
@@ -45,7 +45,7 @@ function summarize(t, viewerId) {
     lastMessageAt: t.lastMessageAt,
     closedAt: t.closedAt,
     closedBy: t.closedBy,
-    unread: hasUnreadForClaimer(t, viewerId),
+    unread: hasUnreadForUser(t, viewerId),
   };
 }
 
@@ -119,14 +119,19 @@ export function createTicketsRouter(client) {
     }
   });
 
-  router.get('/unread-summary', requireStaff, (req, res) => {
+  router.get('/unread-summary', (req, res) => {
     const userId = req.activityUser.userId;
-    const claimed = getTickets().filter((t) => t.status === 'claimed' && t.claimedBy?.id === userId);
+    const involved = getTickets().filter(
+      (t) => t.creatorId === userId || t.claimedBy?.id === userId || (t.participants || []).includes(userId)
+    );
     const byCategory = { soporte: false, reporte: false, ck: false, playmaker: false };
-    for (const t of claimed) {
-      if (hasUnreadForClaimer(t, userId)) byCategory[t.category] = true;
+    let mine = false;
+    for (const t of involved) {
+      if (!hasUnreadForUser(t, userId)) continue;
+      byCategory[t.category] = true;
+      if (t.creatorId === userId || (t.participants || []).includes(userId)) mine = true;
     }
-    res.json({ any: Object.values(byCategory).some(Boolean), byCategory });
+    res.json({ any: Object.values(byCategory).some(Boolean), byCategory, mine });
   });
 
   router.get('/mine', (req, res) => {

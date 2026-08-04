@@ -35,7 +35,7 @@ export default function TicketsPage() {
         {tabs.map((t) => (
           <button key={t.id} className={subTab === t.id ? 'active' : ''} onClick={() => setSubTab(t.id)}>
             {t.label}
-            {ticketsUnread.byCategory[t.id] && <span className="nav-unread-dot" />}
+            {(t.id === 'mine' ? ticketsUnread.mine : ticketsUnread.byCategory[t.id]) && <span className="nav-unread-dot" />}
           </button>
         ))}
       </nav>

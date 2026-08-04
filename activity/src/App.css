@@ -1650,6 +1650,10 @@ body {
   grid-template-columns: 1fr 2fr 90px 160px 140px auto;
 }
 
+.my-sanctions-row {
+  grid-template-columns: 2fr 90px 180px 160px;
+}
+
 .status-badge {
   font-size: 0.75rem;
   font-weight: 600;
@@ -1846,7 +1850,8 @@ a {
   }
 
   .catalog-row,
-  .case-row {
+  .case-row,
+  .my-sanctions-row {
     grid-template-columns: 1fr;
     justify-items: start;
     gap: 0.3rem;

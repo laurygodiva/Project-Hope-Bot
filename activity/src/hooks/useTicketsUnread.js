@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
-import { useIdentity } from '../context/IdentityContext.jsx';
 
-const EMPTY = { any: false, byCategory: { soporte: false, reporte: false, ck: false, playmaker: false } };
+const EMPTY = { any: false, byCategory: { soporte: false, reporte: false, ck: false, playmaker: false }, mine: false };
 
 export function useTicketsUnread() {
-  const { isAdmin } = useIdentity();
   const [summary, setSummary] = useState(EMPTY);
 
   useEffect(() => {
-    if (!isAdmin) return;
     function load() {
       api
         .get('/tickets/unread-summary')
@@ -30,7 +27,7 @@ export function useTicketsUnread() {
       document.removeEventListener('visibilitychange', onVisible);
       window.removeEventListener('focus', load);
     };
-  }, [isAdmin]);
+  }, []);
 
   return summary;
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../../api/client.js';
+import { useIdentity } from '../../context/IdentityContext.jsx';
 import TicketDetail from './TicketDetail.jsx';
 
 function formatDate(iso) {
@@ -12,6 +13,7 @@ function TicketCard({ ticket, onOpen, children }) {
   return (
     <div className="gradient-frame">
       <div className="guide-box ticket-card" role="button" tabIndex={0} onClick={() => onOpen(ticket.id)}>
+        {ticket.unread && <span className="ticket-unread-dot" title="Tienes mensajes sin leer" />}
         <strong>{ticket.title}</strong>
         <span className="muted">{ticket.creatorTag}</span>
         <span className="muted">Últ. mensaje: {formatDate(ticket.lastMessageAt)}</span>
@@ -28,7 +30,9 @@ function TicketCard({ ticket, onOpen, children }) {
 }
 
 export default function TicketBoard({ category }) {
+  const { user, isFounder } = useIdentity();
   const [search, setSearch] = useState('');
+  const [onlyMine, setOnlyMine] = useState(false);
   const [active, setActive] = useState(null);
   const [openTickets, setOpenTickets] = useState(null);
   const [history, setHistory] = useState(null);
@@ -56,7 +60,20 @@ export default function TicketBoard({ category }) {
   }, [category, search]);
 
   const nuevos = (openTickets || []).filter((t) => t.status === 'new');
-  const reclamados = (openTickets || []).filter((t) => t.status === 'claimed');
+  const reclamados = (openTickets || [])
+    .filter((t) => t.status === 'claimed')
+    .filter((t) => !onlyMine || t.claimedBy?.id === user.id);
+
+  async function handleDelete(id, e) {
+    e.stopPropagation();
+    if (!confirm('¿Eliminar este ticket del historial? Esta acción no se puede deshacer.')) return;
+    try {
+      await api.delete(`/tickets/${id}`);
+      load();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
 
   return (
     <div className="send-message-page">
@@ -81,7 +98,12 @@ export default function TicketBoard({ category }) {
         </div>
 
         <div className="ticket-column">
-          <h4>Reclamados</h4>
+          <div className="ticket-column-header">
+            <h4>Reclamados</h4>
+            <button type="button" className={`btn-secondary ${onlyMine ? 'active' : ''}`} onClick={() => setOnlyMine((v) => !v)}>
+              Tus tickets
+            </button>
+          </div>
           {reclamados.length === 0 && <p className="muted">No hay tickets reclamados.</p>}
           {reclamados.map((t) => (
             <TicketCard key={t.id} ticket={t} onOpen={setActive} />
@@ -92,7 +114,13 @@ export default function TicketBoard({ category }) {
           <h4>Historial</h4>
           {history?.length === 0 && <p className="muted">Sin tickets cerrados.</p>}
           {history?.map((t) => (
-            <TicketCard key={t.id} ticket={t} onOpen={setActive} />
+            <TicketCard key={t.id} ticket={t} onOpen={setActive}>
+              {isFounder && (
+                <button type="button" className="btn-secondary ticket-delete-btn" onClick={(e) => handleDelete(t.id, e)}>
+                  Eliminar
+                </button>
+              )}
+            </TicketCard>
           ))}
         </div>
       </div>

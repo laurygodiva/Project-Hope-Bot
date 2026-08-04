@@ -1,0 +1,112 @@
+[
+  {
+    "id": "ae4ac3dc-7d32-4161-98e6-f144da0acf8d",
+    "category": "soporte",
+    "title": "aaaa",
+    "description": "aaaa",
+    "links": [],
+    "images": [
+      "https://cdn.discordapp.com/attachments/1534013888826179665/1534014834599923954/ADMIN_680_x_240_px_1024_x_576_px_2000_x_2000_px_7_1.png?ex=6a729625&is=6a7144a5&hm=b173ead151b3bcda148ca69c5c91b11b8c380939286656e5afa909988e9d0df7&"
+    ],
+    "creatorId": "423596492801179649",
+    "creatorTag": "laurygodiva",
+    "creatorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
+    "status": "closed",
+    "claimedBy": {
+      "id": "423596492801179649",
+      "tag": "laurygodiva",
+      "avatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64"
+    },
+    "messages": [],
+    "createdAt": "2026-08-04T01:47:16.079Z",
+    "lastMessageAt": "2026-08-04T01:47:16.079Z",
+    "closedAt": "2026-08-04T01:48:06.846Z",
+    "closedBy": {
+      "id": "423596492801179649",
+      "tag": "laurygodiva",
+      "avatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64"
+    },
+    "notifyOptOut": []
+  },
+  {
+    "id": "c74061c7-470c-4aef-ab3e-866a1c88690c",
+    "category": "soporte",
+    "title": "donde puedo postular",
+    "description": "quiero saber como se postula para ser fundadora porque mi amiga lay dice que es fundadora, que mi novio es fundador pero yo no tengo claro que soy",
+    "links": [],
+    "images": [
+      "https://cdn.discordapp.com/attachments/1534013888826179665/1534015685041328268/ADMIN_680_x_240_px_1024_x_576_px_2000_x_2000_px_7_1.png?ex=6a7296ef&is=6a71456f&hm=ce3d6d79f83ff366e5fd16e6f1beffe9141840c36b0426ef22a0abb162de5cbf&",
+      "https://cdn.discordapp.com/attachments/1534013888826179665/1534015685322084422/ADMIN_680_x_240_px_1024_x_576_px_2000_x_2000_px_6_1.png?ex=6a7296f0&is=6a714570&hm=6554242596ca3719ae9921244fb33bdd6f885564511a47b6c144b237c62d052c&",
+      "https://cdn.discordapp.com/attachments/1534013888826179665/1534015685741510738/ADMIN_680_x_240_px_1024_x_576_px_2000_x_2000_px_5.png?ex=6a7296f0&is=6a714570&hm=4c6722b4cbc04e21b15d53ba8500799428b21a4a293996a8f2389825fd9a64f2&",
+      "https://cdn.discordapp.com/attachments/1534013888826179665/1534015686421254175/ADMIN_680_x_240_px_1024_x_576_px_2000_x_2000_px_3.png?ex=6a7296f0&is=6a714570&hm=026ea9c3e33f669ff0eb4789e5bbad3b667581013ac2a568ff73e592d3571305&",
+      "https://cdn.discordapp.com/attachments/1534013888826179665/1534015687033360504/ADMIN_680_x_240_px_1024_x_576_px_2000_x_2000_px_1.png?ex=6a7296f0&is=6a714570&hm=6a01f7cb5b827ff1029086b43e6e36fb83393c8218d19e818112137ddd9f322a&"
+    ],
+    "creatorId": "423596492801179649",
+    "creatorTag": "laurygodiva",
+    "creatorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
+    "status": "closed",
+    "claimedBy": {
+      "id": "756961475284959432",
+      "tag": "lay_10",
+      "avatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64"
+    },
+    "messages": [
+      {
+        "id": "ece9d8a7-a3b4-4bc1-9de6-7570ff57dcc2",
+        "authorId": "756961475284959432",
+        "authorTag": "lay_10",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
+        "content": "hola buenas, debes pasarnos tu documentacion para formar parte, entre ellas una foto en bolas y la tarjeta por ambas partes",
+        "images": [],
+        "createdAt": "2026-08-04T01:51:49.393Z"
+      },
+      {
+        "id": "17e304a6-e156-4489-a562-9384fd129c20",
+        "authorId": "423596492801179649",
+        "authorTag": "laurygodiva",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
+        "content": "-.- pero... la tarjeta tiene que tener dinero?",
+        "images": [],
+        "createdAt": "2026-08-04T01:52:19.546Z"
+      },
+      {
+        "id": "164a4151-09ef-4cce-acec-990b3e12bda0",
+        "authorId": "756961475284959432",
+        "authorTag": "lay_10",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
+        "content": "si :)",
+        "images": [],
+        "createdAt": "2026-08-04T01:52:39.058Z"
+      },
+      {
+        "id": "611ee0ea-c8b1-4bbb-b94f-5fdd5e99ac5a",
+        "authorId": "423596492801179649",
+        "authorTag": "laurygodiva",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
+        "content": "a",
+        "images": [],
+        "createdAt": "2026-08-04T01:53:02.043Z"
+      },
+      {
+        "id": "8ed7995f-c85f-4519-8cc7-385acc693c27",
+        "authorId": "756961475284959432",
+        "authorTag": "lay_10",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
+        "content": "e",
+        "images": [],
+        "createdAt": "2026-08-04T01:53:13.773Z"
+      }
+    ],
+    "createdAt": "2026-08-04T01:50:39.604Z",
+    "lastMessageAt": "2026-08-04T01:53:13.773Z",
+    "closedAt": "2026-08-04T01:53:40.534Z",
+    "closedBy": {
+      "id": "756961475284959432",
+      "tag": "lay_10",
+      "avatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64"
+    },
+    "notifyOptOut": [
+      "756961475284959432"
+    ]
+  }
+]

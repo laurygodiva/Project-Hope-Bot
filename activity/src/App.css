@@ -857,6 +857,7 @@ body {
   flex-direction: row !important;
   align-items: center;
   gap: 0.4rem !important;
+  line-height: 22px;
 }
 
 .color-preview {
@@ -1780,6 +1781,45 @@ a {
   letter-spacing: 0.04em;
 }
 
+.ticket-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ticket-column-header h4 {
+  margin: 0;
+}
+
+.ticket-column-header .btn-secondary {
+  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+}
+
+.ticket-column-header .btn-secondary.active {
+  background: var(--accent-gradient);
+  border-color: transparent;
+  color: white;
+}
+
+.ticket-unread-dot {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3ddc84;
+  box-shadow: 0 0 0 3px rgba(61, 220, 132, 0.25);
+}
+
+.ticket-delete-btn {
+  align-self: flex-start;
+  font-size: 0.8rem;
+}
+
 .ticket-column {
   display: flex;
   flex-direction: column;
@@ -1787,6 +1827,7 @@ a {
 }
 
 .ticket-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;

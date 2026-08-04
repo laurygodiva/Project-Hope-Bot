@@ -9,7 +9,10 @@ import {
   unclaimTicket,
   closeTicket,
   setNotifyPreference,
+  markTicketRead,
+  deleteTicket,
   getTicketParticipantIds,
+  hasUnreadForClaimer,
 } from '../../shared/ticketStore.js';
 import { uploadTicketImages } from '../../shared/ticketAttachments.js';
 
@@ -22,7 +25,12 @@ function requireStaff(req, res, next) {
   next();
 }
 
-function summarize(t) {
+function requireFounder(req, res, next) {
+  if (!req.activityUser?.isFounder) return res.status(403).json({ error: 'No tienes permisos de fundador' });
+  next();
+}
+
+function summarize(t, viewerId) {
   return {
     id: t.id,
     category: t.category,
@@ -36,6 +44,7 @@ function summarize(t) {
     lastMessageAt: t.lastMessageAt,
     closedAt: t.closedAt,
     closedBy: t.closedBy,
+    unread: hasUnreadForClaimer(t, viewerId),
   };
 }
 
@@ -54,8 +63,8 @@ function canView(ticket, req) {
 }
 
 async function notifyParticipants(client, ticket, author) {
-  const optOut = new Set(ticket.notifyOptOut || []);
-  const targets = [...getTicketParticipantIds(ticket)].filter((id) => id !== author.id && !optOut.has(id));
+  const optIn = new Set(ticket.notifyOptIn || []);
+  const targets = [...getTicketParticipantIds(ticket)].filter((id) => id !== author.id && optIn.has(id));
   if (targets.length === 0) return;
 
   const guild = client.guilds.cache.get(process.env.DISCORD_GUILD_ID);
@@ -110,7 +119,7 @@ export function createTicketsRouter(client) {
     const mine = getTickets()
       .filter((t) => t.creatorId === userId || t.claimedBy?.id === userId)
       .sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt));
-    res.json(mine.map(summarize));
+    res.json(mine.map((t) => summarize(t, userId)));
   });
 
   router.get('/', requireStaff, (req, res) => {
@@ -122,7 +131,7 @@ export function createTicketsRouter(client) {
       list = list.filter((t) => t.id.includes(search) || t.creatorTag?.toLowerCase().includes(s) || t.creatorId === search);
     }
     list.sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt));
-    res.json(list.map(summarize));
+    res.json(list.map((t) => summarize(t, req.activityUser.userId)));
   });
 
   router.get('/history', requireStaff, (req, res) => {
@@ -134,7 +143,7 @@ export function createTicketsRouter(client) {
       list = list.filter((t) => t.id.includes(search) || t.creatorTag?.toLowerCase().includes(s) || t.creatorId === search);
     }
     list.sort((a, b) => new Date(b.closedAt) - new Date(a.closedAt));
-    res.json(list.map(summarize));
+    res.json(list.map((t) => summarize(t, req.activityUser.userId)));
   });
 
   router.get('/:id', (req, res) => {
@@ -168,6 +177,21 @@ export function createTicketsRouter(client) {
     } catch (err) {
       res.status(500).json({ error: `No se pudo enviar el mensaje: ${err.message}` });
     }
+  });
+
+  router.post('/:id/read', (req, res) => {
+    const ticket = getTicket(req.params.id);
+    if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
+    if (!canView(ticket, req)) return res.status(403).json({ error: 'No tienes acceso a este ticket' });
+    markTicketRead(req.params.id, req.activityUser.userId).then((updated) => res.json(updated));
+  });
+
+  router.delete('/:id', requireFounder, async (req, res) => {
+    const ticket = getTicket(req.params.id);
+    if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
+    if (ticket.status !== 'closed') return res.status(400).json({ error: 'Solo se pueden eliminar tickets del historial' });
+    await deleteTicket(req.params.id);
+    res.json({ ok: true });
   });
 
   router.post('/:id/notifications', (req, res) => {

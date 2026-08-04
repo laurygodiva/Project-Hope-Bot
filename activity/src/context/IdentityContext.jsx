@@ -11,6 +11,7 @@ export function IdentityProvider({ children }) {
     user: null,
     isAdmin: false,
     isSanctionsManager: false,
+    isFounder: false,
     error: null,
     guild: null,
   });
@@ -47,6 +48,7 @@ export function IdentityProvider({ children }) {
           user: data.user,
           isAdmin: data.isAdmin,
           isSanctionsManager: data.isSanctionsManager,
+          isFounder: data.isFounder,
           error: null,
         }));
       } catch (err) {

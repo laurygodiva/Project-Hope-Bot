@@ -11,3 +11,10 @@ export function isSanctionsManager(member) {
   if (!roleId) return false;
   return member.roles.cache.has(roleId);
 }
+
+export function isFounder(member) {
+  if (!member) return false;
+  const roleId = process.env.FOUNDER_ROLE_ID;
+  if (!roleId) return false;
+  return member.roles.cache.has(roleId);
+}

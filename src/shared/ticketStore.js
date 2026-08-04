@@ -59,7 +59,8 @@ export async function createTicket({ category, title, description, links, images
     lastMessageAt: now,
     closedAt: null,
     closedBy: null,
-    notifyOptOut: [],
+    notifyOptIn: [],
+    lastReadBy: {},
   };
   tickets.push(ticket);
   await saveTickets(tickets);
@@ -121,12 +122,29 @@ export async function setNotifyPreference(id, userId, enabled) {
   const tickets = getTickets();
   const ticket = tickets.find((t) => t.id === id);
   if (!ticket) return null;
-  const optOut = new Set(ticket.notifyOptOut || []);
-  if (enabled) optOut.delete(userId);
-  else optOut.add(userId);
-  ticket.notifyOptOut = [...optOut];
+  const optIn = new Set(ticket.notifyOptIn || []);
+  if (enabled) optIn.add(userId);
+  else optIn.delete(userId);
+  ticket.notifyOptIn = [...optIn];
   await saveTickets(tickets);
   return ticket;
+}
+
+export async function markTicketRead(id, userId) {
+  const tickets = getTickets();
+  const ticket = tickets.find((t) => t.id === id);
+  if (!ticket) return null;
+  ticket.lastReadBy = { ...(ticket.lastReadBy || {}), [userId]: new Date().toISOString() };
+  await saveTickets(tickets);
+  return ticket;
+}
+
+export async function deleteTicket(id) {
+  const tickets = getTickets();
+  const next = tickets.filter((t) => t.id !== id);
+  if (next.length === tickets.length) return false;
+  await saveTickets(next);
+  return true;
 }
 
 export function getTicketParticipantIds(ticket) {
@@ -134,4 +152,15 @@ export function getTicketParticipantIds(ticket) {
   if (ticket.claimedBy?.id) ids.add(ticket.claimedBy.id);
   for (const m of ticket.messages) ids.add(m.authorId);
   return ids;
+}
+
+// Solo el staff que reclamó el ticket ve el aviso de "no leído", y solo si el
+// último mensaje no es suyo (si fue el último en escribir, no hay nada pendiente).
+export function hasUnreadForClaimer(ticket, viewerId) {
+  if (!ticket.claimedBy || ticket.claimedBy.id !== viewerId) return false;
+  if (ticket.messages.length === 0) return false;
+  const last = ticket.messages[ticket.messages.length - 1];
+  if (last.authorId === viewerId) return false;
+  const lastRead = ticket.lastReadBy?.[viewerId];
+  return !lastRead || new Date(last.createdAt) > new Date(lastRead);
 }

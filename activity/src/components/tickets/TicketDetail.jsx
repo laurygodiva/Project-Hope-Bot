@@ -29,7 +29,11 @@ export default function TicketDetail({ ticketId, onClose, onChanged }) {
 
   useEffect(() => {
     load();
-    const interval = setInterval(load, 4000);
+    api.post(`/tickets/${ticketId}/read`, {}).catch(() => {});
+    const interval = setInterval(() => {
+      load();
+      api.post(`/tickets/${ticketId}/read`, {}).catch(() => {});
+    }, 4000);
     return () => clearInterval(interval);
   }, [ticketId]);
 
@@ -105,7 +109,7 @@ export default function TicketDetail({ ticketId, onClose, onChanged }) {
 
   if (!ticket) return null;
 
-  const notificationsEnabled = !(ticket.notifyOptOut || []).includes(user.id);
+  const notificationsEnabled = (ticket.notifyOptIn || []).includes(user.id);
   const canModerate = isAdmin;
   const isClosed = ticket.status === 'closed';
 

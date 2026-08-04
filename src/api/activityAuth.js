@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import { logger } from '../shared/logger.js';
-import { isAdmin, isSanctionsManager } from '../shared/permissions.js';
+import { isAdmin, isSanctionsManager, isFounder } from '../shared/permissions.js';
 
 const DISCORD_API = 'https://discord.com/api/v10';
 const TOKEN_TTL = '15m';
@@ -53,9 +53,17 @@ export function createActivityAuthRouter(client) {
       const member = guild ? await guild.members.fetch(user.id).catch(() => null) : null;
       const admin = member ? isAdmin(member) : false;
       const sanctionsManager = member ? isSanctionsManager(member) : false;
+      const founder = member ? isFounder(member) : false;
 
       const sessionToken = jwt.sign(
-        { userId: user.id, username: user.username, avatar: user.avatar, isAdmin: admin, isSanctionsManager: sanctionsManager },
+        {
+          userId: user.id,
+          username: user.username,
+          avatar: user.avatar,
+          isAdmin: admin,
+          isSanctionsManager: sanctionsManager,
+          isFounder: founder,
+        },
         process.env.SESSION_SECRET,
         { expiresIn: TOKEN_TTL }
       );
@@ -65,6 +73,7 @@ export function createActivityAuthRouter(client) {
         user: { id: user.id, username: user.username, avatar: user.avatar },
         isAdmin: admin,
         isSanctionsManager: sanctionsManager,
+        isFounder: founder,
       });
     } catch (err) {
       logger.error('activity-auth', `Error verificando identidad: ${err.stack}`);

@@ -84,13 +84,9 @@ export default function StaffRankingPanel() {
             <img src={r.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'} alt="" />
             <div className="staff-ranking-info">
               <strong>{r.tag}</strong>
-              <span className="muted">
-                {r.ratingsCount} valoración{r.ratingsCount === 1 ? '' : 'es'} ({r.ratingPoints >= 0 ? '+' : ''}
-                {r.ratingPoints}) · {r.sanctionsCount} sanción{r.sanctionsCount === 1 ? '' : 'es'} (+{r.sanctionsPoints})
-              </span>
             </div>
             <span className={`staff-ranking-points ${r.points < 0 ? 'negative' : ''}`}>
-              {r.points >= 0 ? '+' : ''}
+              {r.points > 0 ? '+' : ''}
               {r.points}
             </span>
           </li>

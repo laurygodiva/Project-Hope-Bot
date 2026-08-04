@@ -84,7 +84,7 @@ export default function CreateTicketForm({ onCreated }) {
 
       <label>
         <span className="field-title">Imágenes (hasta 5, desde tu PC)</span>
-        <input type="file" accept="image/*" multiple onChange={handleFiles} />
+        <input type="file" accept="image/*" multiple className="file-input-btn" onChange={handleFiles} />
         {images.length > 0 && <p className="muted">{images.length} imagen(es) seleccionada(s)</p>}
       </label>
 

@@ -633,7 +633,10 @@ body {
 .send-form textarea,
 .embed-fields select,
 .embed-fields input:not([type='checkbox']),
-.embed-fields textarea {
+.embed-fields textarea,
+.message-log-filters select,
+.message-log-filters input:not([type='checkbox']),
+.message-log-filters textarea {
   appearance: none;
   -webkit-appearance: none;
   width: 100%;
@@ -656,7 +659,10 @@ body {
 .send-form textarea:focus,
 .embed-fields select:focus,
 .embed-fields input:not([type='checkbox']):focus,
-.embed-fields textarea:focus {
+.embed-fields textarea:focus,
+.message-log-filters select:focus,
+.message-log-filters input:not([type='checkbox']):focus,
+.message-log-filters textarea:focus {
   outline: none;
   border-color: var(--blue-300);
   box-shadow: 0 0 0 3px rgba(134, 50, 242, 0.35);

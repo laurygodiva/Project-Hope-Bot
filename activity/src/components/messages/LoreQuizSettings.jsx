@@ -43,23 +43,17 @@ export default function LoreQuizSettings() {
   return (
     <div className="gradient-frame">
       <div className="guide-box">
-        <h2>Ajustes del Lore Quizz (Fundador)</h2>
-        <p className="muted">
-          El icono se usa como icono circular del embed y la imagen se envía antes del quiz, en un mensaje aparte. Se
-          guardan de forma permanente y solo el Fundador puede cambiarlas.
-        </p>
-
         <form onSubmit={handleSubmit} className="lore-quiz-settings-form">
           <label>
             <span className="field-title">Icono circular</span>
             {settings?.iconURL && <img src={settings.iconURL} alt="" className="lore-quiz-settings-preview icon" />}
-            <input type="file" accept="image/*" onChange={(e) => setIconFile(e.target.files?.[0] || null)} />
+            <input type="file" accept="image/*" className="file-input-btn" onChange={(e) => setIconFile(e.target.files?.[0] || null)} />
           </label>
 
           <label>
             <span className="field-title">Imagen externa (antes del embed)</span>
             {settings?.imageURL && <img src={settings.imageURL} alt="" className="lore-quiz-settings-preview" />}
-            <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
+            <input type="file" accept="image/*" className="file-input-btn" onChange={(e) => setImageFile(e.target.files?.[0] || null)} />
           </label>
 
           <button type="submit" className="btn-secondary" disabled={sending || (!iconFile && !imageFile)}>

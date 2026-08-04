@@ -255,6 +255,79 @@ body {
   min-width: 0;
 }
 
+.staff-ranking-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.staff-ranking-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--surface-alt);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+}
+
+.staff-ranking-position {
+  width: 28px;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-align: center;
+}
+
+.staff-ranking-row img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.staff-ranking-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.staff-ranking-info span {
+  font-size: 0.78rem;
+}
+
+.staff-ranking-points {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+.staff-ranking-points.negative {
+  color: #ef4444;
+}
+
+.staff-ranking-month-select {
+  margin-top: 0.5rem;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--surface);
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem 0.6rem;
+  font-family: inherit;
+}
+
+.staff-ranking-month-select:focus {
+  outline: none;
+  border-color: var(--blue-300);
+  box-shadow: 0 0 0 3px rgba(134, 50, 242, 0.35);
+}
+
 .ratings-chart-layout {
   display: flex;
   gap: 1.5rem;

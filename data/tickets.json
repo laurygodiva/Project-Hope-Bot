@@ -80,7 +80,7 @@
       "756961475284959432"
     ],
     "lastReadBy": {
-      "423596492801179649": "2026-08-04T03:49:29.463Z"
+      "423596492801179649": "2026-08-04T04:26:13.774Z"
     },
     "notifyOptIn": []
   },
@@ -166,7 +166,7 @@
     },
     "notifyOptIn": [],
     "lastReadBy": {
-      "423596492801179649": "2026-08-04T04:07:19.569Z",
+      "423596492801179649": "2026-08-04T04:26:20.900Z",
       "756961475284959432": "2026-08-04T04:06:47.612Z"
     },
     "participants": [],
@@ -174,7 +174,57 @@
       "stars": 3,
       "comment": "mu guapa la muchacha pero escribe de puta pena",
       "raterId": "423596492801179649",
-      "ratedAt": "2026-08-04T04:07:04.807Z"
+      "ratedAt": "2026-08-04T04:07:04.807Z",
+      "verified": false
+    }
+  },
+  {
+    "id": "c4a513e3-f679-4cf3-8a2d-5f5a856eab6b",
+    "category": "soporte",
+    "title": "pene",
+    "description": "pene",
+    "links": [],
+    "images": [],
+    "creatorId": "756961475284959432",
+    "creatorTag": "lay_10",
+    "creatorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
+    "status": "closed",
+    "claimedBy": {
+      "id": "423596492801179649",
+      "tag": "laurygodiva",
+      "avatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64"
+    },
+    "messages": [
+      {
+        "id": "9b83d5c5-5b13-443d-b91b-ae684aaaeadb",
+        "authorId": "423596492801179649",
+        "authorTag": "laurygodiva",
+        "authorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
+        "content": "que pena",
+        "images": [],
+        "createdAt": "2026-08-04T04:24:57.482Z"
+      }
+    ],
+    "createdAt": "2026-08-04T04:24:44.233Z",
+    "lastMessageAt": "2026-08-04T04:24:57.482Z",
+    "closedAt": "2026-08-04T04:25:01.040Z",
+    "closedBy": {
+      "id": "423596492801179649",
+      "tag": "laurygodiva",
+      "avatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64"
+    },
+    "notifyOptIn": [],
+    "lastReadBy": {
+      "423596492801179649": "2026-08-04T04:26:17.014Z",
+      "756961475284959432": "2026-08-04T04:25:22.729Z"
+    },
+    "participants": [],
+    "rating": {
+      "stars": 4,
+      "comment": "pena darán los que tu has visto",
+      "raterId": "756961475284959432",
+      "ratedAt": "2026-08-04T04:25:18.515Z",
+      "verified": false
     }
   }
 ]

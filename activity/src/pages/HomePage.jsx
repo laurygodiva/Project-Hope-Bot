@@ -6,6 +6,7 @@ import MemberStatsPanel from '../components/MemberStatsPanel.jsx';
 import UserRoleSearch from '../components/UserRoleSearch.jsx';
 import BlacklistPanel from '../components/BlacklistPanel.jsx';
 import StaffRatingsPanel from '../components/StaffRatingsPanel.jsx';
+import StaffRankingPanel from '../components/StaffRankingPanel.jsx';
 
 export default function HomePage() {
   const { isFounder } = useIdentity();
@@ -44,6 +45,10 @@ export default function HomePage() {
 
       <div className="home-right-column">
         <MemberStatsPanel />
+
+        <div className="gradient-frame home-stats-panel">
+          <StaffRankingPanel />
+        </div>
 
         {isFounder && (
           <div className="gradient-frame home-stats-panel">

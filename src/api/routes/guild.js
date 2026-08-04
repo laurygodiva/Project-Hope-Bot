@@ -5,6 +5,7 @@ import { getMemberEvents } from '../../shared/memberEventsStore.js';
 import { getStickyMessageIds, addStickyMessage, removeStickyMessage } from '../../shared/stickyStore.js';
 import { getDeletedMessages, getEditedMessages } from '../../shared/messageLogStore.js';
 import { getTickets } from '../../shared/ticketStore.js';
+import { computeStaffRanking, getAvailableMonths, currentMonthKey } from '../../shared/staffRanking.js';
 import {
   getDangerFlags,
   clearDangerFlags,
@@ -566,6 +567,24 @@ export function createGuildRouter(client) {
       }))
       .sort((a, b) => new Date(b.ratedAt) - new Date(a.ratedAt));
     res.json(ratings);
+  });
+
+  router.get('/staff-ranking/months', (req, res) => {
+    res.json({ current: currentMonthKey(), months: getAvailableMonths() });
+  });
+
+  router.get('/staff-ranking', (req, res) => {
+    const month = req.query.month || currentMonthKey();
+    const guild = getGuild(res);
+    if (!guild) return;
+
+    const ranking = computeStaffRanking(month).map((e) => {
+      if (e.avatar) return e;
+      const member = guild.members.cache.get(e.staffId);
+      return member ? { ...e, avatar: member.user.displayAvatarURL({ size: 64 }), tag: e.tag || member.user.tag } : e;
+    });
+
+    res.json({ month, ranking });
   });
 
   return router;

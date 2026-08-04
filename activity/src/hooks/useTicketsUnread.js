@@ -17,8 +17,19 @@ export function useTicketsUnread() {
         .catch(() => {});
     }
     load();
-    const interval = setInterval(load, 5000);
-    return () => clearInterval(interval);
+    const interval = setInterval(load, 4000);
+
+    function onVisible() {
+      if (document.visibilityState === 'visible') load();
+    }
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('focus', load);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('focus', load);
+    };
   }, [isAdmin]);
 
   return summary;

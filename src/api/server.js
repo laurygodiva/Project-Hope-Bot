@@ -11,8 +11,13 @@ import { logger } from '../shared/logger.js';
 export function startServer(client) {
   const app = express();
 
+  app.set('etag', false);
   app.use(cors());
   app.use(express.json());
+  app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    next();
+  });
 
   // Montadas dos veces a propósito: el proxy de Discord Activities quita el
   // prefijo "/api" antes de reenviar la petición a este backend, pero el

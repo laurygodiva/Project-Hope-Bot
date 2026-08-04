@@ -9,6 +9,7 @@ export function setAuthToken(token) {
 async function request(path, options = {}) {
   const isFormData = options.body instanceof FormData;
   const res = await fetch(`${API_URL}${path}`, {
+    cache: 'no-store',
     headers: {
       ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
       'ngrok-skip-browser-warning': 'true',

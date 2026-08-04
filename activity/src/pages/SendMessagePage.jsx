@@ -5,6 +5,7 @@ import MarkdownGuide from '../components/MarkdownGuide.jsx';
 import ColorTextGenerator from '../components/ColorTextGenerator.jsx';
 import FontConverter from '../components/FontConverter.jsx';
 import EmojiPicker from '../components/EmojiPicker.jsx';
+import ReactionPicker from '../components/ReactionPicker.jsx';
 import SymbolPicker from '../components/SymbolPicker.jsx';
 import MentionPicker from '../components/MentionPicker.jsx';
 import LinkTool from '../components/LinkTool.jsx';
@@ -45,6 +46,7 @@ export default function SendMessagePage() {
   const [webhookPresets, setWebhookPresets] = useState(() => loadWebhookPresets());
   const [stickyChecked, setStickyChecked] = useState(false);
   const [stickyRefreshKey, setStickyRefreshKey] = useState(0);
+  const [reactions, setReactions] = useState([]);
 
   function handleSaveWebhookPreset() {
     if (!username) return;
@@ -112,6 +114,7 @@ export default function SendMessagePage() {
               footerIconURL: embedFooterIconURL,
             }
           : undefined,
+      reactions: reactions.map((r) => r.identifier),
     };
   }
 
@@ -144,6 +147,7 @@ export default function SendMessagePage() {
       setShowFooterDate(false);
       setShowFooterTime(false);
       setStickyChecked(false);
+      setReactions([]);
     } catch (err) {
       setFeedback({ type: 'error', text: err.message });
     } finally {
@@ -385,6 +389,9 @@ export default function SendMessagePage() {
           </div>
           <div className="gradient-frame">
             <EmojiPicker onInsert={(tag) => setContent((prev) => `${prev}${tag}`)} />
+          </div>
+          <div className="gradient-frame">
+            <ReactionPicker reactions={reactions} onChange={setReactions} />
           </div>
           <div className="gradient-frame">
             <SymbolPicker onInsert={(symbol) => setContent((prev) => `${prev}${symbol}`)} />

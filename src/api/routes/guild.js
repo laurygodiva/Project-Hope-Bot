@@ -69,6 +69,18 @@ function buildMessagePayload({ content, messageType, embed }) {
   };
 }
 
+async function addReactions(sentMessage, reactions) {
+  if (!Array.isArray(reactions)) return;
+  for (const identifier of reactions) {
+    try {
+      await sentMessage.react(identifier);
+    } catch {
+      // emoji inválido o el bot no tiene permiso para reaccionar; se ignora
+      // y se sigue con el resto
+    }
+  }
+}
+
 const MEMBERS_CACHE_TTL = 60_000;
 let membersCache = null;
 let membersCacheAt = 0;
@@ -252,7 +264,7 @@ export function createGuildRouter(client) {
     const guild = getGuild(res);
     if (!guild) return;
 
-    const { content, mode, username, avatarURL, messageType, embed } = req.body;
+    const { content, mode, username, avatarURL, messageType, embed, reactions } = req.body;
     const payload = buildMessagePayload({ content, messageType, embed });
     if (!payload) return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
 
@@ -262,6 +274,7 @@ export function createGuildRouter(client) {
     }
 
     try {
+      let sent;
       if (mode === 'webhook') {
         const webhooks = await channel.fetchWebhooks();
         let webhook = webhooks.find((w) => w.owner?.id === guild.client.user.id);
@@ -271,14 +284,15 @@ export function createGuildRouter(client) {
             reason: 'Webhook creado por la Activity de administración',
           });
         }
-        await webhook.send({
+        sent = await webhook.send({
           ...payload,
           username: username || undefined,
           avatarURL: avatarURL || undefined,
         });
       } else {
-        await channel.send(payload);
+        sent = await channel.send(payload);
       }
+      await addReactions(sent, reactions);
       res.json({ ok: true });
     } catch (err) {
       res.status(500).json({ error: 'No se pudo enviar el mensaje (¿permisos del bot insuficientes o color/URL inválidos?)' });
@@ -330,7 +344,7 @@ export function createGuildRouter(client) {
     const guild = getGuild(res);
     if (!guild) return;
 
-    const { content, messageType, embed } = req.body;
+    const { content, messageType, embed, reactions } = req.body;
     const payload = buildMessagePayload({ content, messageType, embed });
     if (!payload) return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
 
@@ -342,6 +356,7 @@ export function createGuildRouter(client) {
     try {
       const sent = await channel.send(payload);
       await addStickyMessage(req.params.id, sent.id);
+      await addReactions(sent, reactions);
       res.json(summarizeStickyMessage(sent));
     } catch (err) {
       res.status(500).json({ error: 'No se pudo fijar el mensaje (¿permisos del bot insuficientes?)' });
@@ -387,7 +402,7 @@ export function createGuildRouter(client) {
     const guild = getGuild(res);
     if (!guild) return;
 
-    const { content, messageType, embed } = req.body;
+    const { content, messageType, embed, reactions } = req.body;
     const payload = buildMessagePayload({ content, messageType, embed });
     if (!payload) return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
 
@@ -395,7 +410,8 @@ export function createGuildRouter(client) {
     if (!member) return res.status(404).json({ error: 'Usuario no encontrado en el servidor' });
 
     try {
-      await member.send(payload);
+      const sent = await member.send(payload);
+      await addReactions(sent, reactions);
       res.json({ ok: true });
     } catch (err) {
       res.status(500).json({ error: 'No se pudo enviar el MD (puede tener los mensajes directos cerrados)' });

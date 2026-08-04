@@ -872,6 +872,42 @@ body {
   gap: 0.5rem;
 }
 
+.reaction-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.reaction-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+}
+
+.reaction-chip img {
+  width: 20px;
+  height: 20px;
+}
+
+.reaction-chip button {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.7rem;
+  padding: 0;
+  line-height: 1;
+}
+
+.reaction-chip button:hover {
+  color: #ff6b6b;
+}
+
 .emoji-picker-panel input {
   background: var(--surface-alt);
   color: var(--text);

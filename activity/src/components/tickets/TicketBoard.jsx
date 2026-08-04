@@ -25,6 +25,7 @@ function TicketCard({ ticket, onOpen, children }) {
         <strong>{ticket.title}</strong>
         <span className="muted">{ticket.creatorTag}</span>
         <span className="muted">Últ. mensaje: {formatDate(ticket.lastMessageAt)}</span>
+        {ticket.status === 'closed' && <span className="muted">Cerrado: {formatDate(ticket.closedAt)}</span>}
         {ticket.claimedBy && (
           <div className="ticket-card-staff">
             <img src={ticket.claimedBy.avatar} alt="" />

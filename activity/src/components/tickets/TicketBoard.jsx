@@ -74,18 +74,15 @@ export default function TicketBoard({ category }) {
     .filter((t) => t.status === 'claimed')
     .filter((t) => !onlyMine || t.claimedBy?.id === user.id);
 
-  async function handleDelete(id, e) {
+  async function confirmDelete(id, e) {
     e.stopPropagation();
-    if (confirmingId !== id) {
-      setConfirmingId(id);
-      return;
-    }
     setConfirmingId(null);
+    setHistory((prev) => (prev ? prev.filter((t) => t.id !== id) : prev));
     try {
       await api.delete(`/tickets/${id}`);
-      load();
     } catch (err) {
       setError(err.message);
+      load();
     }
   }
 
@@ -131,14 +128,34 @@ export default function TicketBoard({ category }) {
             <TicketCard key={t.id} ticket={t} onOpen={setActive}>
               {isFounder && (
                 <div className="ticket-card-actions">
-                  <button
-                    type="button"
-                    className={`btn-secondary ticket-delete-btn ${confirmingId === t.id ? 'confirming' : ''}`}
-                    onClick={(e) => handleDelete(t.id, e)}
-                    onBlur={() => setConfirmingId((id) => (id === t.id ? null : id))}
-                  >
-                    {confirmingId === t.id ? '¿Seguro? Toca de nuevo' : 'Eliminar'}
-                  </button>
+                  {confirmingId === t.id ? (
+                    <>
+                      <button type="button" className="btn-secondary ticket-delete-btn confirming" onClick={(e) => confirmDelete(t.id, e)}>
+                        Confirmar borrado
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-secondary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setConfirmingId(null);
+                        }}
+                      >
+                        Cancelar
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      type="button"
+                      className="btn-secondary ticket-delete-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setConfirmingId(t.id);
+                      }}
+                    >
+                      Eliminar
+                    </button>
+                  )}
                 </div>
               )}
             </TicketCard>

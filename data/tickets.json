@@ -1,37 +1,5 @@
 [
   {
-    "id": "ae4ac3dc-7d32-4161-98e6-f144da0acf8d",
-    "category": "soporte",
-    "title": "aaaa",
-    "description": "aaaa",
-    "links": [],
-    "images": [
-      "https://cdn.discordapp.com/attachments/1534013888826179665/1534014834599923954/ADMIN_680_x_240_px_1024_x_576_px_2000_x_2000_px_7_1.png?ex=6a729625&is=6a7144a5&hm=b173ead151b3bcda148ca69c5c91b11b8c380939286656e5afa909988e9d0df7&"
-    ],
-    "creatorId": "423596492801179649",
-    "creatorTag": "laurygodiva",
-    "creatorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
-    "status": "closed",
-    "claimedBy": {
-      "id": "423596492801179649",
-      "tag": "laurygodiva",
-      "avatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64"
-    },
-    "messages": [],
-    "createdAt": "2026-08-04T01:47:16.079Z",
-    "lastMessageAt": "2026-08-04T01:47:16.079Z",
-    "closedAt": "2026-08-04T01:48:06.846Z",
-    "closedBy": {
-      "id": "423596492801179649",
-      "tag": "laurygodiva",
-      "avatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64"
-    },
-    "notifyOptOut": [],
-    "lastReadBy": {
-      "423596492801179649": "2026-08-04T02:12:51.029Z"
-    }
-  },
-  {
     "id": "c74061c7-470c-4aef-ab3e-866a1c88690c",
     "category": "soporte",
     "title": "donde puedo postular",
@@ -112,88 +80,8 @@
       "756961475284959432"
     ],
     "lastReadBy": {
-      "423596492801179649": "2026-08-04T02:11:59.738Z"
-    }
-  },
-  {
-    "id": "288ff67b-b630-4ff2-91f4-1c994283e12c",
-    "category": "soporte",
-    "title": "erdfz",
-    "description": "asdas",
-    "links": [],
-    "images": [],
-    "creatorId": "423596492801179649",
-    "creatorTag": "laurygodiva",
-    "creatorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
-    "status": "closed",
-    "claimedBy": {
-      "id": "756961475284959432",
-      "tag": "lay_10",
-      "avatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64"
+      "423596492801179649": "2026-08-04T02:14:15.042Z"
     },
-    "messages": [],
-    "createdAt": "2026-08-04T02:08:41.515Z",
-    "lastMessageAt": "2026-08-04T02:08:41.515Z",
-    "closedAt": "2026-08-04T02:09:16.491Z",
-    "closedBy": {
-      "id": "756961475284959432",
-      "tag": "lay_10",
-      "avatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64"
-    },
-    "notifyOptIn": [],
-    "lastReadBy": {
-      "423596492801179649": "2026-08-04T02:11:45.136Z",
-      "756961475284959432": "2026-08-04T02:09:15.273Z"
-    }
-  },
-  {
-    "id": "2bf10e6c-f4e7-4e6c-a545-9ae30b099dd1",
-    "category": "soporte",
-    "title": "sdfgsdlfgds",
-    "description": "sdfgsfg",
-    "links": [],
-    "images": [],
-    "creatorId": "756961475284959432",
-    "creatorTag": "lay_10",
-    "creatorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
-    "status": "closed",
-    "claimedBy": {
-      "id": "423596492801179649",
-      "tag": "laurygodiva",
-      "avatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64"
-    },
-    "messages": [
-      {
-        "id": "c2f32b7e-aa65-4cd3-a12f-2abd84368d96",
-        "authorId": "423596492801179649",
-        "authorTag": "laurygodiva",
-        "authorAvatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64",
-        "content": "asdasd",
-        "images": [],
-        "createdAt": "2026-08-04T02:10:43.484Z"
-      },
-      {
-        "id": "6753adb9-722d-428e-bbb7-07b15380a80d",
-        "authorId": "756961475284959432",
-        "authorTag": "lay_10",
-        "authorAvatar": "https://cdn.discordapp.com/avatars/756961475284959432/0507f4c83fb0e2c3d4b7944c280e482b.png?size=64",
-        "content": "lalsdjnfasldjknvzxdxv",
-        "images": [],
-        "createdAt": "2026-08-04T02:10:50.491Z"
-      }
-    ],
-    "createdAt": "2026-08-04T02:10:02.988Z",
-    "lastMessageAt": "2026-08-04T02:10:50.491Z",
-    "closedAt": "2026-08-04T02:10:56.197Z",
-    "closedBy": {
-      "id": "423596492801179649",
-      "tag": "laurygodiva",
-      "avatar": "https://cdn.discordapp.com/avatars/423596492801179649/a_fb9f999d9462b8223c9eef01d713eeea.png?size=64"
-    },
-    "notifyOptIn": [],
-    "lastReadBy": {
-      "423596492801179649": "2026-08-04T02:12:56.193Z",
-      "756961475284959432": "2026-08-04T02:10:59.183Z"
-    }
+    "notifyOptIn": []
   }
 ]

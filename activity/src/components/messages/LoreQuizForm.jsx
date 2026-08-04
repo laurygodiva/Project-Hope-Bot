@@ -1,35 +1,31 @@
 import { useState } from 'react';
 import { api } from '../../api/client.js';
 
-const NUMBER_EMOTES = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
-
 export default function LoreQuizForm() {
   const [question, setQuestion] = useState('');
-  const [answers, setAnswers] = useState(NUMBER_EMOTES.map((emote) => ({ emote, text: '' })));
-  const [correctEmote, setCorrectEmote] = useState('');
+  const [answers, setAnswers] = useState(['', '', '', '', '', '']);
+  const [correctIndex, setCorrectIndex] = useState('');
   const [sending, setSending] = useState(false);
   const [feedback, setFeedback] = useState(null);
 
-  function updateAnswer(emote, text) {
-    setAnswers((prev) => prev.map((a) => (a.emote === emote ? { ...a, text } : a)));
+  function updateAnswer(i, text) {
+    setAnswers((prev) => prev.map((a, idx) => (idx === i ? text : a)));
   }
 
-  const filledAnswers = answers.filter((a) => a.text.trim());
+  const filledAnswers = answers.map((text, i) => ({ text, originalIndex: i })).filter((a) => a.text.trim());
 
   async function handleSubmit(e) {
     e.preventDefault();
     setSending(true);
     setFeedback(null);
     try {
-      await api.post('/guild/lore-quiz', {
-        question,
-        answers: filledAnswers,
-        correctEmote,
-      });
+      const texts = filledAnswers.map((a) => a.text.trim());
+      const correct = filledAnswers.findIndex((a) => a.originalIndex === Number(correctIndex));
+      await api.post('/guild/lore-quiz', { question, answers: texts, correctIndex: correct });
       setFeedback({ type: 'ok', text: 'Lore Quizz enviado.' });
       setQuestion('');
-      setAnswers(NUMBER_EMOTES.map((emote) => ({ emote, text: '' })));
-      setCorrectEmote('');
+      setAnswers(['', '', '', '', '', '']);
+      setCorrectIndex('');
     } catch (err) {
       setFeedback({ type: 'error', text: err.message });
     } finally {
@@ -37,7 +33,7 @@ export default function LoreQuizForm() {
     }
   }
 
-  const canSend = question.trim() && filledAnswers.length >= 2 && correctEmote && filledAnswers.some((a) => a.emote === correctEmote);
+  const canSend = question.trim() && filledAnswers.length >= 2 && correctIndex !== '' && answers[correctIndex]?.trim();
 
   return (
     <form onSubmit={handleSubmit} className="send-form lore-quiz-form">
@@ -53,26 +49,20 @@ export default function LoreQuizForm() {
 
       <div className="gradient-frame">
         <fieldset className="embed-fields">
-          <span className="field-title">Respuestas</span>
-          {NUMBER_EMOTES.map((emote) => (
-            <label key={emote} className="lore-quiz-answer-row">
-              <span className="lore-quiz-emote">{emote}</span>
-              <input
-                type="text"
-                value={answers.find((a) => a.emote === emote).text}
-                onChange={(e) => updateAnswer(emote, e.target.value)}
-                placeholder="Respuesta (déjalo vacío para no usarla)..."
-              />
+          <span className="field-title">Respuestas (hasta 6)</span>
+          {answers.map((text, i) => (
+            <label key={i}>
+              <input type="text" value={text} onChange={(e) => updateAnswer(i, e.target.value)} placeholder={`Respuesta ${i + 1}...`} />
             </label>
           ))}
 
           <label>
             <span className="field-title">Respuesta correcta</span>
-            <select value={correctEmote} onChange={(e) => setCorrectEmote(e.target.value)}>
+            <select value={correctIndex} onChange={(e) => setCorrectIndex(e.target.value)}>
               <option value="">Selecciona...</option>
               {filledAnswers.map((a) => (
-                <option key={a.emote} value={a.emote}>
-                  {a.emote} {a.text}
+                <option key={a.originalIndex} value={a.originalIndex}>
+                  {a.text}
                 </option>
               ))}
             </select>

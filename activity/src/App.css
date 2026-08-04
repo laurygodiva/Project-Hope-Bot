@@ -310,19 +310,6 @@ body {
   color: #ef4444;
 }
 
-.lore-quiz-answer-row {
-  flex-direction: row !important;
-  align-items: center;
-  gap: 0.6rem !important;
-}
-
-.lore-quiz-emote {
-  font-size: 1.2rem;
-  width: 28px;
-  text-align: center;
-  flex-shrink: 0;
-}
-
 .staff-ranking-month-select {
   margin-top: 0.5rem;
   appearance: none;

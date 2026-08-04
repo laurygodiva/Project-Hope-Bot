@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { ChannelType } from 'discord.js';
+import { ChannelType, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from 'discord.js';
 import { buildEmbed } from '../../shared/embedBuilder.js';
 import { getMemberEvents } from '../../shared/memberEventsStore.js';
 import { getStickyMessageIds, addStickyMessage, removeStickyMessage } from '../../shared/stickyStore.js';
@@ -589,21 +589,17 @@ export function createGuildRouter(client) {
   });
 
   const LORE_QUIZ_CHANNEL_ID = '1534052516612935680';
-  const NUMBER_EMOTES = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
 
   router.post('/lore-quiz', async (req, res) => {
     const guild = getGuild(res);
     if (!guild) return;
 
-    const { question, answers, correctEmote } = req.body;
+    const { question, answers, correctIndex } = req.body;
+    const texts = (answers || []).map((a) => a?.trim()).filter(Boolean);
     if (!question?.trim()) return res.status(400).json({ error: 'Falta la pregunta' });
-    if (!Array.isArray(answers) || answers.length < 2) {
-      return res.status(400).json({ error: 'Añade al menos 2 respuestas' });
-    }
-    if (!answers.every((a) => NUMBER_EMOTES.includes(a.emote) && a.text?.trim())) {
-      return res.status(400).json({ error: 'Respuestas inválidas' });
-    }
-    if (!correctEmote || !answers.some((a) => a.emote === correctEmote)) {
+    if (texts.length < 2) return res.status(400).json({ error: 'Añade al menos 2 respuestas' });
+    if (texts.length > 6) return res.status(400).json({ error: 'Máximo 6 respuestas' });
+    if (!Number.isInteger(correctIndex) || correctIndex < 0 || correctIndex >= texts.length) {
       return res.status(400).json({ error: 'Selecciona cuál es la respuesta correcta' });
     }
 
@@ -612,19 +608,22 @@ export function createGuildRouter(client) {
       return res.status(500).json({ error: 'Canal de Lore Quizz no disponible' });
     }
 
-    const optionsText = answers.map((a) => `${a.emote} ${a.text.trim()}`).join('\n');
+    const optionsText = texts.map((t, i) => `**${i + 1}.** ${t}`).join('\n');
     const embed = buildEmbed({
       title: 'Lore Quizz',
       description: `${question.trim()}\n\n${optionsText}`,
       color: '#8632f2',
     });
 
+    const select = new StringSelectMenuBuilder()
+      .setCustomId('lore-quiz-select')
+      .setPlaceholder('Elige tu respuesta...')
+      .addOptions(texts.map((t, i) => new StringSelectMenuOptionBuilder().setLabel(t.slice(0, 100)).setValue(String(i))));
+    const row = new ActionRowBuilder().addComponents(select);
+
     try {
-      const sent = await channel.send({ embeds: [embed] });
-      for (const a of answers) {
-        await sent.react(a.emote).catch(() => {});
-      }
-      registerQuiz(sent.id, correctEmote);
+      const sent = await channel.send({ embeds: [embed], components: [row] });
+      registerQuiz(sent.id, correctIndex);
       res.json({ ok: true, messageId: sent.id });
     } catch (err) {
       res.status(500).json({ error: `No se pudo enviar el Lore Quizz: ${err.message}` });

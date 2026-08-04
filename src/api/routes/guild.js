@@ -6,6 +6,7 @@ import { getStickyMessageIds, addStickyMessage, removeStickyMessage } from '../.
 import { getDeletedMessages, getEditedMessages } from '../../shared/messageLogStore.js';
 import { getTickets } from '../../shared/ticketStore.js';
 import { computeStaffRanking, getAvailableMonths, currentMonthKey } from '../../shared/staffRanking.js';
+import { registerQuiz } from '../../shared/loreQuizRegistry.js';
 import {
   getDangerFlags,
   clearDangerFlags,
@@ -585,6 +586,49 @@ export function createGuildRouter(client) {
     });
 
     res.json({ month, ranking });
+  });
+
+  const LORE_QUIZ_CHANNEL_ID = '1534052516612935680';
+  const NUMBER_EMOTES = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣'];
+
+  router.post('/lore-quiz', async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+
+    const { question, answers, correctEmote } = req.body;
+    if (!question?.trim()) return res.status(400).json({ error: 'Falta la pregunta' });
+    if (!Array.isArray(answers) || answers.length < 2) {
+      return res.status(400).json({ error: 'Añade al menos 2 respuestas' });
+    }
+    if (!answers.every((a) => NUMBER_EMOTES.includes(a.emote) && a.text?.trim())) {
+      return res.status(400).json({ error: 'Respuestas inválidas' });
+    }
+    if (!correctEmote || !answers.some((a) => a.emote === correctEmote)) {
+      return res.status(400).json({ error: 'Selecciona cuál es la respuesta correcta' });
+    }
+
+    const channel = await guild.channels.fetch(LORE_QUIZ_CHANNEL_ID).catch(() => null);
+    if (!channel || !channel.isTextBased()) {
+      return res.status(500).json({ error: 'Canal de Lore Quizz no disponible' });
+    }
+
+    const optionsText = answers.map((a) => `${a.emote} ${a.text.trim()}`).join('\n');
+    const embed = buildEmbed({
+      title: 'Lore Quizz',
+      description: `${question.trim()}\n\n${optionsText}`,
+      color: '#8632f2',
+    });
+
+    try {
+      const sent = await channel.send({ embeds: [embed] });
+      for (const a of answers) {
+        await sent.react(a.emote).catch(() => {});
+      }
+      registerQuiz(sent.id, correctEmote);
+      res.json({ ok: true, messageId: sent.id });
+    } catch (err) {
+      res.status(500).json({ error: `No se pudo enviar el Lore Quizz: ${err.message}` });
+    }
   });
 
   return router;

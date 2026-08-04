@@ -2,11 +2,13 @@ import { useState } from 'react';
 import ComposeMessagePanel from '../components/messages/ComposeMessagePanel.jsx';
 import DeletedMessagesPanel from '../components/messages/DeletedMessagesPanel.jsx';
 import EditedMessagesPanel from '../components/messages/EditedMessagesPanel.jsx';
+import LoreQuizForm from '../components/messages/LoreQuizForm.jsx';
 
 const SUB_TABS = [
   { id: 'compose', label: 'Enviar mensaje' },
   { id: 'deleted', label: 'Mensajes eliminados' },
   { id: 'edited', label: 'Mensajes editados' },
+  { id: 'lore-quiz', label: 'Lore Quizz' },
 ];
 
 export default function SendMessagePage() {
@@ -25,6 +27,7 @@ export default function SendMessagePage() {
       {subTab === 'compose' && <ComposeMessagePanel />}
       {subTab === 'deleted' && <DeletedMessagesPanel />}
       {subTab === 'edited' && <EditedMessagesPanel />}
+      {subTab === 'lore-quiz' && <LoreQuizForm />}
     </div>
   );
 }

@@ -310,6 +310,38 @@ body {
   color: #ef4444;
 }
 
+.lore-quiz-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.lore-quiz-settings-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-end;
+  margin-top: 0.75rem;
+}
+
+.lore-quiz-settings-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.lore-quiz-settings-preview {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.lore-quiz-settings-preview.icon {
+  border-radius: 50%;
+}
+
 .staff-ranking-month-select {
   margin-top: 0.5rem;
   appearance: none;

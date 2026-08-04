@@ -1,12 +1,15 @@
 import { Router } from 'express';
-import { ChannelType, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from 'discord.js';
+import multer from 'multer';
+import { ChannelType, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, EmbedBuilder } from 'discord.js';
 import { buildEmbed } from '../../shared/embedBuilder.js';
 import { getMemberEvents } from '../../shared/memberEventsStore.js';
 import { getStickyMessageIds, addStickyMessage, removeStickyMessage } from '../../shared/stickyStore.js';
 import { getDeletedMessages, getEditedMessages } from '../../shared/messageLogStore.js';
 import { getTickets } from '../../shared/ticketStore.js';
+import { uploadTicketImages } from '../../shared/ticketAttachments.js';
 import { computeStaffRanking, getAvailableMonths, currentMonthKey } from '../../shared/staffRanking.js';
 import { registerQuiz } from '../../shared/loreQuizRegistry.js';
+import { getLoreQuizSettings, saveLoreQuizSettings } from '../../shared/loreQuizSettings.js';
 import {
   getDangerFlags,
   clearDangerFlags,
@@ -91,6 +94,8 @@ async function addReactions(sentMessage, reactions) {
     }
   }
 }
+
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024, files: 1 } });
 
 const MEMBERS_CACHE_TTL = 60_000;
 let membersCache = null;
@@ -608,12 +613,15 @@ export function createGuildRouter(client) {
       return res.status(500).json({ error: 'Canal de Lore Quizz no disponible' });
     }
 
+    const settings = getLoreQuizSettings();
+
     const optionsText = texts.map((t, i) => `**${i + 1}.** ${t}`).join('\n');
-    const embed = buildEmbed({
-      title: 'Lore Quizz',
-      description: `${question.trim()}\n\n${optionsText}`,
-      color: '#8632f2',
-    });
+    const embed = new EmbedBuilder()
+      .setTitle('Lore Quizz')
+      .setDescription(`${question.trim()}\n\n${optionsText}`)
+      .setColor('#8632f2')
+      .setTimestamp(new Date());
+    if (settings.iconURL) embed.setAuthor({ name: 'Lore Quizz', iconURL: settings.iconURL });
 
     const select = new StringSelectMenuBuilder()
       .setCustomId('lore-quiz-select')
@@ -622,11 +630,40 @@ export function createGuildRouter(client) {
     const row = new ActionRowBuilder().addComponents(select);
 
     try {
+      if (settings.imageURL) await channel.send({ content: settings.imageURL });
       const sent = await channel.send({ embeds: [embed], components: [row] });
       registerQuiz(sent.id, correctIndex);
       res.json({ ok: true, messageId: sent.id });
     } catch (err) {
       res.status(500).json({ error: `No se pudo enviar el Lore Quizz: ${err.message}` });
+    }
+  });
+
+  router.get('/lore-quiz/settings', (req, res) => {
+    res.json(getLoreQuizSettings());
+  });
+
+  router.post('/lore-quiz/settings', upload.fields([{ name: 'icon', maxCount: 1 }, { name: 'image', maxCount: 1 }]), async (req, res) => {
+    if (!req.activityUser?.isFounder) return res.status(403).json({ error: 'Solo el Fundador puede cambiar estas imágenes' });
+
+    try {
+      const settings = getLoreQuizSettings();
+      const iconFile = req.files?.icon?.[0];
+      const imageFile = req.files?.image?.[0];
+
+      if (iconFile) {
+        const [url] = await uploadTicketImages(client, [iconFile]);
+        settings.iconURL = url;
+      }
+      if (imageFile) {
+        const [url] = await uploadTicketImages(client, [imageFile]);
+        settings.imageURL = url;
+      }
+
+      await saveLoreQuizSettings(settings);
+      res.json(settings);
+    } catch (err) {
+      res.status(500).json({ error: `No se pudo guardar la imagen: ${err.message}` });
     }
   });
 

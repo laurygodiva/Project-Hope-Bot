@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { api } from '../../api/client.js';
+import LoreQuizSettings from './LoreQuizSettings.jsx';
 
 export default function LoreQuizForm() {
   const [question, setQuestion] = useState('');
@@ -36,7 +37,10 @@ export default function LoreQuizForm() {
   const canSend = question.trim() && filledAnswers.length >= 2 && correctIndex !== '' && answers[correctIndex]?.trim();
 
   return (
-    <form onSubmit={handleSubmit} className="send-form lore-quiz-form">
+    <div className="lore-quiz-page">
+      <LoreQuizSettings />
+
+      <form onSubmit={handleSubmit} className="send-form lore-quiz-form">
       <label>
         <span className="field-title">Título</span>
         <input type="text" value="Lore Quizz" disabled />
@@ -75,6 +79,7 @@ export default function LoreQuizForm() {
       </button>
 
       {feedback && <p className={feedback.type === 'error' ? 'error-text' : 'ok-text'}>{feedback.text}</p>}
-    </form>
+      </form>
+    </div>
   );
 }

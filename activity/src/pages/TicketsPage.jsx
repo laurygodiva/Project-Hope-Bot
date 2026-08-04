@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useIdentity } from '../context/IdentityContext.jsx';
+import { useTicketNav } from '../context/TicketNavContext.jsx';
 import { useTicketsUnread } from '../hooks/useTicketsUnread.js';
 import CreateTicketForm from '../components/tickets/CreateTicketForm.jsx';
 import TicketBoard from '../components/tickets/TicketBoard.jsx';
@@ -20,6 +21,7 @@ const MEMBER_TABS = [
 
 export default function TicketsPage() {
   const { viewMode } = useIdentity();
+  const { request, clearRequest } = useTicketNav();
   const staffMode = viewMode === 'staff';
   const tabs = staffMode ? STAFF_TABS : MEMBER_TABS;
   const [subTab, setSubTab] = useState('create');
@@ -28,6 +30,10 @@ export default function TicketsPage() {
   useEffect(() => {
     if (!tabs.find((t) => t.id === subTab)) setSubTab('create');
   }, [viewMode]);
+
+  useEffect(() => {
+    if (request?.category) setSubTab(request.category);
+  }, [request]);
 
   return (
     <div className="send-message-page">
@@ -42,10 +48,22 @@ export default function TicketsPage() {
 
       {subTab === 'create' && <CreateTicketForm onCreated={() => setSubTab(staffMode ? 'soporte' : 'mine')} />}
       {subTab === 'mine' && <MyTicketsPanel />}
-      {subTab === 'soporte' && <TicketBoard category="soporte" />}
-      {subTab === 'reporte' && <TicketBoard category="reporte" />}
-      {subTab === 'ck' && <TicketBoard category="ck" />}
-      {subTab === 'playmaker' && <TicketBoard category="playmaker" />}
+      {subTab === 'soporte' && (
+        <TicketBoard category="soporte" initialOpenTicketId={request?.category === 'soporte' ? request.ticketId : null} onInitialOpenHandled={clearRequest} />
+      )}
+      {subTab === 'reporte' && (
+        <TicketBoard category="reporte" initialOpenTicketId={request?.category === 'reporte' ? request.ticketId : null} onInitialOpenHandled={clearRequest} />
+      )}
+      {subTab === 'ck' && (
+        <TicketBoard category="ck" initialOpenTicketId={request?.category === 'ck' ? request.ticketId : null} onInitialOpenHandled={clearRequest} />
+      )}
+      {subTab === 'playmaker' && (
+        <TicketBoard
+          category="playmaker"
+          initialOpenTicketId={request?.category === 'playmaker' ? request.ticketId : null}
+          onInitialOpenHandled={clearRequest}
+        />
+      )}
     </div>
   );
 }

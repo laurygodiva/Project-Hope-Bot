@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { api } from '../api/client.js';
+import { useTicketNav } from '../context/TicketNavContext.jsx';
 
 const CATEGORY_LABEL = { soporte: 'Soporte', reporte: 'Reporte', ck: 'CK', playmaker: 'Solicitar Playmaker' };
 const STAR_COLORS = ['#6b7280', '#ef4444', '#f97316', '#eab308', '#84cc16', '#22c55e'];
@@ -12,17 +13,20 @@ function formatDate(iso) {
 }
 
 export default function StaffRatingsPanel() {
+  const { requestOpenTicket } = useTicketNav();
   const [ratings, setRatings] = useState(null);
   const [error, setError] = useState(null);
   const [mode, setMode] = useState('stars');
   const [openKey, setOpenKey] = useState(null);
 
-  useEffect(() => {
+  function load() {
     api
       .get('/guild/ratings')
       .then(setRatings)
       .catch((err) => setError(err.message));
-  }, []);
+  }
+
+  useEffect(load, []);
 
   const buckets = useMemo(() => {
     if (!ratings) return [];
@@ -59,6 +63,26 @@ export default function StaffRatingsPanel() {
     });
     return `conic-gradient(${stops.join(', ')})`;
   }, [nonEmpty, total]);
+
+  async function handleVerify(r, verified, e) {
+    e.stopPropagation();
+    try {
+      await api.post(`/tickets/${r.ticketId}/rating/verify`, { verified });
+      setRatings((prev) => prev.map((x) => (x.ticketId === r.ticketId ? { ...x, verified } : x)));
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  async function handleDeny(r, e) {
+    e.stopPropagation();
+    try {
+      await api.delete(`/tickets/${r.ticketId}/rating`);
+      setRatings((prev) => prev.filter((x) => x.ticketId !== r.ticketId));
+    } catch (err) {
+      setError(err.message);
+    }
+  }
 
   if (error) return <p className="error-text">{error}</p>;
   if (!ratings) return null;
@@ -99,7 +123,13 @@ export default function StaffRatingsPanel() {
                 {openKey === b.key && (
                   <div className="ratings-legend-details">
                     {b.items.map((r) => (
-                      <div key={r.ticketId + r.ratedAt} className="ratings-entry">
+                      <div
+                        key={r.ticketId + r.ratedAt}
+                        className="ratings-entry"
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => requestOpenTicket(r.ticketId, r.category)}
+                      >
                         <div className="ratings-entry-row">
                           <strong>{r.title}</strong>
                           <span className="ticket-rating-stars small">{'★'.repeat(r.stars)}{'☆'.repeat(5 - r.stars)}</span>
@@ -108,8 +138,19 @@ export default function StaffRatingsPanel() {
                           {CATEGORY_LABEL[r.category] || r.category} · Ticket del {formatDate(r.ticketCreatedAt)}
                         </span>
                         <span className="muted">Staff valorado: {r.staffTag}</span>
+                        <span className="muted">Valorado por: {r.raterTag}</span>
                         {r.comment && <p className="message-log-content">{r.comment}</p>}
                         <span className="muted">Valorado el {formatDate(r.ratedAt)}</span>
+
+                        <div className="ratings-entry-actions">
+                          <label className="checkbox-label" onClick={(e) => e.stopPropagation()}>
+                            <input type="checkbox" checked={r.verified} onChange={(e) => handleVerify(r, e.target.checked, e)} />
+                            Verificar
+                          </label>
+                          <button type="button" className="btn-secondary" onClick={(e) => handleDeny(r, e)}>
+                            Denegar
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>

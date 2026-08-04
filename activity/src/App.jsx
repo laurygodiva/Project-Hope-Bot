@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { IdentityProvider } from './context/IdentityContext.jsx';
 import { useIdentity } from './context/IdentityContext.jsx';
+import { TicketNavProvider, useTicketNav } from './context/TicketNavContext.jsx';
 import IdentityGate from './components/IdentityGate.jsx';
 import HomePage from './pages/HomePage.jsx';
 import SendMessagePage from './pages/SendMessagePage.jsx';
@@ -25,6 +26,7 @@ const USER_TABS = [
 
 function AppShell() {
   const { viewMode, status } = useIdentity();
+  const { request } = useTicketNav();
   const tabs = viewMode === 'staff' ? STAFF_TABS : USER_TABS;
   const [tab, setTab] = useState(tabs[0].id);
   const ticketsUnread = useTicketsUnread();
@@ -32,6 +34,10 @@ function AppShell() {
   useEffect(() => {
     if (status === 'ready' && !tabs.find((t) => t.id === tab)) setTab(tabs[0].id);
   }, [status, viewMode]);
+
+  useEffect(() => {
+    if (request) setTab('tickets');
+  }, [request]);
 
   const Active = tabs.find((t) => t.id === tab)?.Component || tabs[0].Component;
 
@@ -54,7 +60,9 @@ export default function App() {
   return (
     <IdentityProvider>
       <IdentityGate>
-        <AppShell />
+        <TicketNavProvider>
+          <AppShell />
+        </TicketNavProvider>
       </IdentityGate>
     </IdentityProvider>
   );

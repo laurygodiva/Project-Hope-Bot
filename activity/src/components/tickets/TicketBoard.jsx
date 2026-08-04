@@ -38,7 +38,7 @@ function TicketCard({ ticket, onOpen, children }) {
   );
 }
 
-export default function TicketBoard({ category }) {
+export default function TicketBoard({ category, initialOpenTicketId, onInitialOpenHandled }) {
   const { user, isFounder } = useIdentity();
   const [search, setSearch] = useState('');
   const [onlyMine, setOnlyMine] = useState(false);
@@ -47,6 +47,13 @@ export default function TicketBoard({ category }) {
   const [history, setHistory] = useState(null);
   const [error, setError] = useState(null);
   const [confirmingId, setConfirmingId] = useState(null);
+
+  useEffect(() => {
+    if (initialOpenTicketId) {
+      setActive(initialOpenTicketId);
+      onInitialOpenHandled?.();
+    }
+  }, [initialOpenTicketId]);
 
   function load() {
     const params = new URLSearchParams({ category });

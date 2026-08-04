@@ -13,6 +13,8 @@ import {
   deleteTicket,
   addParticipant,
   setTicketRating,
+  setRatingVerified,
+  deleteRating,
   getTicketParticipantIds,
   hasUnreadForUser,
 } from '../../shared/ticketStore.js';
@@ -63,9 +65,14 @@ function actorFromReq(req) {
 function canView(ticket, req) {
   return (
     req.activityUser.isAdmin ||
+    req.activityUser.isFounder ||
     ticket.creatorId === req.activityUser.userId ||
     (ticket.participants || []).includes(req.activityUser.userId)
   );
+}
+
+function canSeeRating(ticket, req) {
+  return req.activityUser.userId === ticket.creatorId || req.activityUser.isFounder;
 }
 
 async function notifyParticipants(client, ticket, author) {
@@ -176,7 +183,7 @@ export function createTicketsRouter(client) {
     const ticket = getTicket(req.params.id);
     if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
     if (!canView(ticket, req)) return res.status(403).json({ error: 'No tienes acceso a este ticket' });
-    res.json(ticket);
+    res.json(canSeeRating(ticket, req) ? ticket : { ...ticket, rating: null });
   });
 
   router.post('/:id/messages', upload.array('images', 5), async (req, res) => {
@@ -275,6 +282,21 @@ export function createTicketsRouter(client) {
     }
 
     const updated = await setTicketRating(req.params.id, { stars, comment: req.body.comment }, req.activityUser.userId);
+    res.json(updated);
+  });
+
+  router.post('/:id/rating/verify', requireFounder, async (req, res) => {
+    const ticket = getTicket(req.params.id);
+    if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
+    if (!ticket.rating) return res.status(400).json({ error: 'Este ticket no tiene valoración' });
+    const updated = await setRatingVerified(req.params.id, Boolean(req.body.verified));
+    res.json(updated);
+  });
+
+  router.delete('/:id/rating', requireFounder, async (req, res) => {
+    const ticket = getTicket(req.params.id);
+    if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
+    const updated = await deleteRating(req.params.id);
     res.json(updated);
   });
 

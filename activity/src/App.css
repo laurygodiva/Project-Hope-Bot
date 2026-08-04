@@ -341,6 +341,22 @@ body {
   gap: 0.2rem;
   border-bottom: 1px solid var(--border);
   padding-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.ratings-entry:hover strong {
+  color: var(--blue-100);
+}
+
+.ratings-entry-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.3rem;
+}
+
+.ratings-entry-actions .checkbox-label {
+  font-size: 0.82rem;
 }
 
 .ratings-entry-row {

@@ -556,9 +556,13 @@ export function createGuildRouter(client) {
         staffId: t.claimedBy?.id || null,
         staffTag: t.claimedBy?.tag || 'Desconocido',
         staffAvatar: t.claimedBy?.avatar || null,
+        raterId: t.creatorId,
+        raterTag: t.creatorTag,
+        raterAvatar: t.creatorAvatar,
         stars: t.rating.stars,
         comment: t.rating.comment,
         ratedAt: t.rating.ratedAt,
+        verified: !!t.rating.verified,
       }))
       .sort((a, b) => new Date(b.ratedAt) - new Date(a.ratedAt));
     res.json(ratings);

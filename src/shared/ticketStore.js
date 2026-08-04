@@ -165,7 +165,25 @@ export async function setTicketRating(id, { stars, comment }, raterId) {
   const ticket = tickets.find((t) => t.id === id);
   if (!ticket) return null;
   if (ticket.rating) return ticket;
-  ticket.rating = { stars, comment: comment || '', raterId, ratedAt: new Date().toISOString() };
+  ticket.rating = { stars, comment: comment || '', raterId, ratedAt: new Date().toISOString(), verified: false };
+  await saveTickets(tickets);
+  return ticket;
+}
+
+export async function setRatingVerified(id, verified) {
+  const tickets = getTickets();
+  const ticket = tickets.find((t) => t.id === id);
+  if (!ticket || !ticket.rating) return null;
+  ticket.rating.verified = verified;
+  await saveTickets(tickets);
+  return ticket;
+}
+
+export async function deleteRating(id) {
+  const tickets = getTickets();
+  const ticket = tickets.find((t) => t.id === id);
+  if (!ticket) return null;
+  ticket.rating = null;
   await saveTickets(tickets);
   return ticket;
 }

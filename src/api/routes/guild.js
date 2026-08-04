@@ -4,6 +4,13 @@ import { buildEmbed } from '../../shared/embedBuilder.js';
 import { getMemberEvents } from '../../shared/memberEventsStore.js';
 import { getStickyMessageIds, addStickyMessage, removeStickyMessage } from '../../shared/stickyStore.js';
 import { getDeletedMessages, getEditedMessages } from '../../shared/messageLogStore.js';
+import {
+  getDangerFlags,
+  clearDangerFlags,
+  getBlacklist,
+  addToBlacklist,
+  removeFromBlacklist,
+} from '../../shared/threatStore.js';
 import { requireSanctionsManager } from '../middleware/requireSanctionsManager.js';
 
 const RANGE_BUCKETS = { day: 14, week: 12, month: 12, year: 5 };
@@ -435,6 +442,103 @@ export function createGuildRouter(client) {
     if (channelId) entries = entries.filter((e) => e.channelId === channelId);
     if (userId) entries = entries.filter((e) => e.authorId === userId);
     res.json(entries.slice(0, 200));
+  });
+
+  router.get('/blacklist/suspicious', async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+    try {
+      const members = await getAllMembers(guild);
+      const suspicious = members
+        .filter((m) => !m.user.bot && (/^\d+$/.test(m.user.username) || !m.user.avatar))
+        .map((m) => ({
+          id: m.id,
+          tag: m.user.tag,
+          username: m.user.username,
+          avatar: m.user.displayAvatarURL({ size: 64 }),
+          reasons: [
+            /^\d+$/.test(m.user.username) ? 'Nombre de usuario son solo números' : null,
+            !m.user.avatar ? 'Sin foto de perfil' : null,
+          ].filter(Boolean),
+        }));
+      res.json(suspicious);
+    } catch (err) {
+      res.status(500).json({ error: `No se pudo calcular usuarios sospechosos: ${err.message}` });
+    }
+  });
+
+  router.get('/blacklist/dangerous', async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+    try {
+      const flags = getDangerFlags();
+      const members = await getAllMembers(guild);
+      const list = Object.entries(flags).map(([userId, entries]) => {
+        const member = members.get(userId);
+        return {
+          id: userId,
+          tag: member?.user.tag || null,
+          avatar: member?.user.displayAvatarURL({ size: 64 }) || null,
+          inGuild: Boolean(member),
+          flags: entries,
+        };
+      });
+      res.json(list);
+    } catch (err) {
+      res.status(500).json({ error: `No se pudo cargar usuarios peligrosos: ${err.message}` });
+    }
+  });
+
+  router.delete('/blacklist/dangerous/:id', async (req, res) => {
+    await clearDangerFlags(req.params.id);
+    res.json({ ok: true });
+  });
+
+  router.get('/blacklist/banned', async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+    try {
+      const bans = await guild.bans.fetch();
+      const list = [...bans.values()].map((b) => ({
+        id: b.user.id,
+        tag: b.user.tag,
+        avatar: b.user.displayAvatarURL({ size: 64 }),
+        reason: b.reason || null,
+      }));
+      res.json(list);
+    } catch (err) {
+      res.status(500).json({ error: `No se pudo cargar la lista de baneados: ${err.message}` });
+    }
+  });
+
+  router.get('/blacklist/vetados', (req, res) => {
+    res.json(getBlacklist());
+  });
+
+  router.post('/blacklist/vetados', async (req, res) => {
+    const guild = getGuild(res);
+    if (!guild) return;
+    const { userId, reason } = req.body;
+    if (!userId?.trim()) return res.status(400).json({ error: 'Falta el ID de usuario' });
+
+    const list = await addToBlacklist(userId.trim(), reason?.trim() || '', req.activityUser?.username || 'admin');
+
+    const member = guild.members.cache.get(userId.trim());
+    if (member) {
+      try {
+        await member.kick('Usuario añadido a la lista negra (vetado)');
+      } catch (err) {
+        // el bot puede no tener permisos suficientes; el usuario se expulsará
+        // igualmente en su próximo intento de entrada
+      }
+    }
+
+    res.json(list);
+  });
+
+  router.delete('/blacklist/vetados/:id', async (req, res) => {
+    const list = await removeFromBlacklist(req.params.id);
+    res.json(list);
   });
 
   return router;

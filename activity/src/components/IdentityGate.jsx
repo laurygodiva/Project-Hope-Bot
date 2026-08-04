@@ -34,7 +34,7 @@ function LoadingScreen({ guild, phase }) {
 }
 
 export default function IdentityGate({ children }) {
-  const { status, phase, user, isAdmin, error, guild } = useIdentity();
+  const { status, phase, user, isAdmin, viewMode, setViewMode, error, guild } = useIdentity();
 
   if (status === 'loading') {
     return <LoadingScreen guild={guild} phase={phase} />;
@@ -53,7 +53,20 @@ export default function IdentityGate({ children }) {
       <div className="identity-banner">
         <img className="avatar-small" src={avatarUrl(user)} alt={user.username} />
         <span>{user.username}</span>
-        {isAdmin && <span className="badge">Admin</span>}
+        <div className="view-mode-toggle">
+          <button
+            type="button"
+            className={viewMode === 'staff' ? 'active' : ''}
+            disabled={!isAdmin}
+            title={isAdmin ? '' : 'No tienes permisos de staff'}
+            onClick={() => setViewMode('staff')}
+          >
+            Staff
+          </button>
+          <button type="button" className={viewMode === 'user' ? 'active' : ''} onClick={() => setViewMode('user')}>
+            User
+          </button>
+        </div>
       </div>
       {children}
     </div>

@@ -3,6 +3,7 @@ import cors from 'cors';
 import { createActivityAuthRouter } from './activityAuth.js';
 import { createGuildRouter } from './routes/guild.js';
 import { createSanctionsRouter } from './routes/sanctions.js';
+import { createSanctionsMineRouter } from './routes/sanctionsMine.js';
 import { createTicketsRouter } from './routes/tickets.js';
 import { requireAdmin } from './middleware/requireAdmin.js';
 import { requireGuildMember } from './middleware/requireGuildMember.js';
@@ -25,12 +26,17 @@ export function startServer(client) {
   const activityAuthRouter = createActivityAuthRouter(client);
   const guildRouter = createGuildRouter(client);
   const sanctionsRouter = createSanctionsRouter(client);
+  const sanctionsMineRouter = createSanctionsMineRouter();
   const ticketsRouter = createTicketsRouter(client);
 
   app.use('/api/activity', activityAuthRouter);
   app.use('/activity', activityAuthRouter);
   app.use('/api/guild', requireAdmin, guildRouter);
   app.use('/guild', requireAdmin, guildRouter);
+  // El de "mine" va antes y sin requireAdmin: solo registra la ruta /mine, así
+  // que cualquier otra ruta de /sanctions cae al router de abajo (admin-gated).
+  app.use('/api/sanctions', requireGuildMember, sanctionsMineRouter);
+  app.use('/sanctions', requireGuildMember, sanctionsMineRouter);
   app.use('/api/sanctions', requireAdmin, sanctionsRouter);
   app.use('/sanctions', requireAdmin, sanctionsRouter);
   app.use('/api/tickets', requireGuildMember, ticketsRouter);

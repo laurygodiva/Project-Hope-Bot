@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/client.js';
+import { useIdentity } from '../context/IdentityContext.jsx';
 import NewSanctionForm from '../components/sanctions/NewSanctionForm.jsx';
 import CatalogManager from '../components/sanctions/CatalogManager.jsx';
 import CaseHistory from '../components/sanctions/CaseHistory.jsx';
 import AnnouncementSettings from '../components/sanctions/AnnouncementSettings.jsx';
 import AggravatorsManager from '../components/sanctions/AggravatorsManager.jsx';
+import MySanctionsPanel from '../components/sanctions/MySanctionsPanel.jsx';
 
 const SUB_TABS = [
   { id: 'new', label: 'Nueva sanción' },
@@ -14,7 +16,7 @@ const SUB_TABS = [
   { id: 'announcements', label: 'Anuncios' },
 ];
 
-export default function SanctionsPage() {
+function StaffSanctionsPanel() {
   const [subTab, setSubTab] = useState('new');
   const [catalog, setCatalog] = useState(null);
   const [error, setError] = useState(null);
@@ -48,4 +50,9 @@ export default function SanctionsPage() {
       {subTab === 'announcements' && <AnnouncementSettings />}
     </div>
   );
+}
+
+export default function SanctionsPage() {
+  const { viewMode } = useIdentity();
+  return viewMode === 'user' ? <MySanctionsPanel /> : <StaffSanctionsPanel />;
 }

@@ -14,6 +14,7 @@ export function IdentityProvider({ children }) {
     isFounder: false,
     error: null,
     guild: null,
+    viewMode: 'user',
   });
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export function IdentityProvider({ children }) {
           isAdmin: data.isAdmin,
           isSanctionsManager: data.isSanctionsManager,
           isFounder: data.isFounder,
+          viewMode: data.isAdmin ? 'staff' : 'user',
           error: null,
         }));
       } catch (err) {
@@ -58,7 +60,14 @@ export function IdentityProvider({ children }) {
     verify();
   }, []);
 
-  return <IdentityContext.Provider value={state}>{children}</IdentityContext.Provider>;
+  function setViewMode(mode) {
+    setState((prev) => {
+      if (mode === 'staff' && !prev.isAdmin) return prev;
+      return { ...prev, viewMode: mode };
+    });
+  }
+
+  return <IdentityContext.Provider value={{ ...state, setViewMode }}>{children}</IdentityContext.Provider>;
 }
 
 export function useIdentity() {

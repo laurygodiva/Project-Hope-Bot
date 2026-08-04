@@ -20,7 +20,7 @@ export default function MyTicketsPanel() {
 
   function load() {
     api
-      .get('/tickets/mine')
+      .get('/tickets/mine?onlyCreated=true')
       .then(setTickets)
       .catch((err) => setError(err.message));
   }

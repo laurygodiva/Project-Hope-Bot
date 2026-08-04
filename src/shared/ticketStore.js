@@ -61,6 +61,7 @@ export async function createTicket({ category, title, description, links, images
     closedBy: null,
     notifyOptIn: [],
     lastReadBy: {},
+    participants: [],
   };
   tickets.push(ticket);
   await saveTickets(tickets);
@@ -147,10 +148,22 @@ export async function deleteTicket(id) {
   return true;
 }
 
+export async function addParticipant(id, userId) {
+  const tickets = getTickets();
+  const ticket = tickets.find((t) => t.id === id);
+  if (!ticket) return null;
+  const participants = new Set(ticket.participants || []);
+  participants.add(userId);
+  ticket.participants = [...participants];
+  await saveTickets(tickets);
+  return ticket;
+}
+
 export function getTicketParticipantIds(ticket) {
   const ids = new Set([ticket.creatorId]);
   if (ticket.claimedBy?.id) ids.add(ticket.claimedBy.id);
   for (const m of ticket.messages) ids.add(m.authorId);
+  for (const p of ticket.participants || []) ids.add(p);
   return ids;
 }
 

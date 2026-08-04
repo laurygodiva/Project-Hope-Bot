@@ -11,6 +11,7 @@ import {
   setNotifyPreference,
   markTicketRead,
   deleteTicket,
+  addParticipant,
   getTicketParticipantIds,
   hasUnreadForClaimer,
 } from '../../shared/ticketStore.js';
@@ -59,7 +60,11 @@ function actorFromReq(req) {
 }
 
 function canView(ticket, req) {
-  return req.activityUser.isAdmin || ticket.creatorId === req.activityUser.userId;
+  return (
+    req.activityUser.isAdmin ||
+    ticket.creatorId === req.activityUser.userId ||
+    (ticket.participants || []).includes(req.activityUser.userId)
+  );
 }
 
 async function notifyParticipants(client, ticket, author) {
@@ -126,8 +131,13 @@ export function createTicketsRouter(client) {
 
   router.get('/mine', (req, res) => {
     const userId = req.activityUser.userId;
+    const onlyCreated = req.query.onlyCreated === 'true';
     const mine = getTickets()
-      .filter((t) => t.creatorId === userId || t.claimedBy?.id === userId)
+      .filter((t) =>
+        onlyCreated
+          ? t.creatorId === userId || (t.participants || []).includes(userId)
+          : t.creatorId === userId || t.claimedBy?.id === userId || (t.participants || []).includes(userId)
+      )
       .sort((a, b) => new Date(b.lastMessageAt) - new Date(a.lastMessageAt));
     res.json(mine.map((t) => summarize(t, userId)));
   });
@@ -202,6 +212,15 @@ export function createTicketsRouter(client) {
     if (ticket.status !== 'closed') return res.status(400).json({ error: 'Solo se pueden eliminar tickets del historial' });
     await deleteTicket(req.params.id);
     res.json({ ok: true });
+  });
+
+  router.post('/:id/participants', requireStaff, async (req, res) => {
+    const ticket = getTicket(req.params.id);
+    if (!ticket) return res.status(404).json({ error: 'Ticket no encontrado' });
+    const userId = req.body.userId?.trim();
+    if (!userId) return res.status(400).json({ error: 'Falta el ID de usuario' });
+    const updated = await addParticipant(req.params.id, userId);
+    res.json(updated);
   });
 
   router.post('/:id/notifications', (req, res) => {

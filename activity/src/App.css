@@ -185,6 +185,34 @@ body {
   border-bottom: 1px solid var(--border);
 }
 
+.view-mode-toggle {
+  display: flex;
+  gap: 0.35rem;
+  margin-left: auto;
+}
+
+.view-mode-toggle button {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.view-mode-toggle button.active {
+  background: var(--accent-gradient);
+  border-color: transparent;
+  color: white;
+}
+
+.view-mode-toggle button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .badge {
   background: var(--accent-gradient);
   color: white;
@@ -2046,6 +2074,27 @@ a {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+.ticket-participant-form {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 1.5rem 0.85rem;
+}
+
+.ticket-participant-form input {
+  flex: 1;
+  background: var(--surface-alt);
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem 0.6rem;
+}
+
+.ticket-participant-form input:focus {
+  outline: none;
+  border-color: var(--blue-300);
+  box-shadow: 0 0 0 3px rgba(134, 50, 242, 0.35);
 }
 
 .ticket-modal-body {

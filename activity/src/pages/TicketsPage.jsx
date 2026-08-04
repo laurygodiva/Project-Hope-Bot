@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useIdentity } from '../context/IdentityContext.jsx';
 import { useTicketsUnread } from '../hooks/useTicketsUnread.js';
 import CreateTicketForm from '../components/tickets/CreateTicketForm.jsx';
@@ -19,10 +19,15 @@ const MEMBER_TABS = [
 ];
 
 export default function TicketsPage() {
-  const { isAdmin } = useIdentity();
-  const tabs = isAdmin ? STAFF_TABS : MEMBER_TABS;
+  const { viewMode } = useIdentity();
+  const staffMode = viewMode === 'staff';
+  const tabs = staffMode ? STAFF_TABS : MEMBER_TABS;
   const [subTab, setSubTab] = useState('create');
   const ticketsUnread = useTicketsUnread();
+
+  useEffect(() => {
+    if (!tabs.find((t) => t.id === subTab)) setSubTab('create');
+  }, [viewMode]);
 
   return (
     <div className="send-message-page">
@@ -35,7 +40,7 @@ export default function TicketsPage() {
         ))}
       </nav>
 
-      {subTab === 'create' && <CreateTicketForm onCreated={() => setSubTab(isAdmin ? 'soporte' : 'mine')} />}
+      {subTab === 'create' && <CreateTicketForm onCreated={() => setSubTab(staffMode ? 'soporte' : 'mine')} />}
       {subTab === 'mine' && <MyTicketsPanel />}
       {subTab === 'soporte' && <TicketBoard category="soporte" />}
       {subTab === 'reporte' && <TicketBoard category="reporte" />}

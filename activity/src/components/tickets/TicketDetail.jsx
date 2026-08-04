@@ -11,13 +11,14 @@ function formatDate(iso) {
 }
 
 export default function TicketDetail({ ticketId, onClose, onChanged }) {
-  const { user, isAdmin } = useIdentity();
+  const { user, isAdmin, viewMode } = useIdentity();
   const [ticket, setTicket] = useState(null);
   const [error, setError] = useState(null);
   const [content, setContent] = useState('');
   const [images, setImages] = useState([]);
   const [sending, setSending] = useState(false);
   const [actionBusy, setActionBusy] = useState(false);
+  const [participantId, setParticipantId] = useState('');
   const bottomRef = useRef(null);
 
   function load() {
@@ -94,6 +95,21 @@ export default function TicketDetail({ ticketId, onClose, onChanged }) {
     }
   }
 
+  async function handleAddParticipant(e) {
+    e.preventDefault();
+    if (!participantId.trim()) return;
+    setActionBusy(true);
+    try {
+      const updated = await api.post(`/tickets/${ticketId}/participants`, { userId: participantId.trim() });
+      setTicket(updated);
+      setParticipantId('');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setActionBusy(false);
+    }
+  }
+
   if (error && !ticket) {
     return (
       <div className="ticket-modal-overlay" onClick={onClose}>
@@ -110,7 +126,7 @@ export default function TicketDetail({ ticketId, onClose, onChanged }) {
   if (!ticket) return null;
 
   const notificationsEnabled = (ticket.notifyOptIn || []).includes(user.id);
-  const canModerate = isAdmin;
+  const canModerate = isAdmin && viewMode === 'staff';
   const isClosed = ticket.status === 'closed';
 
   return (
@@ -159,6 +175,20 @@ export default function TicketDetail({ ticketId, onClose, onChanged }) {
             </div>
           )}
         </div>
+
+        {canModerate && !isClosed && (
+          <form onSubmit={handleAddParticipant} className="ticket-participant-form">
+            <input
+              type="text"
+              value={participantId}
+              onChange={(e) => setParticipantId(e.target.value)}
+              placeholder="ID de usuario a añadir al ticket..."
+            />
+            <button type="submit" className="btn-secondary" disabled={actionBusy}>
+              Añadir usuario
+            </button>
+          </form>
+        )}
 
         <div className="ticket-modal-body">
           <div className="gradient-frame">
